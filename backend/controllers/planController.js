@@ -32,7 +32,6 @@ export const createPlan = async (req, res) => {
     });
   }
 };
-
 export const getPlans = async (req, res) => {
   try {
     const vendorId = req.user.id;
