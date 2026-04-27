@@ -64,6 +64,46 @@ export const getPlans = async (req, res) => {
   }
 };
 
+/*import mongoose from "mongoose";
+import Plan from "../models/plan.js";
+
+export const getSinglePlan = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // ✅ Check if id exists
+    if (!id) {
+      return res.status(400).json({
+        message: "Plan ID is required"
+      });
+    }
+
+    // ✅ Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid Plan ID"
+      });
+    }
+
+    const plan = await Plan.findById(id);
+
+    if (!plan) {
+      return res.status(404).json({
+        message: "Plan not found"
+      });
+    }
+
+    res.json({ plan });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};*/
+
 
 export const deletePlan = async (req, res) => {
   try {
