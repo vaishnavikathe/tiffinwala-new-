@@ -8,6 +8,11 @@ import jwt from "jsonwebtoken";
 export const registerUser = async (req, res) => {
   try {
     const { name, mobile, address, password, email } = req.body;
+    
+    // Get uploaded file
+    const profilePic = req.file
+      ? req.file.filename
+      : "";
 
     // Check existing user
     const existing = await User.findOne({
@@ -33,7 +38,8 @@ export const registerUser = async (req, res) => {
       mobile,
       address,
       password: hashedPassword,
-      email
+      email,
+      profilePic
     });
 
     res.status(201).json({

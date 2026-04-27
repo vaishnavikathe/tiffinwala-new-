@@ -12,10 +12,18 @@ const postpaidSchema = new mongoose.Schema({
 }, { _id: false });
 
 const planSchema = new mongoose.Schema({
+  
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Vendor",
     required: true
+  },
+
+  // ✅ NEW FIELD (ADD THIS)
+  planName: {
+    type: String,
+    required: true,
+    trim: true
   },
 
   planTypes: {
