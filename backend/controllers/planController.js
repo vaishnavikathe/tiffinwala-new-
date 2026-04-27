@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Plan from "../models/plan.js";
 
 export const createPlan = async (req, res) => {
@@ -125,10 +126,27 @@ export const deletePlan = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 export const updatePlan = async (req, res) => {
   try {
+
     const vendorId = req.user.id;
     const { id } = req.params;
+
+    // ✅ Check if ID exists
+    if (!id) {
+      return res.status(400).json({
+        message: "Plan ID is required"
+      });
+    }
+
+    // ✅ Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid Plan ID"
+      });
+    }
 
     const {
       planName,
@@ -137,11 +155,10 @@ export const updatePlan = async (req, res) => {
       postpaidPlan
     } = req.body;
 
-    // Find and update plan
     const updatedPlan = await Plan.findOneAndUpdate(
       {
         _id: id,
-        vendorId // ensures vendor edits only their plan
+        vendorId
       },
       {
         planName,
@@ -150,7 +167,7 @@ export const updatePlan = async (req, res) => {
         postpaidPlan
       },
       {
-        new: true, // return updated data
+        new: true,
         runValidators: true
       }
     );
@@ -167,13 +184,15 @@ export const updatePlan = async (req, res) => {
     });
 
   } catch (error) {
+
     console.error(error);
+
     res.status(500).json({
       error: error.message
     });
+
   }
 };
-
 export const getVendorPlans = async (req, res) => {
   try {
     const { vendorId } = req.params;
