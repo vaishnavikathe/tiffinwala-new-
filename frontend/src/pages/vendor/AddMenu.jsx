@@ -78,14 +78,22 @@ const AddMenu = ({ selectedPlan }) => {
       <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
 
         <div className="grid md:grid-cols-2 gap-4">
-          <input
-            placeholder="Day (Monday)"
-            className="p-3 border rounded"
-            value={menu.day}
-            onChange={(e) =>
-              setMenu({ ...menu, day: e.target.value })
-            }
-          />
+          <select
+  className="p-3 border rounded"
+  value={menu.day}
+  onChange={(e) =>
+    setMenu({ ...menu, day: e.target.value })
+  }
+>
+  <option value="">Select Day</option>
+  <option value="Monday">Monday</option>
+  <option value="Tuesday">Tuesday</option>
+  <option value="Wednesday">Wednesday</option>
+  <option value="Thursday">Thursday</option>
+  <option value="Friday">Friday</option>
+  <option value="Saturday">Saturday</option>
+  <option value="Sunday">Sunday</option>
+</select>
 
           <select
             className="p-3 border rounded"

@@ -2,10 +2,18 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 
 const PlanRow = ({ plan, index, onEdit, onDelete }) => {
   return (
+    
+    
+   
     <tr className="border-t hover:bg-gray-50 transition">
       
       {/* Sr No */}
       <td className="p-3">{index + 1}</td>
+
+      {/* Plan Name */}
+      <td className="p-3">
+        {plan.planName || "N/A"}
+      </td>
 
       {/* Plan Type */}
       <td className="p-3">
@@ -53,6 +61,7 @@ const PlanRow = ({ plan, index, onEdit, onDelete }) => {
       </td>
 
     </tr>
+    
   );
 };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+ 
 const PlanModal = ({ onClose, onSubmit, initialData }) => {
   const [form, setForm] = useState({
     prepaid: true,
@@ -14,8 +14,24 @@ const PlanModal = ({ onClose, onSubmit, initialData }) => {
   });
 
   useEffect(() => {
-    if (initialData) setForm(initialData);
-  }, [initialData]);
+  if (initialData) {
+    setForm({
+      prepaid: initialData.planTypes?.prepaid || false,
+      postpaid: initialData.planTypes?.postpaid || false,
+
+      prepaidPlans:
+        initialData.prepaidPlans?.length > 0
+          ? initialData.prepaidPlans
+          : [{ name: "", tiffinCount: "", price: "" }],
+
+      postpaidPlan: {
+        deposit: initialData.postpaidPlan?.deposit || "",
+        pricePerTiffin:
+          initialData.postpaidPlan?.pricePerTiffin || "",
+      },
+    });
+  }
+}, [initialData]);
 
   // 🔹 Handle prepaid changes
   const handlePrepaidChange = (index, field, value) => {

@@ -8,6 +8,8 @@ import {
   updatePlan
 } from "../../services/vendorApi";
 
+
+
 const PlanManagement = () => {
   const [plans, setPlans] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -45,17 +47,21 @@ const PlanManagement = () => {
 
   // ✅ UPDATE PLAN
   const handleUpdate = async (updated) => {
-    try {
-      const res = await updatePlan(updated._id, updated);
+  try {
+    console.log("UPDATING DATA:", updated); // ✅ correct log
 
-      setPlans(plans.map(p =>
-        p._id === updated._id ? res.data.plan : p
-      ));
-    } catch (err) {
-      console.error(err);
-      alert("❌ Failed to update plan");
-    }
-  };
+    const res = await updatePlan(updated._id, updated);
+
+    setPlans(plans.map(p =>
+      p._id === updated._id ? res.data.plan : p
+    ));
+
+  } catch (err) {
+    console.error("UPDATE ERROR:", err.response?.data || err.message);
+
+    alert(err.response?.data?.message || "❌ Failed to update plan");
+  }
+};
 
   // ✅ DELETE PLAN
   const handleDelete = async (id) => {

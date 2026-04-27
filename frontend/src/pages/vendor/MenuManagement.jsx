@@ -7,7 +7,7 @@ const MenuManagement = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
-  // 🔥 Fetch plans (ONLY ONCE)
+  // 🔥 Fetch plans
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -21,17 +21,17 @@ const MenuManagement = () => {
     fetchPlans();
   }, []);
 
-  // 🔥 HANDLE CLICK
+  // 🔥 Open form
   const handleAddMenu = (plan) => {
     setSelectedPlan(plan);
-    setShowForm(true);  // 👈 force form
+    setShowForm(true);
   };
 
-  // 🔥 BACK BUTTON
-  // const handleBack = () => {
-  //   setShowForm(false);
-  //   setSelectedPlan(null);
-  // };
+  // 🔥 Close form
+  const handleClose = () => {
+    setSelectedPlan(null);
+    setShowForm(false);
+  };
 
   return (
     <div className="p-6">
@@ -41,32 +41,53 @@ const MenuManagement = () => {
       </h2>
 
       {/* ================= PLAN CARDS ================= */}
-      {showForm === false && (
+      {!showForm && (
         <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <div
               key={plan._id}
               className="bg-white shadow-md rounded-xl p-5 border"
             >
+              {/* ✅ Plan Name */}
               <h3 className="text-lg font-bold">
-                Plan Type:{plan.planType || plan.name}
+                {plan.planName|| "No Name"}
               </h3>
 
+              {/* ✅ Plan Type */}
               <p className="text-gray-600 mt-2">
-                Price: ₹{plan.price}
+                Type:
+                {plan.planTypes?.prepaid && " Prepaid "}
+                {plan.planTypes?.postpaid && " Postpaid"}
               </p>
 
-              <p className="text-gray-600">
-                Duration: {plan.duration} days
-              </p>
+              {/* ✅ Price */}
+              <div className="text-gray-600 mt-2">
+                Price:
+                {plan.planTypes?.prepaid &&
+                  plan.prepaidPlans?.map((p, i) => (
+                    <div key={i}>₹{p.price}</div>
+                  ))}
 
-              <p className="text-gray-600">
-                Meals: {plan.meals}
-              </p>
+                {plan.planTypes?.postpaid && (
+                  <div>₹{plan.postpaidPlan?.pricePerTiffin}/tiffin</div>
+                )}
+              </div>
 
+              {/* ✅ Meals */}
+              <div className="text-gray-600 mt-2">
+                Meals:
+                {plan.planTypes?.prepaid &&
+                  plan.prepaidPlans?.map((p, i) => (
+                    <div key={i}>{p.tiffinCount} meals</div>
+                  ))}
+
+                {plan.planTypes?.postpaid && <div>Flexible</div>}
+              </div>
+
+              {/* Button */}
               <button
                 onClick={() => handleAddMenu(plan)}
-                className="mt-4 w-full bg-orange-500 text-white py-2 rounded"
+                className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
               >
                 Add Menu
               </button>
@@ -76,40 +97,28 @@ const MenuManagement = () => {
       )}
 
       {/* ================= FORM ================= */}
-      {showForm === true && (
+      {showForm && selectedPlan && (
         <div>
-          {/* <button
-            onClick={handleBack}
-            className="mb-4 text-blue-500 underline"
-          >
-            ← Back to Plans
-          </button> */}
-
           <h2 className="text-xl font-semibold mb-4">
-            Add Menu for: {selectedPlan?.planType || selectedPlan?.name}
+            Add Menu for: {selectedPlan.planName || "Plan"}
           </h2>
 
-         {selectedPlan && (
-  <div className="flex justify-center mt-6">
-    <div className="w-full max-w-3xl bg-white p-6 rounded-xl shadow relative">
+          <div className="flex justify-center mt-6">
+            <div className="w-full max-w-3xl bg-white p-6 rounded-xl shadow relative">
 
-      {/* ❌ Cross Button */}
-      <button
-  onClick={() => {
-    setSelectedPlan(null);
-    setShowForm(false);   // 🔥 THIS WAS MISSING
-  }}
-  className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-xl"
->
-  ✕
-</button>
+              {/* ❌ Cross Button */}
+              <button
+                onClick={handleClose}
+                className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-xl"
+              >
+                ✕
+              </button>
 
-      {/* Form */}
-      <AddMenu selectedPlan={selectedPlan} />
+              {/* Form */}
+              <AddMenu selectedPlan={selectedPlan} />
 
-    </div>
-  </div>
-)}
+            </div>
+          </div>
         </div>
       )}
 
