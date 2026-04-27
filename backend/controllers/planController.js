@@ -2,11 +2,19 @@ import Plan from "../models/plan.js";
 
 export const createPlan = async (req, res) => {
   try {
-    //  get vendorId from token (middleware)
     const vendorId = req.user.id;
-    const { planTypes, prepaidPlans, postpaidPlan } = req.body;
+
+    // ✅ add planName here
+    const {
+      planName,
+      planTypes,
+      prepaidPlans,
+      postpaidPlan
+    } = req.body;
+
     const plan = await Plan.create({
       vendorId,
+      planName, 
       planTypes,
       prepaidPlans,
       postpaidPlan
@@ -19,7 +27,9 @@ export const createPlan = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
 
@@ -81,32 +91,42 @@ export const updatePlan = async (req, res) => {
     const vendorId = req.user.id;
     const { id } = req.params;
 
-    const { planTypes, prepaidPlans, postpaidPlan } = req.body;
+    const {
+      planName, // ✅ added
+      planTypes,
+      prepaidPlans,
+      postpaidPlan
+    } = req.body;
 
     const plan = await Plan.findOneAndUpdate(
       { _id: id, vendorId },
       {
+        planName, // ✅ added
         planTypes,
         prepaidPlans,
-        postpaidPlan,
+        postpaidPlan
       },
       { new: true }
     );
 
     if (!plan) {
-      return res.status(404).json({ message: "Plan not found" });
+      return res.status(404).json({
+        message: "Plan not found"
+      });
     }
 
     res.json({
       message: "Plan updated successfully",
-      plan,
+      plan
     });
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
-
 
 export const getVendorPlans = async (req, res) => {
   try {
