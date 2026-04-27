@@ -4,6 +4,7 @@ import userroutes from "./routes/userRoutes.js";
 import vendorroutes from "./routes/vendorRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
 import menurouter from "./routes/menuroutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 const app = express();
 
 
@@ -14,6 +15,7 @@ app.use("/api/user",userroutes);
 app.use("/api/vendor",vendorroutes);
 app.use("/api/plan",planRoutes);
 app.use("/api/menu", menurouter); 
+app.use("/api/contact", contactRoutes);
 app.get("/", (req, res) => {
   res.send("Mess Management API running...");
 });
