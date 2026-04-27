@@ -4,7 +4,6 @@ export const createPlan = async (req, res) => {
   try {
     const vendorId = req.user.id;
 
-    // ✅ add planName here
     const {
       planName,
       planTypes,
@@ -92,24 +91,31 @@ export const updatePlan = async (req, res) => {
     const { id } = req.params;
 
     const {
-      planName, // ✅ added
+      planName,
       planTypes,
       prepaidPlans,
       postpaidPlan
     } = req.body;
 
-    const plan = await Plan.findOneAndUpdate(
-      { _id: id, vendorId },
+    // Find and update plan
+    const updatedPlan = await Plan.findOneAndUpdate(
       {
-        planName, // ✅ added
+        _id: id,
+        vendorId // ensures vendor edits only their plan
+      },
+      {
+        planName,
         planTypes,
         prepaidPlans,
         postpaidPlan
       },
-      { new: true }
+      {
+        new: true, // return updated data
+        runValidators: true
+      }
     );
 
-    if (!plan) {
+    if (!updatedPlan) {
       return res.status(404).json({
         message: "Plan not found"
       });
@@ -117,7 +123,7 @@ export const updatePlan = async (req, res) => {
 
     res.json({
       message: "Plan updated successfully",
-      plan
+      plan: updatedPlan
     });
 
   } catch (error) {
