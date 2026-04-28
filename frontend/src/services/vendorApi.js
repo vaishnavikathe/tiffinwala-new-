@@ -10,7 +10,7 @@ export const updatePlan = (id, data) => API.put(`/plan/${id}`, data);
 export const deletePlan = (id) => API.delete(`/plan/${id}`);
 
 // Menu
-export const addMenu = (data) => API.post("/vendor/menu", data);
+export const addMenu = (data) => API.post("/menu", data);
 
 // Users
 export const getUsers = () => API.get("/vendor/users");

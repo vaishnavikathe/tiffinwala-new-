@@ -38,14 +38,20 @@ const AddMenu = ({ selectedPlan }) => {
             try {
           setLoading(true);
 
-          await addMenu({
-            ...menu,
-            planId: selectedPlan._id
-          });
+          const payload = {
+  ...menu,
+  items: menu.items.map(item => item.name), // ✅ FIX
+  planId: selectedPlan?._id
+};
+
+console.log("MENU DATA:", payload); // 👈 DEBUG LINE
+
+await addMenu(payload);
 
           toast.success("Menu added successfully!", {
             position: "top-right",
           });
+          
 
           setMenu({
             day: "",
@@ -55,6 +61,7 @@ const AddMenu = ({ selectedPlan }) => {
 
         } catch (err) {
           console.error(err);
+          console.error("FULL ERROR:", err.response?.data);
 
           // 🔥 ERROR TOAST
           toast.error(

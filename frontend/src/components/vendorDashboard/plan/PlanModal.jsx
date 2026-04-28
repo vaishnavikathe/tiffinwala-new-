@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
+
+
  
 const PlanModal = ({ onClose, onSubmit, initialData }) => {
   const [form, setForm] = useState({
+    planName: "",
     prepaid: true,
     postpaid: false,
     prepaidPlans: [
@@ -16,6 +19,7 @@ const PlanModal = ({ onClose, onSubmit, initialData }) => {
   useEffect(() => {
   if (initialData) {
     setForm({
+      planName: initialData.planName || "",
       prepaid: initialData.planTypes?.prepaid || false,
       postpaid: initialData.planTypes?.postpaid || false,
 
@@ -59,31 +63,46 @@ const PlanModal = ({ onClose, onSubmit, initialData }) => {
 
   // 🔹 Submit
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const payload = {
-      planTypes: {
-        prepaid: form.prepaid,
-        postpaid: form.postpaid
-      },
-      prepaidPlans: form.prepaid
-        ? form.prepaidPlans.map(p => ({
-            name: p.name,
-            tiffinCount: Number(p.tiffinCount),
-            price: Number(p.price)
-          }))
-        : [],
-      postpaidPlan: form.postpaid
-        ? {
-            deposit: Number(form.postpaidPlan.deposit),
-            pricePerTiffin: Number(form.postpaidPlan.pricePerTiffin)
-          }
-        : {}
-    };
+  const payload = {
 
-    onSubmit(payload);
-    onClose();
+    planName: form.planName, 
+    planTypes: {
+      prepaid: form.prepaid,
+      postpaid: form.postpaid
+    },
+    prepaidPlans: form.prepaid
+      ? form.prepaidPlans.map(p => ({
+          name: p.name,
+          tiffinCount: Number(p.tiffinCount),
+          price: Number(p.price)
+        }))
+      : [],
+    postpaidPlan: form.postpaid
+      ? {
+          deposit: Number(form.postpaidPlan.deposit),
+          pricePerTiffin: Number(form.postpaidPlan.pricePerTiffin)
+        }
+      : {}
   };
+  
+
+  console.log("SENDING PAYLOAD:", payload);
+
+  // ✅ FIX: Separate CREATE and UPDATE
+  if (initialData) {
+    // UPDATE
+    onSubmit({ ...payload, _id: initialData._id });
+  } else {
+    // CREATE
+    onSubmit(payload);
+  }
+
+  onClose();
+};
+
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
@@ -128,13 +147,13 @@ const PlanModal = ({ onClose, onSubmit, initialData }) => {
                 <div key={i} className="grid md:grid-cols-4 gap-3">
 
                   <input
-                    placeholder="Plan Name"
-                    className="p-3 border rounded"
-                    value={plan.name}
-                    onChange={(e) =>
-                      handlePrepaidChange(i, "name", e.target.value)
-                    }
-                  />
+  placeholder="Enter Plan Name"
+  className="w-full p-3 border rounded"
+  value={form.planName}
+  onChange={(e) =>
+    setForm({ ...form, planName: e.target.value })
+  }
+/>
 
                   <input
                     placeholder="Tiffin Count"
