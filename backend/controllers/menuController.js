@@ -1,33 +1,32 @@
 import Menu from "../models/menu.js";
 
-// ✅ CREATE MENU (PLAN-BASED)
+// CREATE MENU (PLAN-BASED)
+
 export const createMenu = async (req, res) => {
   try {
     const vendorId = req.user.id;
-    console.log("FULL BODY:", req.body);
-    console.log("ITEMS TYPE:", typeof req.body.items);
 
-    let { planId, day, mealType, items } = req.body;
+    // ✅ Get planId from params (IMPORTANT)
+    const { planId } = req.params;
 
-    // ✅ FIX: handle stringified items (your current bug)
+    let { day, mealType, items } = req.body;
+
+    console.log("PLAN ID:", planId);
+    console.log("BODY:", req.body);
+
+    // ✅ Fix string items issue
     if (typeof items === "string") {
-      try {
-        items = JSON.parse(items);
-      } catch (err) {
-        return res.status(400).json({
-          message: "Invalid items format (must be JSON array)"
-        });
-      }
+      items = JSON.parse(items);
     }
 
-    // ✅ Validate items is array
+    // ✅ Validate items
     if (!Array.isArray(items)) {
       return res.status(400).json({
         message: "Items must be an array"
       });
     }
 
-    // ✅ Prevent duplicate (same plan + day + mealType)
+    // ✅ Prevent duplicate menu
     const existing = await Menu.findOne({
       vendorId,
       planId,
@@ -37,10 +36,12 @@ export const createMenu = async (req, res) => {
 
     if (existing) {
       return res.status(400).json({
-        message: "Menu already exists for this plan/day/meal"
+        message:
+          "Menu already exists for this plan/day/meal"
       });
     }
 
+    // ✅ Create menu
     const menu = await Menu.create({
       vendorId,
       planId,
@@ -56,25 +57,12 @@ export const createMenu = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: error.message });
-  }
-};
-export const getMenuByPlan = async (req, res) => {
-  try {
-    const { planId } = req.params;
 
-    const menus = await Menu.find({ planId })
-      .sort({ createdAt: -1 });
-
-    res.json({
-      menus
+    res.status(500).json({
+      error: error.message
     });
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
-
 
 export const getMenus = async (req, res) => {
   try {
@@ -96,48 +84,77 @@ export const getMenus = async (req, res) => {
 //update menu
 export const updateMenu = async (req, res) => {
   try {
+    const vendorId = req.user.id;
     const { id } = req.params;
 
     let { day, mealType, items } = req.body;
 
-    // Fix stringified items
+    console.log("UPDATE BODY:", req.body);
+
+    // ✅ Fix stringified items
     if (typeof items === "string") {
-      items = JSON.parse(items);
+      try {
+        items = JSON.parse(items);
+      } catch (err) {
+        return res.status(400).json({
+          message: "Invalid items format"
+        });
+      }
     }
 
-    // Validate items
+    // ✅ Validate items
     if (!Array.isArray(items)) {
       return res.status(400).json({
         message: "Items must be an array"
       });
     }
 
-    const updatedMenu = await Menu.findByIdAndUpdate(
-      id,
-      {
-        day,
-        mealType,
-        items
-      },
-      {
-        new: true,
-        runValidators: true
-      }
-    );
+    // ✅ Find existing menu first
+    const existingMenu = await Menu.findById(id);
 
-    if (!updatedMenu) {
+    if (!existingMenu) {
       return res.status(404).json({
         message: "Menu not found"
       });
     }
 
+    // ✅ Check vendor ownership
+    if (existingMenu.vendorId.toString() !== vendorId) {
+      return res.status(403).json({
+        message: "Unauthorized action"
+      });
+    }
+
+    // ✅ Prevent duplicate (same plan/day/mealType)
+    const duplicate = await Menu.findOne({
+      vendorId,
+      planId: existingMenu.planId,
+      day,
+      mealType,
+      _id: { $ne: id }
+    });
+
+    if (duplicate) {
+      return res.status(400).json({
+        message: "Menu already exists for this day and meal"
+      });
+    }
+
+    // ✅ Update menu
+     if (day) existingMenu.day = day;
+     if (mealType) existingMenu.mealType = mealType;
+     if (items) existingMenu.items = items;
+
+    await existingMenu.save();
+
     res.json({
       message: "Menu updated successfully",
-      menu: updatedMenu
+      menu: existingMenu
     });
 
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       error: error.message
     });
@@ -157,5 +174,23 @@ export const deleteMenu = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+    // ✅ GET MENU BY PLAN (User side)
+export const getMenuByPlan = async (req, res) => {
+  try {
+    const { planId } = req.params;
+
+    const menus = await Menu.find({ planId })
+      .sort({ day: 1 });
+
+    res.json({
+      menus
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
