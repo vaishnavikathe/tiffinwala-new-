@@ -40,9 +40,12 @@ const PlanManagement = () => {
       const res = await createPlan(data);
       setPlans([res.data.plan, ...plans]);
     } catch (err) {
-      console.error(err);
-      alert("❌ Failed to create plan");
-    }
+  console.error("CREATE ERROR:", err.response?.data || err.message);
+
+  alert(
+    err.response?.data?.message || "❌ Failed to create plan"
+  );
+}
   };
 
   // ✅ UPDATE PLAN

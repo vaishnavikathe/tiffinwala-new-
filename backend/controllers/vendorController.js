@@ -30,7 +30,8 @@ export const registerVendor= async (req,res)=>{
     password: hashedPassword,
     cuisine,
     shopName,
-    email
+    email,
+    profilePic 
   });
   
   res.status(201).json({

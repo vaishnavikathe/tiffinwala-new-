@@ -1,8 +1,10 @@
 import express from "express";
+
 import {
   createMenu,
   getMenus,
   getMenuByPlan,
+  updateMenu,
   deleteMenu
 } from "../controllers/menuController.js";
 
@@ -11,22 +13,42 @@ import { protectVendor } from "../middlewares/authMiddleware.js";
 const menurouter = express.Router();
 
 
-// ✅ VENDOR ROUTES (protected)
-
-// Create menu for a plan
-menurouter.post("/", protectVendor, createMenu);
-
-// Get all menus of logged-in vendor (dashboard use)
-menurouter.get("/", protectVendor, getMenus);
-
-// Delete menu
-menurouter.delete("/:id", protectVendor, deleteMenu);
+// ✅ CREATE MENU (plan based)
+menurouter.post(
+  "/:planId",
+  protectVendor,
+  createMenu
+);
 
 
-// ✅ USER FLOW ROUTE (public or protected based on your design)
+// ✅ GET ALL MENUS (vendor dashboard)
+menurouter.get(
+  "/",
+  protectVendor,
+  getMenus
+);
 
-// Get menu of a specific plan
-menurouter.get("/plan/:planId", getMenuByPlan);
 
+// ✅ GET MENU BY PLAN (user side)
+menurouter.get(
+  "/plan/:planId",
+  getMenuByPlan
+);
+
+
+// ✅ UPDATE MENU
+menurouter.put(
+  "/:id",
+  protectVendor,
+  updateMenu
+);
+
+
+// ✅ DELETE MENU
+menurouter.delete(
+  "/:id",
+  protectVendor,
+  deleteMenu
+);
 
 export default menurouter;
