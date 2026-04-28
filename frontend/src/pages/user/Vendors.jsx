@@ -1,36 +1,41 @@
-import { useEffect, useState } from "react";
-import { getVendors } from "../../services/userApi";
-import VendorCard from "../../components/user/VendorCard";
-import { useNavigate } from "react-router-dom";
+// src/pages/user/Vendors.jsx
 
-const VendorList = () => {
-  const [vendors, setVendors] = useState([]);
+import { useNavigate } from "react-router-dom";
+import useVendors from "../../hooks/useVendors";
+import VendorGrid from "../../pages/user/VendorGrid";
+
+const Vendors = () => {
+  const { vendors, loading, error } = useVendors();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchVendors();
-  }, []);
-
-  const fetchVendors = async () => {
-    const res = await getVendors();
-    setVendors(res.data.vendors || []);
+  const handleViewPlans = (vendorId) => {
+    navigate(`/vendors/${vendorId}`);
   };
 
+  if (loading) {
+    return <p className="text-center mt-10">Loading vendors...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className="text-center text-red-500 mt-10">
+        {error}
+      </p>
+    );
+  }
+
   return (
-    <div className="grid md:grid-cols-3 gap-6">
-      {vendors.length === 0 ? (
-        <p>No Vendors Available</p>
-      ) : (
-        vendors.map(vendor => (
-          <VendorCard
-            key={vendor._id}
-            vendor={vendor}
-            onClick={() => navigate(`/vendors/${vendor._id}`)}
-          />
-        ))
-      )}
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">
+        Browse Vendors
+      </h1>
+
+      <VendorGrid
+        vendors={vendors}
+        onViewPlans={handleViewPlans}
+      />
     </div>
   );
 };
 
-export default VendorList;
+export default Vendors;

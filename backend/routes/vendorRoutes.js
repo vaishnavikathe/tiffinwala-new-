@@ -7,10 +7,11 @@ const vendorroutes = express.Router();
 
 vendorroutes.post("/register", registerVendor);
 vendorroutes.post("/login", loginVendor);
+vendorroutes.get("/all", getAllVendors);
 
 vendorroutes.use(protectVendor);
 
-vendorroutes.get("/all", getAllVendors);
+
 vendorroutes.get("/:id/details", getVendorDetails);
 vendorroutes.put("/update-profile", updateVendorProfile);
 vendorroutes.put("/change-password", updateVendorPassword);

@@ -5,7 +5,7 @@ const API = axios.create({
 });
 
 // ✅ Get all vendors
-export const getVendors = () => API.get("/vendors");
+export const getVendors = () => API.get("/vendor/all");
 
 // ✅ Get plans by vendor
 export const getVendorPlans = (vendorId) =>
