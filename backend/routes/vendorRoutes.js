@@ -7,14 +7,10 @@ const vendorroutes = express.Router();
 
 vendorroutes.post("/register", registerVendor);
 vendorroutes.post("/login", loginVendor);
-<<<<<<< HEAD
 vendorroutes.get("/all", getAllVendors);
-=======
 vendorroutes.post("/register",upload.single("profilePic"),registerVendor);
->>>>>>> 2d0c19f2c28947eb14a9d37f9bb58173f36f7266
 
 vendorroutes.use(protectVendor);
-
 
 vendorroutes.get("/:id/details", getVendorDetails);
 vendorroutes.put("/update-profile", updateVendorProfile);
