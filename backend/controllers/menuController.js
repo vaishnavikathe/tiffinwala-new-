@@ -93,6 +93,57 @@ export const getMenus = async (req, res) => {
   }
 };
 
+//update menu
+export const updateMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let { day, mealType, items } = req.body;
+
+    // Fix stringified items
+    if (typeof items === "string") {
+      items = JSON.parse(items);
+    }
+
+    // Validate items
+    if (!Array.isArray(items)) {
+      return res.status(400).json({
+        message: "Items must be an array"
+      });
+    }
+
+    const updatedMenu = await Menu.findByIdAndUpdate(
+      id,
+      {
+        day,
+        mealType,
+        items
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!updatedMenu) {
+      return res.status(404).json({
+        message: "Menu not found"
+      });
+    }
+
+    res.json({
+      message: "Menu updated successfully",
+      menu: updatedMenu
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};
+
 
 export const deleteMenu = async (req, res) => {
   try {

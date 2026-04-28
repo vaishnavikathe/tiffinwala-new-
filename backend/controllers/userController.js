@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
     const { name, mobile, address, password, email } = req.body;
     
     // Get uploaded file
