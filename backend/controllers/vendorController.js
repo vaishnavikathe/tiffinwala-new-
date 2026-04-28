@@ -181,7 +181,7 @@ export const getVendorDetails = async (req, res) => {
     const menu = await Menu.findOne({ vendorId });
 
     // plans (prepaid + postpaid)
-    const plan = await Plan.findOne({ vendorId });
+    const plans = await Plan.find({ vendorId });
 
     return res.json({
       message: "Vendor details fetched",
