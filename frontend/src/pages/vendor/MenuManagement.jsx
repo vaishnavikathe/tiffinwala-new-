@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import AddMenu from "./AddMenu";
 import { getPlans } from "../../services/vendorApi";
+import { getMenus } from "../../services/vendorApi";
 
 const MenuManagement = () => {
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [menus, setMenus] = useState([]);
 
   // 🔥 Fetch plans
   useEffect(() => {
@@ -27,6 +29,21 @@ const MenuManagement = () => {
     setShowForm(true);
   };
 
+
+  // 🔥 Fetch menus
+  useEffect(() => {
+  fetchMenus();
+}, []);
+
+const fetchMenus = async () => {
+  try {
+    const res = await getMenus();
+    setMenus(res.data.menus || res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
   // 🔥 Close form
   const handleClose = () => {
     setSelectedPlan(null);
@@ -39,6 +56,27 @@ const MenuManagement = () => {
       <h2 className="text-2xl font-semibold mb-6">
         Menu Management
       </h2>
+
+      <div className="mt-6">
+  <h3 className="text-lg font-semibold mb-4">Your Menus</h3>
+
+  {menus.map((menu) => (
+    <div key={menu._id} className="border p-4 rounded mb-3">
+
+      <p><b>Day:</b> {menu.day}</p>
+      <p><b>Meal:</b> {menu.mealType}</p>
+
+      <ul>
+        {menu.items.map((item, i) => (
+          <li key={i}>
+            {item.name} ({item.type})
+          </li>
+        ))}
+      </ul>
+
+    </div>
+  ))}
+</div>
 
       {/* ================= PLAN CARDS ================= */}
       {!showForm && (

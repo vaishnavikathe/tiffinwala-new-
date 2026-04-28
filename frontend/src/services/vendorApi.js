@@ -14,3 +14,10 @@ export const addMenu = (data) => API.post("/menu", data);
 
 // Users
 export const getUsers = () => API.get("/vendor/users");
+
+
+// Get menu
+export const getMenus = () => API.get("/menu/vendor");
+
+// Edit Menu
+export const updateMenu = (id, data) => API.put(`/menu/${id}`, data);

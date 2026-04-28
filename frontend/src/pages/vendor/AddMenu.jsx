@@ -32,49 +32,43 @@ const AddMenu = ({ selectedPlan }) => {
     setMenu({ ...menu, items: updated });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-            try {
-          setLoading(true);
+  try {
+    setLoading(true);
 
-          const payload = {
-  ...menu,
-  items: menu.items.map(item => item.name), // ✅ FIX
-  planId: selectedPlan?._id
+    const payload = {
+      day: menu.day,
+      mealType: menu.mealType,
+      items: menu.items, // ✅ full objects
+      planId: selectedPlan?._id
+    };
+
+    console.log("MENU DATA:", payload);
+
+    await addMenu(payload);
+
+    toast.success("Menu added successfully!");
+
+    setMenu({
+      day: "",
+      mealType: "lunch",
+      items: [{ name: "", type: "sabzi" }]
+    });
+
+  } catch (err) {
+    console.error("FULL ERROR:", err.response?.data);
+
+    toast.error(
+      err?.response?.data?.message || "Failed to add menu"
+    );
+
+  } finally {
+    setLoading(false);
+  }
 };
 
-console.log("MENU DATA:", payload); // 👈 DEBUG LINE
-
-await addMenu(payload);
-
-          toast.success("Menu added successfully!", {
-            position: "top-right",
-          });
-          
-
-          setMenu({
-            day: "",
-            mealType: "lunch",
-            items: [{ name: "", type: "sabzi" }]
-          });
-
-        } catch (err) {
-          console.error(err);
-          console.error("FULL ERROR:", err.response?.data);
-
-          // 🔥 ERROR TOAST
-          toast.error(
-            err?.response?.data?.message || "Failed to add menu",
-            {
-              position: "top-right",
-            }
-          );
-
-        } finally {
-          setLoading(false);
-}
-  };
   return (
     <div>
 
