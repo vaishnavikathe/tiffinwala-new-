@@ -2,7 +2,7 @@ import { useState } from "react";
 import { addMenu } from "../../services/vendorApi";
 import toast from "react-hot-toast";
 
-const AddMenu = ({ selectedPlan }) => {
+const AddMenu = ({ selectedPlan, fetchMenus }) => {
   const [menu, setMenu] = useState({
     day: "",
     mealType: "lunch",
@@ -48,7 +48,9 @@ const handleSubmit = async (e) => {
     console.log("MENU DATA:", payload);
 
     await addMenu(payload);
-
+    if(fetchMenus){
+    await fetchMenus();
+    }
     toast.success("Menu added successfully!");
 
     setMenu({

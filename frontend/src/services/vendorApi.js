@@ -10,14 +10,20 @@ export const updatePlan = (id, data) => API.put(`/plan/${id}`, data);
 export const deletePlan = (id) => API.delete(`/plan/${id}`);
 
 // Menu
-export const addMenu = (data) => API.post("/menu", data);
-
+//export const addMenu = (data) => API.post("/menu", data);
+export const addMenu = (data) =>
+  API.post(`/menu/${data.planId}`, {
+    day: data.day,
+    mealType: data.mealType,
+    items: data.items
+  });
 // Users
 export const getUsers = () => API.get("/vendor/users");
 
 
 // Get menu
-export const getMenus = () => API.get("/menu/vendor");
-
+//export const getMenus = () => API.get("/menu/vendor");
+export const getMenus = () =>
+  API.get("/menu");
 // Edit Menu
 export const updateMenu = (id, data) => API.put(`/menu/${id}`, data);

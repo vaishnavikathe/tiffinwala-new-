@@ -25,6 +25,7 @@ const MenuManagement = () => {
 
   // 🔥 Open form
   const handleAddMenu = (plan) => {
+    console.log("CLICKED PLAN:", plan);
     setSelectedPlan(plan);
     setShowForm(true);
   };
@@ -153,7 +154,8 @@ const fetchMenus = async () => {
               </button>
 
               {/* Form */}
-              <AddMenu selectedPlan={selectedPlan} />
+              <AddMenu selectedPlan={selectedPlan}
+                fetchMenus={fetchMenus} />
 
             </div>
           </div>
