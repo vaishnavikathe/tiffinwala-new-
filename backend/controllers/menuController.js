@@ -4,7 +4,7 @@ import Menu from "../models/menu.js";
 
 export const createMenu = async (req, res) => {
   try {
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
 
     // ✅ Get planId from params (IMPORTANT)
     const { planId } = req.params;
@@ -66,7 +66,7 @@ export const createMenu = async (req, res) => {
 
 export const getMenus = async (req, res) => {
   try {
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
 
     const menus = await Menu.find({ vendorId })
       .populate("planId") // useful for showing plan name in UI

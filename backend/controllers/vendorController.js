@@ -302,7 +302,7 @@ export const updateVendorPassword = async (req, res) => {
 export const getVendorDashboard = async (req, res) => {
   try {
 
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
 
     // Total Users
     const totalUsers = await User.countDocuments();
