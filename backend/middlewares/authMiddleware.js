@@ -38,7 +38,7 @@ export const protectVendor = (req, res, next) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    req.user = decoded; // ✅ FIX (IMPORTANT)
+    req.vendor = decoded; // ✅ FIX (IMPORTANT)
 
     next();
   } catch (err) {

@@ -233,30 +233,61 @@ export const updateVendorProfile = async (req,res) =>{
 };
 
 //Update password 
-export const updateVendorPassword = async (req,res)=>{
-  try{
-    const vendorId = req.vendorId;
-    const {oldPassword,newPassword} = req.body;
+export const updateVendorPassword = async (req, res) => {
+  try {
 
+    const vendorId = req.vendor.id; // ✅ FIX
+
+    const {
+      currentPassword,
+      newPassword
+    } = req.body;
+
+    // Find vendor
     const vendor = await Vendor.findById(vendorId);
 
-    if(!vendor){
-      res.status(404).json({message:"Vendor Not found"})
+    if (!vendor) {
+      return res.status(404).json({
+        message: "Vendor Not found"
+      });
     }
-    const isMatch = await bcrypt.compare(oldPassword, vendor.password);
 
-    if(!isMatch){
-      res.status(401).json({message:"Incorrect Password"})
+    // Check current password
+    const isMatch = await bcrypt.compare(
+      currentPassword,
+      vendor.password
+    );
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: "Current password is incorrect"
+      });
     }
+
+    // Hash new password
     const salt = await bcrypt.genSalt(10);
-    vendor.password = await bcrypt.hash(newPassword, salt);
+
+    vendor.password = await bcrypt.hash(
+      newPassword,
+      salt
+    );
+
     await vendor.save();
-    res.json({ message: "Password updated successfully" })
-  }
-  catch(error){
-    res.status(500).json({error:error.message})
+
+    res.json({
+      message: "Password updated successfully"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
+
 
 export const getVendorDashboard = async (req, res) => {
   try {
