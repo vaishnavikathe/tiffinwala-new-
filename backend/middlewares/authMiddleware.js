@@ -24,28 +24,7 @@ export const protectUser = (req, res, next) => {
   }
 };
 
-// ================= VENDOR =================
-/*export const protectVendor = (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({ message: "No token" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (decoded.role !== "vendor") {
-      return res.status(403).json({ message: "Access denied" });
-    }
-
-    req.vendor = decoded; // ✅ FIX (IMPORTANT)
-
-    next();
-  } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
-  }
-};*/
 export const protectVendor = async (req, res, next) => {
   try {
 
