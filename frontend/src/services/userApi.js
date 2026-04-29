@@ -1,11 +1,9 @@
-import axios from "axios";
+import API from "./api";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000/api", // change if needed
-});
-
-// ✅ Get all vendors
-export const getVendors = () => API.get("/vendor/all");
+// ✅ Get vendors (pagination handled by backend)
+export const getVendors = ({ page = 1, limit = 9 } = {}) => {
+  return API.get(`/vendor/all?page=${page}&limit=${limit}`);
+};
 
 // ✅ Get plans by vendor
 export const getVendorPlans = (vendorId) =>
