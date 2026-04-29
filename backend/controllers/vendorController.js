@@ -1,8 +1,9 @@
 import Vendor from "../models/vendor.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import Menu from "../models/menu.js";
+import User from "../models/user.js";
 import Plan from "../models/plan.js";
+import Menu from "../models/menu.js";
 
 export const registerVendor= async (req,res)=>{
   try{
@@ -254,5 +255,44 @@ export const updateVendorPassword = async (req,res)=>{
   }
   catch(error){
     res.status(500).json({error:error.message})
+  }
+};
+
+export const getVendorDashboard = async (req, res) => {
+  try {
+
+    const vendorId = req.user.id;
+
+    // Total Users
+    const totalUsers = await User.countDocuments();
+
+    // Active Users (same for now)
+    const activeUsers = totalUsers;
+
+    // Total Plans
+    const totalPlans = await Plan.countDocuments({
+      vendorId
+    });
+
+    // Total Menus
+    const totalMenus = await Menu.countDocuments({
+      vendorId
+    });
+
+    res.json({
+      totalUsers,
+      activeUsers,
+      totalPlans,
+      totalMenus
+    });
+
+  } catch (error) {
+
+    console.error("Dashboard Error:", error);
+
+    res.status(500).json({
+      message: error.message
+    });
+
   }
 };

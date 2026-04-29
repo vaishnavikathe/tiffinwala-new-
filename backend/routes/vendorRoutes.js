@@ -10,7 +10,7 @@ import {
 } from "../controllers/vendorController.js";
 
 import { protectVendor } from "../middlewares/authMiddleware.js";
-
+import { getVendorDashboard } from "../controllers/vendorController.js";
 import upload from "../middlewares/uploadMiddleware.js";
 
 const vendorroutes = express.Router();
@@ -29,6 +29,7 @@ vendorroutes.post("/login",loginVendor);
 vendorroutes.get("/all",getAllVendors);
 //get Vendor Details
 vendorroutes.get("/:id/details",getVendorDetails);
+vendorroutes.get("/dashboard",protectVendor,getVendorDashboard);
 
 
 // PROTECTED ROUTES
