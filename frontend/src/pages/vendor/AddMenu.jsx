@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { addMenu } from "../../services/vendorApi";
+import { useState, useEffect } from "react";
+import { addMenu, updateMenu } from "../../services/vendorApi";
 import toast from "react-hot-toast";
 
-const AddMenu = ({ selectedPlan, fetchMenus }) => {
+const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
   const [menu, setMenu] = useState({
     day: "",
     mealType: "lunch",
@@ -11,8 +11,21 @@ const AddMenu = ({ selectedPlan, fetchMenus }) => {
 
   const [loading, setLoading] = useState(false);
 
-  
+  // ✅ PREFILL FORM WHEN EDITING
+  useEffect(() => {
+    if (editMenu) {
+      setMenu({
+        day: editMenu.day || "",
+        mealType: editMenu.mealType || "lunch",
+        items:
+          editMenu.items?.length > 0
+            ? editMenu.items
+            : [{ name: "", type: "sabzi" }]
+      });
+    }
+  }, [editMenu]);
 
+  // 🔧 Handle item change
   const handleItemChange = (index, field, value) => {
     const updated = [...menu.items];
     updated[index][field] = value;
@@ -26,77 +39,81 @@ const AddMenu = ({ selectedPlan, fetchMenus }) => {
     });
   };
 
-
   const removeItem = (index) => {
     const updated = menu.items.filter((_, i) => i !== index);
     setMenu({ ...menu, items: updated });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  // 🚀 SUBMIT (ADD + EDIT)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const payload = {
-      day: menu.day,
-      mealType: menu.mealType,
-      items: menu.items, // ✅ full objects
-      planId: selectedPlan?._id
-    };
+      const payload = {
+        day: menu.day,
+        mealType: menu.mealType,
+        items: menu.items,
+        planId: selectedPlan?._id
+      };
 
-    console.log("MENU DATA:", payload);
+      console.log("MENU DATA:", payload);
 
-    await addMenu(payload);
-    if(fetchMenus){
-    await fetchMenus();
+      if (editMenu) {
+        // ✏️ UPDATE
+        await updateMenu(editMenu._id, payload);
+        toast.success("Menu updated successfully!");
+      } else {
+        // ➕ ADD
+        await addMenu(payload);
+        toast.success("Menu added successfully!");
+      }
+
+      if (fetchMenus) {
+        await fetchMenus();
+      }
+
+      // 🔄 RESET FORM
+      setMenu({
+        day: "",
+        mealType: "lunch",
+        items: [{ name: "", type: "sabzi" }]
+      });
+
+    } catch (err) {
+      console.error("FULL ERROR:", err.response?.data);
+
+      toast.error(
+        err?.response?.data?.message || "Something went wrong"
+      );
+    } finally {
+      setLoading(false);
     }
-    toast.success("Menu added successfully!");
-
-    setMenu({
-      day: "",
-      mealType: "lunch",
-      items: [{ name: "", type: "sabzi" }]
-    });
-
-  } catch (err) {
-    console.error("FULL ERROR:", err.response?.data);
-
-    toast.error(
-      err?.response?.data?.message || "Failed to add menu"
-    );
-
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div>
-
-      {/* <h2 className="text-2xl font-semibold mb-4">
-        Add Menu for: {selectedPlan?.planType|| selectedPlan?.name}
-      </h2> */}
-
       <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
 
+        {/* Day + Meal */}
         <div className="grid md:grid-cols-2 gap-4">
           <select
-  className="p-3 border rounded"
-  value={menu.day}
-  onChange={(e) =>
-    setMenu({ ...menu, day: e.target.value })
-  }
->
-  <option value="">Select Day</option>
-  <option value="Monday">Monday</option>
-  <option value="Tuesday">Tuesday</option>
-  <option value="Wednesday">Wednesday</option>
-  <option value="Thursday">Thursday</option>
-  <option value="Friday">Friday</option>
-  <option value="Saturday">Saturday</option>
-  <option value="Sunday">Sunday</option>
-</select>
+            className="p-3 border rounded"
+            value={menu.day}
+            onChange={(e) =>
+              setMenu({ ...menu, day: e.target.value })
+            }
+          >
+            <option value="">Select Day</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
+          </select>
 
           <select
             className="p-3 border rounded"
@@ -110,11 +127,13 @@ const handleSubmit = async (e) => {
           </select>
         </div>
 
+        {/* Items */}
         <div className="space-y-4">
           <h3 className="font-semibold">Menu Items</h3>
 
           {menu.items.map((item, i) => (
             <div key={i} className="grid md:grid-cols-3 gap-3">
+              
               <input
                 placeholder="Item Name"
                 className="p-3 border rounded"
@@ -157,8 +176,15 @@ const handleSubmit = async (e) => {
           </button>
         </div>
 
+        {/* Submit */}
         <button className="bg-orange-600 text-white w-full py-3 rounded">
-          {loading ? "Adding..." : "Add Menu"}
+          {loading
+            ? editMenu
+              ? "Updating..."
+              : "Adding..."
+            : editMenu
+            ? "Update Menu"
+            : "Add Menu"}
         </button>
 
       </form>

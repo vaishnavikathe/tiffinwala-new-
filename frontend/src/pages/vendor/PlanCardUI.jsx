@@ -10,24 +10,25 @@ const PlanCardUI = ({
 }) => {
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  console.log("PLAN ID:", plan._id);
-console.log("MENUS:", menus);
+  const filteredMenus = menus.filter(
+    (m) =>
+      m.planId?._id?.toString() === plan._id?.toString()
+  );
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-5 border hover:shadow-lg transition">
+    <div className="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       
       {/* Plan Info */}
-      <h3 className="text-lg font-bold">
+      <h3 className="text-xl font-bold text-gray-800">
         {plan.planName || "No Name"}
       </h3>
 
-      <p className="text-gray-600 mt-2">
-        Type:
-        {plan.planTypes?.prepaid && " Prepaid "}
-        {plan.planTypes?.postpaid && " Postpaid"}
+      <p className="text-sm text-gray-500 mt-1">
+        {plan.planTypes?.prepaid && "Prepaid"}
+        {plan.planTypes?.postpaid && " / Postpaid"}
       </p>
 
-      <div className="text-gray-600 mt-2">
+      <div className="text-gray-600 mt-2 text-sm">
         Price:
         {plan.planTypes?.prepaid &&
           plan.prepaidPlans?.map((p, i) => (
@@ -36,12 +37,12 @@ console.log("MENUS:", menus);
       </div>
 
       {/* 🔥 Buttons */}
-      <div className="mt-4 flex gap-2">
+      <div className="mt-5 flex gap-2 items-center">
         
         {/* Add */}
         <button
           onClick={() => handleAddMenu(plan)}
-          className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
+          className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
         >
           + Add Menu
         </button>
@@ -55,41 +56,40 @@ console.log("MENUS:", menus);
                 openMenuId === plan._id ? null : plan._id
               );
             }}
-            className="px-3 bg-gray-200 rounded hover:bg-gray-300"
+            className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200"
           >
             ⋮
           </button>
 
+          {/* Dropdown Menu */}
           {openMenuId === plan._id && (
-            <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-md z-10">
+            <div className="absolute right-0 mt-2 w-36 bg-white border rounded-xl shadow-lg z-10 overflow-hidden">
               
               <button
                 onClick={() => {
                   handleView(plan._id);
                   setOpenMenuId(null);
                 }}
-                className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
               >
-                👁 View
+                👁 View Menu
               </button>
 
               <button
                 onClick={() => {
-                  const menu = menus.find(
-                    m => m.planId?.toString() === plan._id?.toString()
-                  );
+                  const menu = filteredMenus[0];
 
                   if (menu) {
                     handleEdit(menu);
                   } else {
-                    alert("No menu found");
+                    alert("No menu found for this plan");
                   }
 
                   setOpenMenuId(null);
                 }}
-                className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
               >
-                ✏️ Edit
+                ✏️ Edit Menu
               </button>
 
             </div>
@@ -99,24 +99,35 @@ console.log("MENUS:", menus);
 
       {/* 👁 Show Menu */}
       {activeMenuId === plan._id && (
-        <div className="mt-3 border-t pt-3">
-          {menus
-            .filter(m => m.planId?.toString() === plan._id?.toString())
-            .map(menu => (
-              <div key={menu._id} className="mb-2">
-                <p className="font-semibold">
-                  {menu.day} ({menu.mealType})
+        <div className="mt-4 bg-gray-50 rounded-xl p-4 space-y-3">
+          
+          {filteredMenus.length === 0 ? (
+            <p className="text-sm text-gray-400">
+              No menu added yet
+            </p>
+          ) : (
+            filteredMenus.map((menu) => (
+              <div
+                key={menu._id}
+                className="bg-white rounded-lg p-3 shadow-sm border"
+              >
+                <p className="font-semibold text-gray-700">
+                  {menu.day} • {menu.mealType}
                 </p>
 
-                <ul className="ml-4 list-disc text-sm">
+                <div className="flex flex-wrap gap-2 mt-2">
                   {menu.items?.map((item, i) => (
-                    <li key={i}>
-                      {item.name} ({item.type})
-                    </li>
+                    <span
+                      key={i}
+                      className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full"
+                    >
+                      {item.name}
+                    </span>
                   ))}
-                </ul>
+                </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
       )}
     </div>

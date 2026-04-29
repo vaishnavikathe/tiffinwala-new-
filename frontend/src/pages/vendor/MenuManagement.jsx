@@ -28,6 +28,7 @@ const MenuManagement = () => {
   const fetchMenus = async () => {
     try {
       const res = await getMenus();
+      console.log("MENU API RESPONSE:", res.data); // ✅ correct logging
       setMenus(res.data.menus || res.data);
     } catch (err) {
       console.error(err);
@@ -35,8 +36,18 @@ const MenuManagement = () => {
   };
 
   useEffect(() => {
-    fetchMenus();
-  }, []);
+  const loadMenus = async () => {
+    try {
+      const res = await getMenus();
+      console.log("MENU API RESPONSE:", res.data);
+      setMenus(res.data.menus || res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  loadMenus();
+}, []);
 
   // 🔥 Open Add Menu
   const handleAddMenu = (plan) => {
@@ -53,7 +64,9 @@ const MenuManagement = () => {
   // 🔥 Edit Menu
   const handleEdit = (menu) => {
     const plan = plans.find(
-      (p) => p._id?.toString() === menu.planId?.toString()
+      (p) =>
+        p._id?.toString() ===
+        (menu.planId?._id?.toString() || menu.planId?.toString())
     );
     setSelectedPlan(plan);
     setEditMenu(menu);
@@ -65,6 +78,12 @@ const MenuManagement = () => {
     setSelectedPlan(null);
     setShowForm(false);
     setEditMenu(null);
+  };
+
+  // 🔥 Refresh after add/edit
+  const handleRefresh = async () => {
+    await fetchMenus();
+    handleClose();
   };
 
   return (
@@ -111,10 +130,7 @@ const MenuManagement = () => {
               <AddMenu
                 selectedPlan={selectedPlan}
                 editMenu={editMenu}
-                fetchMenus={() => {
-                  fetchMenus();
-                  handleClose(); // auto close after submit
-                }}
+                fetchMenus={handleRefresh}
               />
             </div>
           </div>
