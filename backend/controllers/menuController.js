@@ -194,3 +194,26 @@ export const getMenuByPlan = async (req, res) => {
     });
   }
 };
+// GET SINGLE MENU (for edit form)
+export const getSingleMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const menu = await Menu.findById(id);
+
+    if (!menu) {
+      return res.status(404).json({
+        message: "Menu not found"
+      });
+    }
+
+    res.json({
+      menu
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};

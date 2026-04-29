@@ -5,7 +5,8 @@ import {
   getMenus,
   getMenuByPlan,
   updateMenu,
-  deleteMenu
+  deleteMenu,
+  getSingleMenu
 } from "../controllers/menuController.js";
 
 import { protectVendor } from "../middlewares/authMiddleware.js";
@@ -49,6 +50,12 @@ menurouter.delete(
   "/:id",
   protectVendor,
   deleteMenu
+);
+// GET SINGLE MENU
+menurouter.get(
+  "/single/:id",
+  protectVendor,
+  getSingleMenu
 );
 
 export default menurouter;
