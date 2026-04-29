@@ -43,10 +43,10 @@ export const getPlans = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // ✅ total count
-    const total = await Plan.countDocuments({ vendorId });
+    const total = await Plan.countDocuments({vendorId });
 
     // ✅ paginated data
-    const plans = await Plan.find({ vendorId })
+    const plans = await Plan.find({ vendorId: vendorId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
