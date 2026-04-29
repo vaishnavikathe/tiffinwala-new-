@@ -27,19 +27,16 @@ vendorroutes.post("/login",loginVendor);
 
 // Get all vendors (user browsing)
 vendorroutes.get("/all",getAllVendors);
-
-// =========================
-// PROTECTED ROUTES
-// =========================
-
-vendorroutes.use(protectVendor);
-
-// Get Vendor Details
+//get Vendor Details
 vendorroutes.get("/:id/details",getVendorDetails);
 
+
+// PROTECTED ROUTES
+
+
+vendorroutes.use(protectVendor);
 // Update Profile
 vendorroutes.put("/update-profile",updateVendorProfile);
-
 // Change Password
 vendorroutes.put("/change-password",updateVendorPassword);
 
