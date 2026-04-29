@@ -239,7 +239,7 @@ export const updateVendorPassword = async (req,res)=>{
     const vendor = await Vendor.findById(vendorId);
 
     if(!vendor){
-      res.status(404).json({message:"Vendot Not found"})
+      res.status(404).json({message:"Vendor Not found"})
     }
     const isMatch = await bcrypt.compare(oldPassword, vendor.password);
 
