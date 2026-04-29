@@ -1,15 +1,30 @@
-import { useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
 
-const PlanCard = ({ plan }) => {
-  const navigate = useNavigate();
-
+const PlanCard = ({ plan, onSubscribe, onViewMenu }) => {
   return (
-    <div
-      onClick={() => navigate(`/plan/${plan._id}`)}
-      className="bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-lg"
-    >
-      <h2 className="font-bold">{plan.prepaidPlans?.[0]?.name || "Plan"}</h2>
-      <p>₹{plan.prepaidPlans?.[0]?.price}</p>
+    <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition space-y-3">
+      
+      <h2 className="text-lg font-semibold">
+        {plan.name || "Meal Plan"}
+      </h2>
+
+      <p className="text-gray-600">
+        ₹{plan.price} / {plan.duration || "month"}
+      </p>
+
+      <div className="flex gap-2">
+        <Button onClick={() => onSubscribe(plan._id)}>
+          Subscribe
+        </Button>
+
+        <Button
+          variant="outline"
+          onClick={() => onViewMenu(plan._id)}
+        >
+          View Menu
+        </Button>
+      </div>
+
     </div>
   );
 };

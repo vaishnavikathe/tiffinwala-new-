@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FiHome, FiUsers, FiLogOut, FiX } from "react-icons/fi";
 
-const UserSidebar = ({ isOpen, closeSidebar }) => {
+const UserSidebar = ({ closeSidebar }) => {
   const navigate = useNavigate();
 
   const menuItems = [
@@ -16,12 +16,9 @@ const UserSidebar = ({ isOpen, closeSidebar }) => {
   };
 
   return (
-    <div
-  className={`h-screen bg-[#0B1A2C] text-white p-5
-  transition-all duration-300
-  ${isOpen ? "w-64" : "w-0 overflow-hidden"}`}
->
+    <div className="w-64 h-screen bg-[#0B1A2C] text-white p-5 flex flex-col">
 
+      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-bold">TiffinWala</h2>
         <button onClick={closeSidebar} className="text-2xl">
@@ -29,6 +26,7 @@ const UserSidebar = ({ isOpen, closeSidebar }) => {
         </button>
       </div>
 
+      {/* Menu */}
       <nav className="flex flex-col gap-2">
         {menuItems.map((item) => (
           <NavLink
@@ -48,10 +46,11 @@ const UserSidebar = ({ isOpen, closeSidebar }) => {
         ))}
       </nav>
 
-      <div className="absolute bottom-5 left-0 w-full px-5">
+      {/* Logout (sticks to bottom) */}
+      <div className="mt-auto">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-600"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-600 w-full"
         >
           <FiLogOut />
           Logout

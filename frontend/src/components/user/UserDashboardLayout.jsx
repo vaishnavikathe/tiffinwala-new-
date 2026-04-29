@@ -8,29 +8,24 @@ const UserDashboardLayout = () => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden">
 
       {/* Sidebar */}
-      <div
-        className={`transition-all duration-300 ${
-          isOpen ? "w-64" : "w-0"
-        }`}
-      >
-        <UserSidebar
-          isOpen={isOpen}
-          closeSidebar={() => setIsOpen(false)}
-        />
-      </div>
+      {isOpen && (
+        <UserSidebar closeSidebar={() => setIsOpen(false)} />
+      )}
 
       {/* Main Content */}
-      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300">
+      <div className="flex-1 flex flex-col bg-gray-100">
 
+        {/* Navbar */}
         <UserNavbar
           isOpen={isOpen}
           openSidebar={() => setIsOpen(true)}
         />
 
-        <div className="p-6">
+        {/* Page Content */}
+        <div className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </div>
 
