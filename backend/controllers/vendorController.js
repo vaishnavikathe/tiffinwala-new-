@@ -200,38 +200,48 @@ export const getVendorDetails = async (req, res) => {
 };
 
 //update vendor profile
-export const updateVendorProfile = async (req,res) =>{
+export const updateVendorProfile = async (req, res) => {
   try {
-    const vendorId = req.vendorId;
-    const { name, email, mobile, shopName, address, password } = req.body;
+
+    const vendorId = req.vendor._id; // ✅ FIX
 
     const vendor = await Vendor.findById(vendorId);
 
-    if(!vendor){
-      res.status(404).json({message:"Vendor not found"});
-    }
-    const isMatch = await bcrypt.compare(password,vendor.password);
-
-    if(!isMatch){
-      res.status(401).json({message:"Incorrect password"})
+    if (!vendor) {
+      return res.status(404).json({
+        message: "Vendor not found"
+      });
     }
 
-    vendor.ownerName = name || vendor.ownerName;
-    vendor.email = email || vendor.email;
-    vendor.address = address || vendor.address;
-    vendor.mobile = mobile || vendor.mobile;
-    vendor.shopName = shopName || vendor.shopName
+    vendor.ownerName =
+      req.body.ownerName || vendor.ownerName;
 
-    await vendor.save()
-    res.json({ message: "Profile updated successfully", vendor });
+    vendor.shopName =
+      req.body.shopName || vendor.shopName;
 
+    vendor.cuisine =
+      req.body.cuisine || vendor.cuisine;
 
-  }
-  catch(error){
-     res.status(500).json({ error: error.message });
+    vendor.address =
+      req.body.address || vendor.address;
+
+    await vendor.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      vendor
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+
   }
 };
-
 //Update password 
 export const updateVendorPassword = async (req, res) => {
   try {
