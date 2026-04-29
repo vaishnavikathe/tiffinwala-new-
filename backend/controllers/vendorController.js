@@ -6,7 +6,7 @@ import Plan from "../models/plan.js";
 
 export const registerVendor= async (req,res)=>{
   try{
-    const{ownerName,address,mobile,password,cuisine,shopName,email} = req.body;
+    const{ownerName,address,mobile,password,cuisine,shopName,email,profilePic} = req.body;
 
     const existing = await Vendor.findOne({ 
       $or: [
@@ -178,19 +178,20 @@ export const getVendorDetails = async (req, res) => {
     }
 
     // menu (7 days)
-    const menu = await Menu.findOne({ vendorId });
+    const menu = await Menu.findOne({vendor: vendorId });
 
     // plans (prepaid + postpaid)
-    const plans = await Plan.find({ vendorId });
+    const plans = await Plan.find({vendor: vendorId });
 
     return res.json({
       message: "Vendor details fetched",
       vendor,
       menu,
-      plan
+      plans
     });
 
   } catch (error) {
+    console.error("Error in getVendorDetails:",error);
     return res.status(500).json({
       error: error.message
     });
