@@ -32,21 +32,24 @@ export const createPlan = async (req, res) => {
     });
   }
 };
+
 export const getPlans = async (req, res) => {
   try {
-    const vendorId = req.user.id;
 
-    // ✅ query params
+    // ✅ get vendor from middleware
+    const vendorId = req.vendor._id;
+
+    // query params
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
 
     const skip = (page - 1) * limit;
 
-    // ✅ total count
-    const total = await Plan.countDocuments({vendorId });
+    // total count
+    const total = await Plan.countDocuments({ vendorId });
 
-    // ✅ paginated data
-    const plans = await Plan.find({ vendorId: vendorId })
+    // paginated data
+    const plans = await Plan.find({ vendorId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -59,8 +62,13 @@ export const getPlans = async (req, res) => {
     });
 
   } catch (error) {
+
     console.error(error);
-    res.status(500).json({ error: error.message });
+
+    res.status(500).json({
+      error: error.message
+    });
+
   }
 };
 

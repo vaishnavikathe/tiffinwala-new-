@@ -26,6 +26,7 @@ const PlanManagement = () => {
       setLoading(true);
       const res = await getPlans();
       setPlans(res.data.plans);
+      console.log(res, "Get All Plans")
     } catch (err) {
       console.error(err);
       alert("❌ Failed to fetch plans");
