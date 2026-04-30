@@ -1,15 +1,36 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   FiHome,
   FiPlusCircle,
   FiMenu,
   FiUsers,
   FiLogOut,
-  FiX
+  FiX,
+  FiUser
 } from "react-icons/fi";
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
   const navigate = useNavigate();
+  const [vendor, setVendor] = useState(null);
+
+  // ✅ SAFE vendor fetch (no crash)
+  useEffect(() => {
+    try {
+      const storedVendor = localStorage.getItem("vendor");
+
+      if (storedVendor && storedVendor !== "undefined") {
+        setVendor(JSON.parse(storedVendor));
+      } else {
+        const name = localStorage.getItem("vendorName");
+        if (name) {
+          setVendor({ ownerName: name });
+        }
+      }
+    } catch (error) {
+      console.error("Vendor parse error:", error);
+    }
+  }, []);
 
   const menuItems = [
     { name: "Dashboard", path: "/vendor/dashboard", icon: <FiHome /> },
@@ -23,11 +44,12 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
   const inactiveClass = "hover:bg-orange-500 text-gray-300";
   const activeClass = "bg-orange-600 text-white";
 
-  // ✅ ONLY ONE logout function (correct place)
+  // ✅ Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("vendorName"); // 🔥 important
-    localStorage.removeItem("shopName");   // optional
+    localStorage.removeItem("vendor");
+    localStorage.removeItem("vendorName");
+    localStorage.removeItem("shopName");
 
     navigate("/vendor-login");
   };
@@ -40,15 +62,40 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
     >
 
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold tracking-wide">
           TiffinWala
         </h2>
 
-        <button onClick={closeSidebar} className="text-2xl">
+        {/* ✅ SAFE close */}
+        <button
+          onClick={() => closeSidebar && closeSidebar()}
+          className="text-2xl"
+        >
           <FiX />
         </button>
       </div>
+
+      {/* 👤 VENDOR INFO */}
+      {vendor && (
+        <div className="mb-6 p-3 bg-white/10 rounded-xl flex items-center gap-3">
+          
+          {/* Avatar */}
+          <div className="w-10 h-10 flex items-center justify-center bg-orange-500 rounded-full">
+            <FiUser />
+          </div>
+
+          {/* Name + Role */}
+          <div>
+            <p className="text-sm font-semibold">
+              {vendor.ownerName || "Vendor"}
+            </p>
+            <p className="text-xs text-gray-300">
+              Vendor Account
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* MENU */}
       <nav className="flex flex-col gap-2">
@@ -66,7 +113,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
         ))}
       </nav>
 
-      {/* LOGOUT BUTTON */}
+      {/* LOGOUT */}
       <div className="absolute bottom-5 left-0 w-full px-5">
         <button
           onClick={handleLogout}
