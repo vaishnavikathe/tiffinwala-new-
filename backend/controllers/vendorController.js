@@ -23,7 +23,13 @@ export const registerVendor= async (req,res)=>{
   }  
 
   const hashedPassword = await bcrypt.hash(password, 10);
-   
+  
+  let profilePicPath = "uploads/default.png"; // default
+
+    if (req.file) {
+      profilePicPath = req.file.path;
+    }
+    
   const vendor =await Vendor.create({
     ownerName,
     address,
@@ -32,7 +38,7 @@ export const registerVendor= async (req,res)=>{
     cuisine,
     shopName,
     email,
-    profilePic 
+    profilePic: profilePicPath
   });
   
   res.status(201).json({

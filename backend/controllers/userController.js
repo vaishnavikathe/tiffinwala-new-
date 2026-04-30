@@ -9,19 +9,24 @@ export const registerUser = async (req, res) => {
   try {
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
+
     const { name, mobile, address, password, email } = req.body;
     
-    // Get uploaded file
-    const profilePic = req.file
-      ? req.file.filename
-      : "";
+    if (!req.body) {
+  return res.status(400).json({
+    message: "Request body missing"
+  });
+}
+    // ✅ profile pic handling
+    let profilePic = "uploads/default.png";
 
-    // Check existing user
+    if (req.file) {
+      profilePic = req.file.path;
+    }
+
+    // check existing
     const existing = await User.findOne({
-      $or: [
-        { mobile: mobile },
-        { email: email }
-      ]
+      $or: [{ mobile }, { email }]
     });
 
     if (existing) {
@@ -30,11 +35,8 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    // Hash password
-    const hashedPassword =
-      await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await User.create({
       name,
       mobile,
@@ -55,7 +57,6 @@ export const registerUser = async (req, res) => {
     });
   }
 };
-
 
 // ================= LOGIN USER =================
 

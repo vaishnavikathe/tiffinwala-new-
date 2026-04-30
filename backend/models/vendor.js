@@ -42,7 +42,11 @@ const vendorSchema = new mongoose.Schema(
     profilePic: {
      type: String,
      default: ""
-    }  
+    },
+    profilePic: {
+     type: String,
+     default: "uploads/default.png"
+}  
 
   },
   {

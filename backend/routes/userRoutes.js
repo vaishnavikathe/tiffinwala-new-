@@ -6,7 +6,7 @@ import upload from "../middlewares/uploadMiddleware.js";
 const userroutes = express.Router();
 
 //public
-userroutes.post("/register", registerUser);
+//userroutes.post("/register", registerUser);
 userroutes.post("/login", loginUser);
 userroutes.post("/register",upload.single("profilePic"),registerUser);
 
