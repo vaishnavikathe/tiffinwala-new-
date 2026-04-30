@@ -14,7 +14,7 @@ import { protectVendor } from "../middlewares/authMiddleware.js";
 const menurouter = express.Router();
 
 
-// ✅ CREATE MENU (plan based)
+// CREATE MENU (plan based)
 menurouter.post(
   "/:planId",
   protectVendor,
@@ -22,7 +22,7 @@ menurouter.post(
 );
 
 
-// ✅ GET ALL MENUS (vendor dashboard)
+// GET ALL MENUS (vendor dashboard)
 menurouter.get(
   "/",
   protectVendor,
@@ -30,14 +30,14 @@ menurouter.get(
 );
 
 
-// ✅ GET MENU BY PLAN (user side)
+// GET MENU BY PLAN (user side)
 menurouter.get(
   "/plan/:planId",
   getMenuByPlan
 );
 
 
-// ✅ UPDATE MENU
+// UPDATE MENU
 menurouter.put(
   "/:id",
   protectVendor,
@@ -45,7 +45,7 @@ menurouter.put(
 );
 
 
-// ✅ DELETE MENU
+// DELETE MENU
 menurouter.delete(
   "/:id",
   protectVendor,

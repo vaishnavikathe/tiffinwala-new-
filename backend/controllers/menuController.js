@@ -6,7 +6,7 @@ export const createMenu = async (req, res) => {
   try {
     const vendorId = req.vendor.id;
 
-    // ✅ Get planId from params (IMPORTANT)
+    // Get planId from params (IMPORTANT)
     const { planId } = req.params;
 
     let { day, mealType, items } = req.body;
@@ -14,19 +14,19 @@ export const createMenu = async (req, res) => {
     console.log("PLAN ID:", planId);
     console.log("BODY:", req.body);
 
-    // ✅ Fix string items issue
+    // Fix string items issue
     if (typeof items === "string") {
       items = JSON.parse(items);
     }
 
-    // ✅ Validate items
+    // Validate items
     if (!Array.isArray(items)) {
       return res.status(400).json({
         message: "Items must be an array"
       });
     }
 
-    // ✅ Prevent duplicate menu
+    // Prevent duplicate menu
     const existing = await Menu.findOne({
       vendorId,
       planId,
@@ -41,7 +41,7 @@ export const createMenu = async (req, res) => {
       });
     }
 
-    // ✅ Create menu
+    // Create menu
     const menu = await Menu.create({
       vendorId,
       planId,
@@ -91,7 +91,7 @@ export const updateMenu = async (req, res) => {
 
     console.log("UPDATE BODY:", req.body);
 
-    // ✅ Fix stringified items
+    // Fix stringified items
     if (typeof items === "string") {
       try {
         items = JSON.parse(items);
@@ -102,14 +102,14 @@ export const updateMenu = async (req, res) => {
       }
     }
 
-    // ✅ Validate items
+    // Validate items
     if (!Array.isArray(items)) {
       return res.status(400).json({
         message: "Items must be an array"
       });
     }
 
-    // ✅ Find existing menu first
+    // Find existing menu first
     const existingMenu = await Menu.findById(id);
 
     if (!existingMenu) {
@@ -118,14 +118,14 @@ export const updateMenu = async (req, res) => {
       });
     }
 
-    // ✅ Check vendor ownership
+    // Check vendor ownership
     if (existingMenu.vendorId.toString() !== vendorId) {
       return res.status(403).json({
         message: "Unauthorized action"
       });
     }
 
-    // ✅ Prevent duplicate (same plan/day/mealType)
+    // Prevent duplicate (same plan/day/mealType)
     const duplicate = await Menu.findOne({
       vendorId,
       planId: existingMenu.planId,
@@ -140,7 +140,7 @@ export const updateMenu = async (req, res) => {
       });
     }
 
-    // ✅ Update menu
+    //  Update menu
      if (day) existingMenu.day = day;
      if (mealType) existingMenu.mealType = mealType;
      if (items) existingMenu.items = items;
@@ -176,7 +176,7 @@ export const deleteMenu = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-    // ✅ GET MENU BY PLAN (User side)
+    // GET MENU BY PLAN (User side)
 export const getMenuByPlan = async (req, res) => {
   try {
     const { planId } = req.params;
