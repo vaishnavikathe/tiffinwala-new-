@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import DashboardLayout from "./components/vendorDashboard/layout/VendorDashboardLayout";
 import UserDashboardLayout from "./components/user/UserDashboardLayout";
+import VendorProfile from "./components/vendorDashboard/layout/VendorProfile";
 
 // Auth Pages
 import VendorLogin from "./pages/Auth/VendorLogin";
@@ -55,7 +56,9 @@ const App = () => {
           <Route path="/vendor/add-plan" element={<AddMealPlan />} />
           <Route path="/vendor/edit-plan/:id" element={<EditMealPlan />} />
           <Route path="/vendor/menu" element={<MenuManagement />} />
+          <Route path="/vendor/profile" element={<VendorProfile />} />
           <Route path="/vendor/users" element={<Users />} />
+          
         </Route>
       </Route>
 

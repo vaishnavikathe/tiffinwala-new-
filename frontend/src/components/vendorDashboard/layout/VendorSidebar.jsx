@@ -6,15 +6,14 @@ import {
   FiMenu,
   FiUsers,
   FiLogOut,
-  FiX,
-  FiUser
+  FiX
 } from "react-icons/fi";
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
   const navigate = useNavigate();
   const [vendor, setVendor] = useState(null);
 
-  // ✅ SAFE vendor fetch (no crash)
+  // ✅ SAFE vendor fetch
   useEffect(() => {
     try {
       const storedVendor = localStorage.getItem("vendor");
@@ -67,7 +66,6 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
           TiffinWala
         </h2>
 
-        {/* ✅ SAFE close */}
         <button
           onClick={() => closeSidebar && closeSidebar()}
           className="text-2xl"
@@ -76,13 +74,25 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
         </button>
       </div>
 
-      {/* 👤 VENDOR INFO */}
+      {/* 👤 PROFILE CARD (CLICKABLE) */}
       {vendor && (
-        <div className="mb-6 p-3 bg-white/10 rounded-xl flex items-center gap-3">
-          
+        <div
+          onClick={() => navigate("/vendor/profile")}
+          className="mb-6 p-3 bg-white/10 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-white/20 transition"
+        >
           {/* Avatar */}
-          <div className="w-10 h-10 flex items-center justify-center bg-orange-500 rounded-full">
-            <FiUser />
+          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-orange-500">
+            {vendor.profilePic ? (
+              <img
+                src={`http://localhost:5000${vendor.profilePic}`}
+                alt="profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-orange-500 text-white font-bold">
+                {vendor.ownerName?.charAt(0) || "V"}
+              </div>
+            )}
           </div>
 
           {/* Name + Role */}

@@ -3,14 +3,14 @@ import API from "./api";
 // Dashboard
 export const getDashboard = () => API.get("/vendor/dashboard");
 
-// ✅ FIXED PLANS API
+// FIXED PLANS API
 export const getPlans = () => API.get("/plan");
 export const createPlan = (data) => API.post("/plan/create", data);
 export const updatePlan = (id, data) => API.put(`/plan/${id}`, data);
 export const deletePlan = (id) => API.delete(`/plan/${id}`);
 
 // Menu
-//export const addMenu = (data) => API.post("/menu", data);
+
 export const addMenu = (data) => API.post(`/menu/${data.planId}`, {
     day: data.day,
     mealType: data.mealType,
@@ -25,3 +25,12 @@ export const getUsers = () => API.get("/vendor/users");
 export const getMenus = () => API.get("/menu");
 // Edit Menu
 export const updateMenu = (id, data) => API.put(`/menu/${id}`, data);
+
+
+//  Get Vendor Profile
+export const getVendorProfile = () => 
+  API.get("/vendor/profile");
+
+//  Update Vendor Profile
+export const updateVendorProfile = (data) => 
+  API.put("/vendor/profile", data);
