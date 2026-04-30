@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// =========================
+
+
 // Base API instance
-// =========================
 
 const API = axios.create({
   baseURL: "http://localhost:5000/api",
@@ -11,9 +11,9 @@ const API = axios.create({
   },
 });
 
-// =========================
+
 // Attach token automatically
-// =========================
+
 
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -26,9 +26,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// =========================
 // USER APIs
-// =========================
 
 export const loginUser = async (data) => {
   try {
@@ -79,9 +77,7 @@ export const registerUser = async (data) => {
   }
 };
 
-// =========================
 // VENDOR APIs
-// =========================
 
 export const loginVendor = async (data) => {
   try {
@@ -197,7 +193,7 @@ export const addMenu = async (data) => {
     }
 
     const response = await API.post(
-      `/menu/${data.planId}`, // ✅ correct
+      `/menu/${data.planId}`, 
       {
         day: data.day,
         mealType: data.mealType,

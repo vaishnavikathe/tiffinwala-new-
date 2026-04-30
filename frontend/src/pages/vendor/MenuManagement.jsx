@@ -1,141 +1,204 @@
-import { useState, useEffect } from "react";
-import AddMenu from "./AddMenu";
-import { getPlans, getMenus } from "../../services/vendorApi";
-import PlanCardUI from "./PlanCardUI";
+import { useEffect, useState } from "react";
+import { getPlans, getMenus, addMenu, updateMenu } from "../../services/vendorApi";
+import toast from "react-hot-toast";
+
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const MenuManagement = () => {
   const [plans, setPlans] = useState([]);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState("");
   const [menus, setMenus] = useState([]);
-  const [activeMenuId, setActiveMenuId] = useState(null);
-  const [editMenu, setEditMenu] = useState(null);
+  const [menuData, setMenuData] = useState({});
 
-  // 🔥 Fetch plans
+  // ✅ Fetch Plans
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const res = await getPlans();
-        setPlans(res.data.plans || res.data);
+        const plansData = res.data.plans || res.data;
+        setPlans(plansData);
+
+        if (plansData.length > 0) {
+          setSelectedPlanId(plansData[0]._id);
+        }
       } catch (err) {
         console.error(err);
       }
     };
+
     fetchPlans();
   }, []);
 
-  // 🔥 Fetch menus
-  const fetchMenus = async () => {
-    try {
-      const res = await getMenus();
-      console.log("MENU API RESPONSE:", res.data); // ✅ correct logging
-      setMenus(res.data.menus || res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+  // ✅ Fetch Menus
   useEffect(() => {
-  const loadMenus = async () => {
+    if (!selectedPlanId) return;
+
+    const fetchMenus = async () => {
+      try {
+        const res = await getMenus();
+        const allMenus = res.menus || res.data?.menus || [];
+
+        const filtered = allMenus.filter(
+          (m) =>
+            (m.planId?._id || m.planId)?.toString() === selectedPlanId
+        );
+
+        setMenus(filtered);
+
+        // 🔥 Convert API data → UI structure
+        const structured = {};
+
+        days.forEach((day) => {
+          structured[day] = {
+            lunch: "",
+            dinner: ""
+          };
+        });
+
+        filtered.forEach((menu) => {
+          const items = menu.items.map((i) => i.name).join(", ");
+
+          structured[menu.day] = {
+            ...structured[menu.day],
+            [menu.mealType]: items
+          };
+        });
+
+        setMenuData(structured);
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchMenus();
+  }, [selectedPlanId]);
+
+  // ✅ Handle input change
+  const handleChange = (day, type, value) => {
+    setMenuData((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [type]: value
+      }
+    }));
+  };
+
+  // ✅ Save Menu
+  const handleSave = async () => {
     try {
-      const res = await getMenus();
-      console.log("MENU API RESPONSE:", res.data);
-      setMenus(res.data.menus || res.data);
+      for (const day of days) {
+        for (const type of ["lunch", "dinner"]) {
+          const value = menuData[day]?.[type];
+
+          if (!value) continue;
+
+          const items = value.split(",").map((item) => ({
+            name: item.trim(),
+            type: "other"
+          }));
+
+          const existing = menus.find(
+            (m) => m.day === day && m.mealType === type
+          );
+
+          if (existing) {
+            await updateMenu(existing._id, {
+              day,
+              mealType: type,
+              items
+            });
+          } else {
+            await addMenu({
+              planId: selectedPlanId,
+              day,
+              mealType: type,
+              items
+            });
+          }
+        }
+      }
+
+      toast.success("Menu saved successfully");
+
     } catch (err) {
       console.error(err);
+      toast.error("Failed to save menu");
     }
-  };
-
-  loadMenus();
-}, []);
-
-  // 🔥 Open Add Menu
-  const handleAddMenu = (plan) => {
-    setSelectedPlan(plan);
-    setEditMenu(null); // reset edit
-    setShowForm(true);
-  };
-
-  // 🔥 View Menu
-  const handleView = (id) => {
-    setActiveMenuId((prev) => (prev === id ? null : id));
-  };
-
-  // 🔥 Edit Menu
-  const handleEdit = (menu) => {
-    const plan = plans.find(
-      (p) =>
-        p._id?.toString() ===
-        (menu.planId?._id?.toString() || menu.planId?.toString())
-    );
-    setSelectedPlan(plan);
-    setEditMenu(menu);
-    setShowForm(true);
-  };
-
-  // 🔥 Close form
-  const handleClose = () => {
-    setSelectedPlan(null);
-    setShowForm(false);
-    setEditMenu(null);
-  };
-
-  // 🔥 Refresh after add/edit
-  const handleRefresh = async () => {
-    await fetchMenus();
-    handleClose();
   };
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">Menu Management</h2>
 
-      {/* ================= PLAN CARDS ================= */}
-      {!showForm && (
-        <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((plan) => (
-            <PlanCardUI
-              key={plan._id}
-              plan={plan}
-              menus={menus}
-              handleAddMenu={handleAddMenu}
-              handleView={handleView}
-              handleEdit={handleEdit}
-              activeMenuId={activeMenuId}
-            />
-          ))}
-        </div>
-      )}
+      {/* 🔥 Top Bar */}
+      <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow mb-6">
 
-      {/* ================= FORM ================= */}
-      {showForm && selectedPlan && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">
-            {editMenu ? "Edit Menu" : "Add Menu"} for:{" "}
-            {selectedPlan.planName || "Plan"}
-          </h2>
+          <label className="mr-2 font-medium">Plan:</label>
+          <select
+            value={selectedPlanId}
+            onChange={(e) => setSelectedPlanId(e.target.value)}
+            className="p-2 border rounded"
+          >
+            {plans.map((plan) => (
+              <option key={plan._id} value={plan._id}>
+                {plan.planName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          <div className="flex justify-center mt-6">
-            <div className="w-full max-w-3xl bg-white p-6 rounded-xl shadow relative">
-              
-              {/* ❌ Close Button */}
-              <button
-                onClick={handleClose}
-                className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-xl"
-              >
-                ✕
-              </button>
+        <button
+          onClick={handleSave}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transition"
+        >
+          Save Menu
+        </button>
+      </div>
 
-              {/* Form */}
-              <AddMenu
-                selectedPlan={selectedPlan}
-                editMenu={editMenu}
-                fetchMenus={handleRefresh}
-              />
+      {/* 🔥 Weekly UI */}
+      <div className="space-y-5">
+        {days.map((day) => (
+          <div key={day} className="bg-white p-5 rounded-xl shadow">
+
+            <h3 className="font-semibold mb-3">{day}</h3>
+
+            <div className="grid md:grid-cols-2 gap-4">
+
+              {/* Lunch */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Lunch</p>
+                <input
+                  type="text"
+                  placeholder="Dal, Roti, Sabzi..."
+                  value={menuData[day]?.lunch || ""}
+                  onChange={(e) =>
+                    handleChange(day, "lunch", e.target.value)
+                  }
+                  className="w-full p-3 border rounded"
+                />
+              </div>
+
+              {/* Dinner */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Dinner</p>
+                <input
+                  type="text"
+                  placeholder="Paneer, Roti..."
+                  value={menuData[day]?.dinner || ""}
+                  onChange={(e) =>
+                    handleChange(day, "dinner", e.target.value)
+                  }
+                  className="w-full p-3 border rounded"
+                />
+              </div>
+
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+
     </div>
   );
 };

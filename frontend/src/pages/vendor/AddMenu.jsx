@@ -11,7 +11,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ PREFILL FORM WHEN EDITING
+  // ✅ PREFILL (EDIT MODE)
   useEffect(() => {
     if (editMenu) {
       setMenu({
@@ -19,8 +19,15 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
         mealType: editMenu.mealType || "lunch",
         items:
           editMenu.items?.length > 0
-            ? editMenu.items
+            ? editMenu.items.map(item => ({ ...item })) // avoid mutation
             : [{ name: "", type: "sabzi" }]
+      });
+    } else {
+      // ✅ RESET when switching back to ADD mode
+      setMenu({
+        day: "",
+        mealType: "lunch",
+        items: [{ name: "", type: "sabzi" }]
       });
     }
   }, [editMenu]);
@@ -28,25 +35,39 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
   // 🔧 Handle item change
   const handleItemChange = (index, field, value) => {
     const updated = [...menu.items];
-    updated[index][field] = value;
+    updated[index] = {
+      ...updated[index],
+      [field]: value
+    };
     setMenu({ ...menu, items: updated });
   };
 
   const addItem = () => {
-    setMenu({
-      ...menu,
-      items: [...menu.items, { name: "", type: "sabzi" }]
-    });
+    setMenu(prev => ({
+      ...prev,
+      items: [...prev.items, { name: "", type: "sabzi" }]
+    }));
   };
 
   const removeItem = (index) => {
-    const updated = menu.items.filter((_, i) => i !== index);
-    setMenu({ ...menu, items: updated });
+    setMenu(prev => ({
+      ...prev,
+      items: prev.items.filter((_, i) => i !== index)
+    }));
   };
 
-  // 🚀 SUBMIT (ADD + EDIT)
+  // 🚀 SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ VALIDATION
+    if (!menu.day) {
+      return toast.error("Please select a day");
+    }
+
+    if (!menu.items.length || menu.items.some(i => !i.name)) {
+      return toast.error("Please fill all item names");
+    }
 
     try {
       setLoading(true);
@@ -54,19 +75,21 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
       const payload = {
         day: menu.day,
         mealType: menu.mealType,
-        items: menu.items,
-        planId: selectedPlan?._id
+        items: menu.items
       };
 
       console.log("MENU DATA:", payload);
 
       if (editMenu) {
-        // ✏️ UPDATE
+        // ✏️ UPDATE (NO planId needed)
         await updateMenu(editMenu._id, payload);
         toast.success("Menu updated successfully!");
       } else {
-        // ➕ ADD
-        await addMenu(payload);
+        // ➕ CREATE
+        await addMenu({
+          ...payload,
+          planId: selectedPlan?._id
+        });
         toast.success("Menu added successfully!");
       }
 
@@ -74,19 +97,13 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
         await fetchMenus();
       }
 
-      // 🔄 RESET FORM
-      setMenu({
-        day: "",
-        mealType: "lunch",
-        items: [{ name: "", type: "sabzi" }]
-      });
-
     } catch (err) {
-      console.error("FULL ERROR:", err.response?.data);
+      console.error("FULL ERROR:", err?.response?.data);
 
       toast.error(
         err?.response?.data?.message || "Something went wrong"
       );
+
     } finally {
       setLoading(false);
     }
@@ -99,7 +116,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
         {/* Day + Meal */}
         <div className="grid md:grid-cols-2 gap-4">
           <select
-            className="p-3 border rounded"
+            className="p-3 border rounded focus:ring-2 focus:ring-orange-400"
             value={menu.day}
             onChange={(e) =>
               setMenu({ ...menu, day: e.target.value })
@@ -116,7 +133,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
           </select>
 
           <select
-            className="p-3 border rounded"
+            className="p-3 border rounded focus:ring-2 focus:ring-orange-400"
             value={menu.mealType}
             onChange={(e) =>
               setMenu({ ...menu, mealType: e.target.value })
@@ -129,14 +146,16 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
 
         {/* Items */}
         <div className="space-y-4">
-          <h3 className="font-semibold">Menu Items</h3>
+          <h3 className="font-semibold text-gray-700">
+            Menu Items
+          </h3>
 
           {menu.items.map((item, i) => (
             <div key={i} className="grid md:grid-cols-3 gap-3">
-              
+
               <input
                 placeholder="Item Name"
-                className="p-3 border rounded"
+                className="p-3 border rounded focus:ring-2 focus:ring-orange-400"
                 value={item.name}
                 onChange={(e) =>
                   handleItemChange(i, "name", e.target.value)
@@ -144,7 +163,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
               />
 
               <select
-                className="p-3 border rounded"
+                className="p-3 border rounded focus:ring-2 focus:ring-orange-400"
                 value={item.type}
                 onChange={(e) =>
                   handleItemChange(i, "type", e.target.value)
@@ -160,7 +179,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
               <button
                 type="button"
                 onClick={() => removeItem(i)}
-                className="bg-red-100 text-red-600 rounded"
+                className="bg-red-100 text-red-600 rounded hover:bg-red-200 transition"
               >
                 Remove
               </button>
@@ -170,21 +189,29 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
           <button
             type="button"
             onClick={addItem}
-            className="border border-orange-500 px-4 py-2 rounded"
+            className="border border-orange-500 text-orange-600 px-4 py-2 rounded hover:bg-orange-50 transition"
           >
             + Add Item
           </button>
         </div>
 
         {/* Submit */}
-        <button className="bg-orange-600 text-white w-full py-3 rounded">
-          {loading
-            ? editMenu
-              ? "Updating..."
-              : "Adding..."
-            : editMenu
-            ? "Update Menu"
-            : "Add Menu"}
+        <button
+          disabled={loading}
+          className={`w-full py-3 rounded text-white font-medium flex items-center justify-center gap-2 transition
+            ${
+              loading
+                ? "bg-orange-400 cursor-not-allowed"
+                : "bg-orange-600 hover:bg-orange-700"
+            }`}
+        >
+          {loading ? (
+            "Saving..."
+          ) : editMenu ? (
+            "✔ Update Menu"
+          ) : (
+            "✔ Add Menu"
+          )}
         </button>
 
       </form>
