@@ -3,7 +3,7 @@ import Plan from "../models/plan.js";
 
 export const createPlan = async (req, res) => {
   try {
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
 
     const {
       planName,
@@ -138,7 +138,7 @@ export const deletePlan = async (req, res) => {
 export const updatePlan = async (req, res) => {
   try {
 
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
     const { id } = req.params;
 
     // ✅ Check if ID exists

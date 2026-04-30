@@ -84,7 +84,7 @@ export const getMenus = async (req, res) => {
 //update menu
 export const updateMenu = async (req, res) => {
   try {
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
     const { id } = req.params;
 
     let { day, mealType, items } = req.body;
