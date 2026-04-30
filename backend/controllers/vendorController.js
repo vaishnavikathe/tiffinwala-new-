@@ -299,7 +299,7 @@ export const updateVendorPassword = async (req, res) => {
 };
 
 
-export const getVendorDashboard = async (req, res) => {
+/*export const getVendorDashboard = async (req, res) => {
   try {
 
     const vendorId = req.vendor.id;
@@ -335,5 +335,32 @@ export const getVendorDashboard = async (req, res) => {
       message: error.message
     });
 
+  }
+};*/
+export const getVendorDashboard = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id;
+
+    const totalUsers = await User.countDocuments();
+
+    const totalPlans = await Plan.countDocuments({
+      vendorId
+    });
+
+    const totalMenus = await Menu.countDocuments({
+      vendorId
+    });
+
+    res.json({
+      totalUsers,
+      activeUsers: totalUsers,
+      totalPlans,
+      totalMenus
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
   }
 };

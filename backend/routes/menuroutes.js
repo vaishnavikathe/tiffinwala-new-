@@ -1,4 +1,4 @@
-import express from "express";
+/*import express from "express";
 
 import {
   createMenu,
@@ -55,7 +55,31 @@ menurouter.delete(
 menurouter.get(
   "/single/:id",
   protectVendor,
-  getSingleMenu
+  getSingleMenu,
 );
 
-export default menurouter;
+export default menurouter;*/
+import express from "express";
+import {
+  saveMenu,
+  getMenuByPlan,
+  deleteMenu,
+  getMenus,
+  getSingleMenu
+} from "../controllers/menuController.js";
+
+import { protectVendor } from "../middlewares/authMiddleware.js";
+
+const router = express.Router();
+
+// ✅ SAVE MENU
+router.post("/", protectVendor, saveMenu);
+router.get("/", protectVendor, getMenus);
+// ✅ GET MENU BY PLAN
+router.get("/plan/:planId", protectVendor, getMenuByPlan);
+router.get("/single/:id", protectVendor, getSingleMenu);
+
+// ✅ DELETE MENU
+router.delete("/:id", protectVendor, deleteMenu);
+
+export default router;

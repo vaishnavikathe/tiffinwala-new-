@@ -1,4 +1,4 @@
-import Menu from "../models/menu.js";
+/*import Menu from "../models/menu.js";
 
 // CREATE MENU (PLAN-BASED)
 
@@ -215,5 +215,198 @@ export const getSingleMenu = async (req, res) => {
     res.status(500).json({
       error: error.message
     });
+  }
+};*/
+/*import Menu from "../models/menu.js";
+
+// ✅ CREATE / UPDATE MENU (SINGLE API)
+export const saveMenu = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id;
+    const { planId, day, lunch, dinner } = req.body;
+
+    if (!planId || !day) {
+      return res.status(400).json({
+        message: "planId and day are required"
+      });
+    }
+
+    let menu = await Menu.findOne({ vendorId, planId, day });
+
+    if (menu) {
+      // update
+      menu.lunch = lunch;
+      menu.dinner = dinner;
+      await menu.save();
+    } else {
+      // create
+      menu = await Menu.create({
+        vendorId,
+        planId,
+        day,
+        lunch,
+        dinner
+      });
+    }
+
+    res.json({
+      message: "Menu saved successfully",
+      menu
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ GET MENU BY PLAN (for frontend)
+export const getMenuByPlan = async (req, res) => {
+  try {
+    const { planId } = req.params;
+    const vendorId = req.vendor._id;
+
+    const menus = await Menu.find({ vendorId, planId })
+      .sort({ day: 1 });
+
+    res.json({ menus });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ DELETE MENU
+export const deleteMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Menu.findByIdAndDelete(id);
+
+    res.json({
+      message: "Menu deleted successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};*/
+import Menu from "../models/menu.js";
+
+// ✅ CREATE / UPDATE MENU (MERGED LOGIC)
+export const saveMenu = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id; // ✅ FIXED
+
+    const { planId, day, lunch, dinner } = req.body;
+
+    if (!planId || !day) {
+      return res.status(400).json({
+        message: "planId and day are required"
+      });
+    }
+
+    let menu = await Menu.findOne({ vendorId, planId, day });
+
+    if (menu) {
+      // update
+      menu.lunch = lunch || [];
+      menu.dinner = dinner || [];
+      await menu.save();
+    } else {
+      // create
+      menu = await Menu.create({
+        vendorId,
+        planId,
+        day,
+        lunch,
+        dinner
+      });
+    }
+
+    res.json({
+      message: "Menu saved successfully",
+      menu
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ GET ALL MENUS (VENDOR)
+export const getMenus = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id; // ✅ FIXED
+
+    const menus = await Menu.find({ vendorId })
+      .populate("planId")
+      .sort({ createdAt: -1 });
+
+    res.json({ menus });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ GET MENU BY PLAN
+export const getMenuByPlan = async (req, res) => {
+  try {
+    const { planId } = req.params;
+    const vendorId = req.vendor._id; // ✅ FIXED
+
+    const menus = await Menu.find({ vendorId, planId })
+      .sort({ day: 1 });
+
+    res.json({ menus });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ GET SINGLE MENU
+export const getSingleMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const menu = await Menu.findById(id);
+
+    if (!menu) {
+      return res.status(404).json({
+        message: "Menu not found"
+      });
+    }
+
+    res.json({ menu });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ DELETE MENU
+export const deleteMenu = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id; // ✅ FIXED
+    const { id } = req.params;
+
+    const menu = await Menu.findOneAndDelete({
+      _id: id,
+      vendorId
+    });
+
+    if (!menu) {
+      return res.status(404).json({
+        message: "Menu not found"
+      });
+    }
+
+    res.json({
+      message: "Menu deleted successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
