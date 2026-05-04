@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import API from "../../../services/api";
+import {
+  getVendorProfile,
+  updateVendorProfile
+} from "../../../services/vendorApi";
 import toast from "react-hot-toast";
+import defaultProfile from "../../../assets/default-profile.png";
 
 const Profile = () => {
   const [form, setForm] = useState({
@@ -9,32 +13,44 @@ const Profile = () => {
     mobile: "",
     shopName: "",
     address: "",
-    profilePic: ""
+    cuisine: ""
   });
 
-  const [image, setImage] = useState(null); // file
-  const [preview, setPreview] = useState(null); //preview
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Load existing data safely
+  // ✅ FETCH PROFILE (ONLY ONCE)
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("vendor");
+    const fetchProfile = async () => {
+      try {
+        const res = await getVendorProfile();
+        const vendor = res.data.vendor;
 
-      if (stored && stored !== "undefined") {
-        const vendor = JSON.parse(stored);
-        setForm(vendor);
+        setForm({
+          ownerName: vendor.ownerName || "",
+          email: vendor.email || "",
+          mobile: vendor.mobile || "",
+          shopName: vendor.shopName || "",
+          address: vendor.address || "",
+          cuisine: vendor.cuisine || ""
+        });
 
+        // ✅ FIX IMAGE PATH
         if (vendor.profilePic) {
-          setPreview(`http://localhost:5000${vendor.profilePic}`);
+          setPreview(`http://localhost:5000/${vendor.profilePic}`);
         }
+
+      } catch (err) {
+        console.error("PROFILE LOAD ERROR:", err);
+        toast.error("Failed to load profile");
       }
-    } catch (err) {
-      console.error("Vendor parse error:", err);
-    }
+    };
+
+    fetchProfile();
   }, []);
 
-  //  Handle input
+  // ✅ HANDLE INPUT
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -42,16 +58,22 @@ const Profile = () => {
     });
   };
 
-  // Handle image upload
+  // ✅ HANDLE IMAGE
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setImage(file);
+
+    // cleanup old preview
+    if (preview && preview.startsWith("blob:")) {
+      URL.revokeObjectURL(preview);
+    }
+
     setPreview(URL.createObjectURL(file));
   };
 
-  // Submit update
+  // ✅ HANDLE SUBMIT (FULLY FIXED)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -61,31 +83,33 @@ const Profile = () => {
       const formData = new FormData();
 
       formData.append("ownerName", form.ownerName);
-      formData.append("email", form.email);
-      formData.append("mobile", form.mobile);
       formData.append("shopName", form.shopName);
       formData.append("address", form.address);
+      formData.append("cuisine", form.cuisine);
 
       if (image) {
-        formData.append("profilePic", image); // backend field
+        formData.append("profilePic", image);
       }
 
-      const res = await API.put("/vendor/profile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
+      const res = await updateVendorProfile(formData);
 
-      // Update localStorage
-      localStorage.setItem("vendor", JSON.stringify(res.data.vendor));
+      const updatedVendor = res.data.vendor;
 
-      toast.success("Profile updated");
+      // ✅ Update localStorage
+      localStorage.setItem("vendor", JSON.stringify(updatedVendor));
 
-      // refresh UI instantly
-      window.location.reload();
+      // ✅ Update UI instantly (IMPORTANT FIX)
+      if (updatedVendor.profilePic) {
+        setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
+      }
+
+      // ✅ Trigger sidebar refresh
+      window.dispatchEvent(new Event("vendorUpdated"));
+
+      toast.success("Profile updated successfully!");
 
     } catch (err) {
-      console.error("PROFILE ERROR:", err.response?.data);
+      console.error("PROFILE UPDATE ERROR:", err.response?.data);
       toast.error(err?.response?.data?.message || "Update failed ❌");
     } finally {
       setLoading(false);
@@ -102,30 +126,31 @@ const Profile = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* 📸 Profile Image */}
+          {/* 📸 PROFILE IMAGE */}
           <div className="flex flex-col items-center gap-3">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500">
               <img
-                src={
-                  preview ||
-                  "https://via.placeholder.com/100"
-                }
+                src={preview || defaultProfile}
                 alt="profile"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = defaultProfile;
+                }}
               />
             </div>
 
             <input
               type="file"
+              accept="image/*"
               onChange={handleImageChange}
               className="text-sm"
             />
           </div>
 
-          {/* Inputs */}
+          {/* INPUTS */}
           <input
             name="ownerName"
-            value={form.ownerName || ""}
+            value={form.ownerName}
             onChange={handleChange}
             placeholder="Owner Name"
             className="w-full p-3 border rounded"
@@ -133,42 +158,47 @@ const Profile = () => {
 
           <input
             name="email"
-            value={form.email || ""}
-            onChange={handleChange}
-            placeholder="Email"
-            className="w-full p-3 border rounded"
+            value={form.email}
+            disabled
+            className="w-full p-3 border rounded bg-gray-100"
           />
 
           <input
             name="mobile"
-            value={form.mobile || ""}
-            onChange={handleChange}
-            placeholder="Mobile"
-            className="w-full p-3 border rounded"
+            value={form.mobile}
+            disabled
+            className="w-full p-3 border rounded bg-gray-100"
           />
 
           <input
             name="shopName"
-            value={form.shopName || ""}
+            value={form.shopName}
             onChange={handleChange}
             placeholder="Shop Name"
             className="w-full p-3 border rounded"
           />
 
           <input
+            name="cuisine"
+            value={form.cuisine}
+            onChange={handleChange}
+            placeholder="Cuisine"
+            className="w-full p-3 border rounded"
+          />
+
+          <input
             name="address"
-            value={form.address || ""}
+            value={form.address}
             onChange={handleChange}
             placeholder="Address"
             className="w-full p-3 border rounded"
           />
 
-          {/* Submit */}
           <button
             disabled={loading}
-            className="bg-orange-600 hover:bg-orange-700 text-white w-full py-3 rounded-lg font-medium transition"
+            className="bg-orange-600 hover:bg-orange-700 text-white w-full py-3 rounded-lg"
           >
-            {loading ? "Updating..." : "Save Profile"}
+            {loading ? "Updating..." : "Update Profile"}
           </button>
 
         </form>

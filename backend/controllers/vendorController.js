@@ -209,8 +209,7 @@ export const getVendorDetails = async (req, res) => {
 //update vendor profile
 export const updateVendorProfile = async (req, res) => {
   try {
-
-    const vendorId = req.vendor._id; // ✅ FIX
+    const vendorId = req.vendor._id;
 
     const vendor = await Vendor.findById(vendorId);
 
@@ -219,20 +218,17 @@ export const updateVendorProfile = async (req, res) => {
         message: "Vendor not found"
       });
     }
+
+    // ✅ Update text fields safely
+    vendor.ownerName = req.body.ownerName || vendor.ownerName;
+    vendor.shopName = req.body.shopName || vendor.shopName;
+    vendor.cuisine = req.body.cuisine || vendor.cuisine;
+    vendor.address = req.body.address || vendor.address;
+
+    // ✅ FIX: correct image path (IMPORTANT)
     if (req.file) {
-      vendor.profilePic = req.file.filename;
+      vendor.profilePic = req.file.path; // NOT filename ❌
     }
-    vendor.ownerName =
-      req.body.ownerName || vendor.ownerName;
-
-    vendor.shopName =
-      req.body.shopName || vendor.shopName;
-
-    vendor.cuisine =
-      req.body.cuisine || vendor.cuisine;
-
-    vendor.address =
-      req.body.address || vendor.address;
 
     await vendor.save();
 
@@ -242,13 +238,12 @@ export const updateVendorProfile = async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error(error);
+    console.error("UPDATE PROFILE ERROR:", error);
 
     res.status(500).json({
+      message: "Server error",
       error: error.message
     });
-
   }
 };
 //Update password 

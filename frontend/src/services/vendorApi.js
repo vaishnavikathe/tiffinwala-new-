@@ -27,10 +27,11 @@ export const getMenus = () => API.get("/menu");
 export const updateMenu = (id, data) => API.put(`/menu/${id}`, data);
 
 
-//  Get Vendor Profile
-export const getVendorProfile = () => 
+export const getVendorProfile = () =>
   API.get("/vendor/profile");
 
-//  Update Vendor Profile
-export const updateVendorProfile = (data) => 
+export const updateVendorProfile = (data) =>
   API.put("/vendor/profile", data);
+
+
+  
