@@ -20,7 +20,7 @@ const Profile = () => {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH PROFILE (ONLY ONCE)
+  // ✅ FETCH PROFILE (RUNS ONLY ONCE)
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -58,14 +58,14 @@ const Profile = () => {
     });
   };
 
-  // ✅ HANDLE IMAGE
+  // ✅ HANDLE IMAGE CHANGE
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setImage(file);
 
-    // cleanup old preview
+    // cleanup old blob preview
     if (preview && preview.startsWith("blob:")) {
       URL.revokeObjectURL(preview);
     }
@@ -73,7 +73,7 @@ const Profile = () => {
     setPreview(URL.createObjectURL(file));
   };
 
-  // ✅ HANDLE SUBMIT (FULLY FIXED)
+  // ✅ HANDLE SUBMIT (FULLY CLEAN)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -93,17 +93,29 @@ const Profile = () => {
 
       const res = await updateVendorProfile(formData);
 
-      const updatedVendor = res.data.vendor;
+console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
 
-      // ✅ Update localStorage
+const updatedVendor = res.data.vendor;
+
+      // ✅ SAVE UPDATED DATA
       localStorage.setItem("vendor", JSON.stringify(updatedVendor));
 
-      // ✅ Update UI instantly (IMPORTANT FIX)
+      // ✅ UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
       if (updatedVendor.profilePic) {
         setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
       }
 
-      // ✅ Trigger sidebar refresh
+      // ✅ UPDATE FORM
+      setForm({
+        ownerName: updatedVendor.ownerName || "",
+        email: updatedVendor.email || "",
+        mobile: updatedVendor.mobile || "",
+        shopName: updatedVendor.shopName || "",
+        address: updatedVendor.address || "",
+        cuisine: updatedVendor.cuisine || ""
+      });
+
+      // ✅ notify sidebar
       window.dispatchEvent(new Event("vendorUpdated"));
 
       toast.success("Profile updated successfully!");
@@ -115,6 +127,8 @@ const Profile = () => {
       setLoading(false);
     }
   };
+
+  
 
   return (
     <div className="p-6 flex justify-center bg-gray-50 min-h-screen">

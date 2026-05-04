@@ -227,9 +227,8 @@ export const updateVendorProfile = async (req, res) => {
 
     // ✅ FIX: correct image path (IMPORTANT)
     if (req.file) {
-      vendor.profilePic = req.file.path; // NOT filename ❌
-    }
-
+  vendor.profilePic = req.file.path.replace(/\\/g, "/");
+}
     await vendor.save();
 
     res.json({

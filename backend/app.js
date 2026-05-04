@@ -21,7 +21,7 @@ app.use("/api/plan",planRoutes);
 app.use("/api/menu", menurouter); 
 app.use("/api/contact", contactRoutes);
 app.use("/api/subscription", subscriptionRoutes);
-app.use("/uploads",express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.get("/", (req, res) => {
   res.send("Mess Management API running...");
 });
