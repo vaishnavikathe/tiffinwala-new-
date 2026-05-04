@@ -32,6 +32,8 @@ export const getVendorProfile = () =>
 
 export const updateVendorProfile = (data) =>
   API.put("/vendor/profile", data);
+/*export const updateVendorProfile = (data) =>
+  API.put("/vendor/update-profile", data);*/
 
 
   
