@@ -45,6 +45,6 @@ vendorroutes.use(protectVendor);
 vendorroutes.put("/profile", updateVendorProfile);
 // Change Password
 vendorroutes.put("/change-password",updateVendorPassword);
-vendorroutes.put("/update-profile",upload.single("profilePic"),updateVendorProfile);
+vendorroutes.put("/profile", protectVendor,upload.single("profilePic"),updateVendorProfile);
 
 export default vendorroutes;
