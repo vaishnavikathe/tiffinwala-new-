@@ -32,15 +32,19 @@ vendorroutes.get("/all",getAllVendors);
 vendorroutes.get("/:id/details",getVendorDetails);
 vendorroutes.get("/dashboard",protectVendor,getVendorDashboard);
 vendorroutes.get("/subscribers", protectVendor, getVendorSubscribers);
-
+vendorroutes.get("/profile", protectVendor, (req, res) => {
+  res.json({ vendor: req.vendor });
+});
 
 // PROTECTED ROUTES
 
 
 vendorroutes.use(protectVendor);
 // Update Profile
-vendorroutes.put("/update-profile",updateVendorProfile);
+//vendorroutes.put("/update-profile",updateVendorProfile);
+vendorroutes.put("/profile", updateVendorProfile);
 // Change Password
 vendorroutes.put("/change-password",updateVendorPassword);
+vendorroutes.put("/update-profile",upload.single("profilePic"),updateVendorProfile);
 
 export default vendorroutes;

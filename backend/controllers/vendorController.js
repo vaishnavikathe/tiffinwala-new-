@@ -219,7 +219,9 @@ export const updateVendorProfile = async (req, res) => {
         message: "Vendor not found"
       });
     }
-
+    if (req.file) {
+      vendor.profilePic = req.file.filename;
+    }
     vendor.ownerName =
       req.body.ownerName || vendor.ownerName;
 
@@ -344,7 +346,7 @@ export const updateVendorPassword = async (req, res) => {
 
   }
 };*/
-export const getVendorDashboard = async (req, res) => {
+/*export const getVendorDashboard = async (req, res) => {
   try {
     const vendorId = req.vendor._id;
 
@@ -361,6 +363,37 @@ export const getVendorDashboard = async (req, res) => {
     res.json({
       totalUsers,
       activeUsers: totalUsers,
+      totalPlans,
+      totalMenus
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};*/
+export const getVendorDashboard = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id;
+
+    // ✅ Only users subscribed to THIS vendor
+    const totalSubscribers = await Subscription.countDocuments({
+      vendorId,
+      status: "active"
+    });
+
+    const totalPlans = await Plan.countDocuments({
+      vendorId
+    });
+
+    const totalMenus = await Menu.countDocuments({
+      vendorId
+    });
+
+    res.json({
+      totalSubscribers, // ✅ replace totalUsers
+      activeUsers: totalSubscribers, // same for now
       totalPlans,
       totalMenus
     });
