@@ -218,17 +218,22 @@ export const updateVendorProfile = async (req, res) => {
         message: "Vendor not found"
       });
     }
+       console.log("BODY:", req.body);
+       console.log("FILE:", req.file);
 
     // ✅ Update text fields safely
-    vendor.ownerName = req.body.ownerName || vendor.ownerName;
-    vendor.shopName = req.body.shopName || vendor.shopName;
-    vendor.cuisine = req.body.cuisine || vendor.cuisine;
-    vendor.address = req.body.address || vendor.address;
+   const { ownerName, shopName, cuisine, address } = req.body || {};
+
+vendor.ownerName = ownerName || vendor.ownerName;
+vendor.shopName = shopName || vendor.shopName;
+vendor.cuisine = cuisine || vendor.cuisine;
+vendor.address = address || vendor.address;
 
     // ✅ FIX: correct image path (IMPORTANT)
     if (req.file) {
-  vendor.profilePic = req.file.path.replace(/\\/g, "/");
-}
+      vendor.profilePic = `/uploads/vendors/${req.file.filename}`;
+    }
+
     await vendor.save();
 
     res.json({

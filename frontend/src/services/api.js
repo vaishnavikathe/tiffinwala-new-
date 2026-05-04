@@ -4,11 +4,15 @@ import axios from "axios";
 
 // Base API instance
 
-const API = axios.create({
+/*const API = axios.create({
   baseURL: "http://localhost:5000/api",
   headers: {
     "Content-Type": "application/json",
   },
+});*/
+
+const API = axios.create({
+  baseURL: "http://localhost:5000/api",
 });
 
 

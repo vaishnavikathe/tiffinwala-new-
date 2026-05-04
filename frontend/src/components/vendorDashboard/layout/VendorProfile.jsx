@@ -90,6 +90,9 @@ const Profile = () => {
       if (image) {
         formData.append("profilePic", image);
       }
+      for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+       }
 
       const res = await updateVendorProfile(formData);
 
@@ -143,7 +146,7 @@ const updatedVendor = res.data.vendor;
           {/* 📸 PROFILE IMAGE */}
           <div className="flex flex-col items-center gap-3">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500">
-              <img
+             <img
                 src={preview || defaultProfile}
                 alt="profile"
                 className="w-full h-full object-cover"
@@ -155,9 +158,9 @@ const updatedVendor = res.data.vendor;
 
             <input
               type="file"
-              accept="image/*"
+              //accept="image/*"
               onChange={handleImageChange}
-              className="text-sm"
+              //className="text-sm"
             />
           </div>
 
