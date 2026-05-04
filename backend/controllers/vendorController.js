@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Plan from "../models/plan.js";
 import Menu from "../models/menu.js";
+import Subscription from "../models/subscription.js";
 
 export const registerVendor= async (req,res)=>{
   try{
@@ -365,6 +366,51 @@ export const getVendorDashboard = async (req, res) => {
     });
 
   } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+export const createSubscription = async (req, res) => {
+  try {
+    const { planId, vendorId } = req.body;
+    const userId = req.user._id;
+
+    const sub = await Subscription.create({
+      userId,
+      vendorId,
+      planId
+    });
+
+    res.json({
+      message: "Subscribed successfully",
+      sub
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+export const getVendorSubscribers = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id;
+
+    const subscribers = await Subscription.find({
+      vendorId,
+      status: "active"
+    })
+      .populate("userId", "name email mobile")
+      .populate("planId", "planName");
+
+    res.json({
+      totalSubscribers: subscribers.length,
+      subscribers
+    });
+
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: error.message
     });

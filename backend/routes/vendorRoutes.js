@@ -6,7 +6,8 @@ import {
   getAllVendors,
   getVendorDetails,
   updateVendorProfile,
-  updateVendorPassword
+  updateVendorPassword,
+  getVendorSubscribers
 } from "../controllers/vendorController.js";
 
 import { protectVendor } from "../middlewares/authMiddleware.js";
@@ -30,6 +31,7 @@ vendorroutes.get("/all",getAllVendors);
 //get Vendor Details
 vendorroutes.get("/:id/details",getVendorDetails);
 vendorroutes.get("/dashboard",protectVendor,getVendorDashboard);
+vendorroutes.get("/subscribers", protectVendor, getVendorSubscribers);
 
 
 // PROTECTED ROUTES

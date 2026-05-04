@@ -72,14 +72,16 @@ import { protectVendor } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-// ✅ SAVE MENU
-router.post("/", protectVendor, saveMenu);
-router.get("/", protectVendor, getMenus);
-// ✅ GET MENU BY PLAN
+//  SAVE MENU
+router.post("/:planId", protectVendor, saveMenu);
+router.get("/:planId", protectVendor, getMenus);
+//router.post("/", protectVendor, saveMenu);
+//router.get("/", protectVendor, getMenus);
+// GET MENU BY PLAN
 router.get("/plan/:planId", protectVendor, getMenuByPlan);
 router.get("/single/:id", protectVendor, getSingleMenu);
 
-// ✅ DELETE MENU
+// DELETE MENU
 router.delete("/:id", protectVendor, deleteMenu);
 
 export default router;

@@ -295,6 +295,39 @@ import Menu from "../models/menu.js";
 // ✅ CREATE / UPDATE MENU (MERGED LOGIC)
 export const saveMenu = async (req, res) => {
   try {
+    const vendorId = req.vendor._id;
+    const { planId } = req.params;
+    const { day, lunch, dinner } = req.body;
+
+    if (!day) {
+      return res.status(400).json({ message: "Day is required" });
+    }
+
+    let menu = await Menu.findOne({ vendorId, planId, day });
+
+    if (menu) {
+      menu.lunch = lunch;
+      menu.dinner = dinner;
+      await menu.save();
+    } else {
+      menu = await Menu.create({
+        vendorId,
+        planId,
+        day,
+        lunch,
+        dinner
+      });
+    }
+
+    res.json({ message: "Menu saved successfully", menu });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+/*export const saveMenu = async (req, res) => {
+  try {
     const vendorId = req.vendor._id; // ✅ FIXED
 
     const { planId, day, lunch, dinner } = req.body;
@@ -331,7 +364,7 @@ export const saveMenu = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+};*/
 
 // ✅ GET ALL MENUS (VENDOR)
 export const getMenus = async (req, res) => {
