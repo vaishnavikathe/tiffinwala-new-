@@ -1,30 +1,42 @@
+// src/components/user/PlanCard.jsx
+
 import Button from "../ui/Button";
 
 const PlanCard = ({ plan, onSubscribe, onViewMenu }) => {
   return (
-    <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition space-y-3">
+    <div className="bg-white shadow-md rounded-xl p-5 hover:shadow-lg transition">
       
-      <h2 className="text-lg font-semibold">
-        {plan.name || "Meal Plan"}
-      </h2>
+      <h3 className="text-lg font-semibold">
+        {plan.title}
+      </h3>
 
       <p className="text-gray-600">
-        ₹{plan.price} / {plan.duration || "month"}
+        ₹{plan.price}
       </p>
 
-      <div className="flex gap-2">
-        <Button onClick={() => onSubscribe(plan._id)}>
-          Subscribe
-        </Button>
+      <p className="text-sm text-gray-500">
+        Meals: {plan.mealCount}
+      </p>
 
+      <p className="text-sm text-gray-500">
+        {plan.description}
+      </p>
+
+      <div className="flex gap-3 mt-4">
         <Button
-          variant="outline"
+          className="flex-1"
           onClick={() => onViewMenu(plan._id)}
         >
           View Menu
         </Button>
-      </div>
 
+        <Button
+          className="flex-1 bg-green-500 hover:bg-green-600"
+          onClick={() => onSubscribe(plan._id)}
+        >
+          Subscribe
+        </Button>
+      </div>
     </div>
   );
 };
