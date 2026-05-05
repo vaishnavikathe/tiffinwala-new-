@@ -113,7 +113,7 @@ export const getSinglePlan = async (req, res) => {
 };*/
 
 
-export const deletePlan = async (req, res) => {
+/*export const deletePlan = async (req, res) => {
   try {
     const vendorId = req.user.id;
     const { id } = req.params;
@@ -131,6 +131,23 @@ export const deletePlan = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
+  }
+};*/
+export const deletePlan = async (req, res) => {
+  try {
+    const plan = await Plan.findById(req.params.id);
+
+    if (!plan) {
+      return res.status(404).json({ message: "Plan not found" });
+    }
+
+    await plan.deleteOne();
+
+    res.json({ message: "Plan deleted successfully" });
+
+  } catch (error) {
+    console.error("DELETE PLAN ERROR:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

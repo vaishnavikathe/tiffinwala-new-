@@ -12,6 +12,7 @@ import { protectVendor } from "../middlewares/authMiddleware.js";
 const planRoutes = express.Router();
 
 planRoutes.post("/create", protectVendor, createPlan);
+planRoutes.get("/vendor/:vendorId", getVendorPlans);
 planRoutes.get("/", protectVendor, getPlans);
 planRoutes.delete("/:id", protectVendor, deletePlan);
 planRoutes.put("/:id", protectVendor, updatePlan);
