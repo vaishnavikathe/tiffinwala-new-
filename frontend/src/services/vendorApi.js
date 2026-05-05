@@ -17,7 +17,7 @@ export const addMenu = (data) => API.post(`/menu/${data.planId}`, {
     items: data.items
   });
 // Users
-export const getUsers = () => API.get("/vendor/users");
+export const getUsers = () => API.get("/vendor/subscribers");
 
 
 // Get menu

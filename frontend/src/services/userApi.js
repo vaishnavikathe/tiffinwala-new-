@@ -6,8 +6,9 @@ export const getVendors = ({ page = 1, limit = 9 } = {}) => {
 };
 
 // ✅ Get plans by vendor
-export const getVendorPlans = (vendorId) =>
-  API.get(`/plans/vendor/${vendorId}`);
+export const getVendorDetails = (vendorId) => {
+  return API.get(`/vendor/${vendorId}/details`);
+};
 
 // ✅ Get menu by plan
 export const getPlanByMenu = (planId) =>
