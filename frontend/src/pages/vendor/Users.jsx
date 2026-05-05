@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "../../services/vendorApi";
-import DashboardLayout from "../../components/vendorDashboard/layout/VendorDashboardLayout";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -8,41 +7,58 @@ const Users = () => {
 
   useEffect(() => {
     getUsers()
-      .then(res => setUsers(res.data))
+      .then(res => {
+        console.log("USERS DATA 👉", res.data);
+        setUsers(res.data.subscribers); // ✅ FIX
+      })
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <>
-      <h2 className="text-2xl font-semibold">Active Users</h2>
+      <h2 className="text-2xl font-semibold mb-4">
+        Active Subscribers
+      </h2>
 
       {loading ? (
-        <p>Loading users...</p>
+        <p>Loading...</p>
       ) : users.length === 0 ? (
-        <p>No users yet</p>
+        <p>No subscribers yet</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full bg-white border rounded">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
 
-            <thead>
-              <tr className="bg-gray-100 text-left">
-                <th className="p-3">Name</th>
-                <th className="p-3">Plan</th>
-                <th className="p-3">Status</th>
-              </tr>
-            </thead>
+          {/* Header */}
+          <div className="grid grid-cols-6 gap-4 px-6 py-3 bg-gray-100 text-sm font-medium text-gray-600">
+            <p>Diner</p>
+            <p>Plan</p>
+            <p>Billing</p>
+            <p>Status</p>
+          </div>
 
-            <tbody>
-              {users.map((u) => (
-                <tr key={u._id} className="border-t">
-                  <td className="p-3">{u.name}</td>
-                  <td className="p-3">{u.plan || "-"}</td>
-                  <td className="p-3 text-green-600">Active</td>
-                </tr>
-              ))}
-            </tbody>
+          {/* Rows */}
+          {users.map((sub) => (
+            <div
+              key={sub._id}
+              className="grid grid-cols-6 gap-4 px-6 py-4 border-t items-center"
+            >
+              <p className="font-medium">
+                {sub.userId?.name}
+              </p>
 
-          </table>
+              <p>
+                {sub.planId?.planName}
+              </p>
+
+              <span className="px-3 py-1 text-xs rounded-full bg-orange-100 text-orange-600 w-fit">
+                postpaid
+              </span>
+
+              <span className="text-green-600 font-medium">
+                Active
+              </span>
+            </div>
+          ))}
+
         </div>
       )}
     </>
