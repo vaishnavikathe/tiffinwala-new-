@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "../../services/vendorApi";
+import  BackButton  from "../../components/layout/BackButton";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -29,7 +30,7 @@ const Users = () => {
       ) : (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
 
-          {/* ✅ HEADER */}
+          {/* HEADER */}
           <div className="grid grid-cols-8 gap-4 px-6 py-3 bg-gray-100 text-sm font-medium text-gray-600">
             <p>User</p>
             <p>Plan</p>
@@ -41,7 +42,7 @@ const Users = () => {
             <p>Total</p>
           </div>
 
-          {/* ✅ ROWS */}
+          {/* ROWS */}
           {users.map((sub) => (
             <div
               key={sub._id}
@@ -91,6 +92,7 @@ const Users = () => {
 
         </div>
       )}
+      <BackButton />
     </div>
   );
 };

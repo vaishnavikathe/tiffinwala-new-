@@ -20,7 +20,7 @@ const Profile = () => {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH PROFILE (RUNS ONLY ONCE)
+  // FETCH PROFILE (RUNS ONLY ONCE)
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -36,7 +36,7 @@ const Profile = () => {
           cuisine: vendor.cuisine || ""
         });
 
-        // ✅ FIX IMAGE PATH
+        //  FIX IMAGE PATH
         if (vendor.profilePic) {
           setPreview(`http://localhost:5000/${vendor.profilePic}`);
         }
@@ -50,7 +50,7 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  // ✅ HANDLE INPUT
+  // HANDLE INPUT
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -58,7 +58,7 @@ const Profile = () => {
     });
   };
 
-  // ✅ HANDLE IMAGE CHANGE
+  // HANDLE IMAGE CHANGE
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -73,7 +73,7 @@ const Profile = () => {
     setPreview(URL.createObjectURL(file));
   };
 
-  // ✅ HANDLE SUBMIT (FULLY CLEAN)
+  // HANDLE SUBMIT (FULLY CLEAN)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -100,15 +100,15 @@ console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
 
 const updatedVendor = res.data.vendor;
 
-      // ✅ SAVE UPDATED DATA
+      // SAVE UPDATED DATA
       localStorage.setItem("vendor", JSON.stringify(updatedVendor));
 
-      // ✅ UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
+      // UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
       if (updatedVendor.profilePic) {
         setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
       }
 
-      // ✅ UPDATE FORM
+      // UPDATE FORM
       setForm({
         ownerName: updatedVendor.ownerName || "",
         email: updatedVendor.email || "",
@@ -118,7 +118,7 @@ const updatedVendor = res.data.vendor;
         cuisine: updatedVendor.cuisine || ""
       });
 
-      // ✅ notify sidebar
+      //notify sidebar
       window.dispatchEvent(new Event("vendorUpdated"));
 
       toast.success("Profile updated successfully!");
@@ -143,7 +143,7 @@ const updatedVendor = res.data.vendor;
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* 📸 PROFILE IMAGE */}
+          {/* PROFILE IMAGE */}
           <div className="flex flex-col items-center gap-3">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500">
              <img

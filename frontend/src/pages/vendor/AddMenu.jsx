@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { addMenu, updateMenu } from "../../services/vendorApi";
 import toast from "react-hot-toast";
+import {BackButton} from "../../components/layout/BackButton";
 
 const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
   const [menu, setMenu] = useState({
@@ -11,7 +12,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ PREFILL (EDIT MODE)
+  // PREFILL (EDIT MODE)
   useEffect(() => {
     if (editMenu) {
       setMenu({
@@ -23,7 +24,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
             : [{ name: "", type: "sabzi" }]
       });
     } else {
-      // ✅ RESET when switching back to ADD mode
+      // RESET when switching back to ADD mode
       setMenu({
         day: "",
         mealType: "lunch",
@@ -32,7 +33,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
     }
   }, [editMenu]);
 
-  // 🔧 Handle item change
+  //  Handle item change
   const handleItemChange = (index, field, value) => {
     const updated = [...menu.items];
     updated[index] = {
@@ -56,11 +57,11 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
     }));
   };
 
-  // 🚀 SUBMIT
+  //  SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ VALIDATION
+    // VALIDATION
     if (!menu.day) {
       return toast.error("Please select a day");
     }
@@ -81,11 +82,11 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
       console.log("MENU DATA:", payload);
 
       if (editMenu) {
-        // ✏️ UPDATE (NO planId needed)
+        // UPDATE (NO planId needed)
         await updateMenu(editMenu._id, payload);
         toast.success("Menu updated successfully!");
       } else {
-        // ➕ CREATE
+        //  CREATE
         await addMenu({
           ...payload,
           planId: selectedPlan?._id
@@ -215,6 +216,7 @@ const AddMenu = ({ selectedPlan, editMenu, fetchMenus }) => {
         </button>
 
       </form>
+      <BackButton />
     </div>
   );
 };

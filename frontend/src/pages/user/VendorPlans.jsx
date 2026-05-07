@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getVendorPlans } from "../../services/userApi";
 import PlanCard from "../../components/user/PlanCard";
-
+import BackButton from "../../components/layout/BackButton";
 const VendorPlans = () => {
   const { vendorId } = useParams();
   const [plans, setPlans] = useState([]);
@@ -25,6 +25,7 @@ const VendorPlans = () => {
           <PlanCard key={plan._id} plan={plan} />
         ))
       )}
+      <BackButton />
     </div>
   );
 };

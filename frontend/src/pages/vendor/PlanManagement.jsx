@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import PlanTable from "../../components/vendorDashboard/plan/PlanTable";
 import PlanModal from "../../components/vendorDashboard/plan/PlanModal";
+import  BackButton  from "../../components/layout/BackButton";  
+
 import {
   createPlan,
   getPlans,
@@ -9,14 +11,13 @@ import {
 } from "../../services/vendorApi";
 
 
-
 const PlanManagement = () => {
   const [plans, setPlans] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editPlan, setEditPlan] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH PLANS FROM BACKEND
+  // FETCH PLANS FROM BACKEND
   useEffect(() => {
     fetchPlans();
   }, []);
@@ -35,7 +36,7 @@ const PlanManagement = () => {
     }
   };
 
-  // ✅ CREATE PLAN (API)
+  // CREATE PLAN (API)
   const handleCreate = async (data) => {
     try {
       const res = await createPlan(data);
@@ -49,10 +50,10 @@ const PlanManagement = () => {
 }
   };
 
-  // ✅ UPDATE PLAN
+  //  UPDATE PLAN
   const handleUpdate = async (updated) => {
   try {
-    console.log("UPDATING DATA:", updated); // ✅ correct log
+    console.log("UPDATING DATA:", updated); // correct log
 
     const res = await updatePlan(updated._id, updated);
 
@@ -67,7 +68,7 @@ const PlanManagement = () => {
   }
 };
 
-  // ✅ DELETE PLAN
+  // DELETE PLAN
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this plan?")) return;
 
@@ -119,6 +120,7 @@ const PlanManagement = () => {
           initialData={editPlan}
         />
       )}
+      <BackButton />
     </>
   );
 };

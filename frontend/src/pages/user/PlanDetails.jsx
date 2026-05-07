@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPlanByMenu } from "../../services/userApi";
 import MenuView from "../../components/user/MenuView";
+import BackButton from "../../components/layout/BackButton";
 
 const PlanDetails = () => {
   const { planId } = useParams();
@@ -18,13 +19,16 @@ const PlanDetails = () => {
 
   return (
     <div>
+      
       <h1 className="text-xl font-bold mb-4">Menu</h1>
 
       {menus.length === 0 ? (
         <p>No Menu Available</p>
       ) : (
         <MenuView menus={menus} />
+        
       )}
+      <BackButton />
     </div>
   );
 };
