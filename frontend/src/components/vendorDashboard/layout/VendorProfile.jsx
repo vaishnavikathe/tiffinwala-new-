@@ -19,10 +19,11 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-
+console.log(preview,"preview")
   // ✅ FETCH PROFILE (RUNS ONLY ONCE)
-  useEffect(() => {
-    const fetchProfile = async () => {
+
+   const fetchProfile = async () => {
+      debugger
       try {
         const res = await getVendorProfile();
         const vendor = res.data.vendor;
@@ -38,7 +39,7 @@ const Profile = () => {
 
         // ✅ FIX IMAGE PATH
         if (vendor.profilePic) {
-          setPreview(`http://localhost:5000/${vendor.profilePic}`);
+          setPreview(`http://localhost:5000${vendor.profilePic}`);
         }
 
       } catch (err) {
@@ -46,7 +47,7 @@ const Profile = () => {
         toast.error("Failed to load profile");
       }
     };
-
+  useEffect(() => {
     fetchProfile();
   }, []);
 
@@ -59,79 +60,172 @@ const Profile = () => {
   };
 
   // ✅ HANDLE IMAGE CHANGE
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setImage(file);
+
+  //   // cleanup old blob preview
+  //   if (preview && preview.startsWith("blob:")) {
+  //     URL.revokeObjectURL(preview);
+  //   }
+
+  //   setPreview(URL.createObjectURL(file));
+  // };
+
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
 
-    setImage(file);
+  if (!file) return;
 
-    // cleanup old blob preview
-    if (preview && preview.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
-    }
+  // ✅ Save File
+  setImage(file);
 
-    setPreview(URL.createObjectURL(file));
-  };
+  // ✅ Preview Image
+  setPreview(URL.createObjectURL(file));
+
+  console.log("SELECTED IMAGE 👉", file);
+};
 
   // ✅ HANDLE SUBMIT (FULLY CLEAN)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+//   const handleSubmit = async (e) => {
+//     debugger
+//     e.preventDefault();
 
-    try {
-      setLoading(true);
+//     try {
+//       setLoading(true);
 
-      const formData = new FormData();
+//       const formData = new FormData();
 
-      formData.append("ownerName", form.ownerName);
-      formData.append("shopName", form.shopName);
-      formData.append("address", form.address);
-      formData.append("cuisine", form.cuisine);
+//       formData.append("ownerName", form.ownerName);
+//       formData.append("shopName", form.shopName);
+//       formData.append("address", form.address);
+//       formData.append("cuisine", form.cuisine);
 
-      if (image) {
-        formData.append("profilePic", image);
-      }
-      for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-       }
+//       if (image) {
+//         formData.append("profilePic", image);
+//       }
+//       for (let pair of formData.entries()) {
+//       console.log(pair[0], pair[1]);
+//        }
 
-      const res = await updateVendorProfile(formData);
+//       const res = await updateVendorProfile(formData);
 
-console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
+// console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
 
-const updatedVendor = res.data.vendor;
+// const updatedVendor = res.data.vendor;
 
-      // ✅ SAVE UPDATED DATA
-      localStorage.setItem("vendor", JSON.stringify(updatedVendor));
+//       // ✅ SAVE UPDATED DATA
+//       localStorage.setItem("vendor", JSON.stringify(updatedVendor));
 
-      // ✅ UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
-      if (updatedVendor.profilePic) {
-        setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
-      }
+//       // ✅ UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
+//       if (updatedVendor.profilePic) {
+//         setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
+//       }
 
-      // ✅ UPDATE FORM
-      setForm({
-        ownerName: updatedVendor.ownerName || "",
-        email: updatedVendor.email || "",
-        mobile: updatedVendor.mobile || "",
-        shopName: updatedVendor.shopName || "",
-        address: updatedVendor.address || "",
-        cuisine: updatedVendor.cuisine || ""
-      });
+//       // ✅ UPDATE FORM
+//       setForm({
+//         ownerName: updatedVendor.ownerName || "",
+//         email: updatedVendor.email || "",
+//         mobile: updatedVendor.mobile || "",
+//         shopName: updatedVendor.shopName || "",
+//         address: updatedVendor.address || "",
+//         cuisine: updatedVendor.cuisine || ""
+//       });
 
-      // ✅ notify sidebar
-      window.dispatchEvent(new Event("vendorUpdated"));
+//       // ✅ notify sidebar
+//       window.dispatchEvent(new Event("vendorUpdated"));
 
-      toast.success("Profile updated successfully!");
+//       toast.success("Profile updated successfully!");
 
-    } catch (err) {
-      console.error("PROFILE UPDATE ERROR:", err.response?.data);
-      toast.error(err?.response?.data?.message || "Update failed ❌");
-    } finally {
-      setLoading(false);
+//     } catch (err) {
+//       console.error("PROFILE UPDATE ERROR:", err.response?.data);
+//       toast.error(err?.response?.data?.message || "Update failed ❌");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+const handleSubmit = async (e) => {
+  debugger
+  e.preventDefault();
+
+  try {
+    setLoading(true);
+
+    // ✅ Create FormData
+    const formData = new FormData();
+
+    formData.append("ownerName", form.ownerName);
+    formData.append("shopName", form.shopName);
+    formData.append("address", form.address);
+    formData.append("cuisine", form.cuisine);
+
+    // ✅ Append Image
+    if (image) {
+      formData.append("profilePic", image);
     }
-  };
 
-  
+    // ✅ Debug FormData
+    console.log("========= FORM DATA =========");
+
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    console.log("=============================");
+
+    // ✅ API CALL
+    const res = await updateVendorProfile(formData);
+
+    console.log("SERVER RESPONSE 👉", res.data);
+
+    const updatedVendor = res.data.vendor;
+
+    // ✅ Save Vendor
+    localStorage.setItem(
+      "vendor",
+      JSON.stringify(updatedVendor)
+    );
+
+    // ✅ Update Preview
+    if (updatedVendor.profilePic) {
+      setPreview(
+        `http://localhost:5000/${updatedVendor.profilePic}`
+      );
+    }
+
+    // ✅ Update Form
+    setForm({
+      ownerName: updatedVendor.ownerName || "",
+      email: updatedVendor.email || "",
+      mobile: updatedVendor.mobile || "",
+      shopName: updatedVendor.shopName || "",
+      address: updatedVendor.address || "",
+      cuisine: updatedVendor.cuisine || "",
+    });
+
+    // ✅ Notify Sidebar/Navbar
+    window.dispatchEvent(new Event("vendorUpdated"));
+
+    toast.success("Profile updated successfully ✅");
+    fetchProfile()
+
+  } catch (err) {
+    console.error(
+      "PROFILE UPDATE ERROR:",
+      err.response?.data || err.message
+    );
+
+    toast.error(
+      err.response?.data?.message ||
+      "Update failed ❌"
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="p-6 flex justify-center bg-gray-50 min-h-screen">
@@ -158,7 +252,10 @@ const updatedVendor = res.data.vendor;
 
             <input
               type="file"
-              //accept="image/*"
+               accept="image/png, image/jpeg, image/jpg,image/webp,
+    image/svg,
+    image/jfif,
+    image/avif"
               onChange={handleImageChange}
               //className="text-sm"
             />

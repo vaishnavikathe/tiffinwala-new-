@@ -42,9 +42,20 @@ vendorroutes.get("/profile", protectVendor, (req, res) => {
 vendorroutes.use(protectVendor);
 // Update Profile
 //vendorroutes.put("/update-profile",updateVendorProfile);
-vendorroutes.put("/profile", updateVendorProfile);
+// vendorroutes.put("/profile", updateVendorProfile);
+vendorroutes.put(
+  "/profile",
+  protectVendor,
+  upload.single("profilePic"),
+  updateVendorProfile
+);
 // Change Password
 vendorroutes.put("/change-password",updateVendorPassword);
-vendorroutes.put("/profile", protectVendor,upload.single("profilePic"),updateVendorProfile);
-
+//vendorroutes.put("/profile", protectVendor,upload.single("profilePic"),updateVendorProfile);
+vendorroutes.put(
+  "/profile",
+  protectVendor,
+  upload.single("profilePic"),
+  updateVendorProfile
+);
 export default vendorroutes;

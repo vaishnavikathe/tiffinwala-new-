@@ -207,46 +207,136 @@ export const getVendorDetails = async (req, res) => {
 };
 
 //update vendor profile
+// export const updateVendorProfile = async (req, res) => {
+//   try {
+//     const vendorId = req.vendor._id;
+
+//     const vendor = await Vendor.findById(vendorId);
+
+//     if (!vendor) {
+//       return res.status(404).json({
+//         message: "Vendor not found"
+//       });
+//     }
+//        console.log("BODY:", req.body);
+//        console.log("FILE:", req.file);
+
+//     // ✅ Update text fields safely
+//    const { ownerName, shopName, cuisine, address } = req.body || {};
+
+// vendor.ownerName = ownerName || vendor.ownerName;
+// vendor.shopName = shopName || vendor.shopName;
+// vendor.cuisine = cuisine || vendor.cuisine;
+// vendor.address = address || vendor.address;
+
+//     // ✅ FIX: correct image path (IMPORTANT)
+//     if (req.file) {
+//       vendor.profilePic = `/uploads/vendors/${req.file.filename}`;
+//     }
+
+//     await vendor.save();
+
+//     res.json({
+//       message: "Profile updated successfully",
+//       vendor
+//     });
+
+//   } catch (error) {
+//     console.error("UPDATE PROFILE ERROR:", error);
+
+//     res.status(500).json({
+//       message: "Server error",
+//       error: error.message
+//     });
+//   }
+// };
+
 export const updateVendorProfile = async (req, res) => {
   try {
-    const vendorId = req.vendor._id;
 
-    const vendor = await Vendor.findById(vendorId);
+    console.log("========= BODY =========");
+    console.log(req.body);
+
+    console.log("========= FILE =========");
+    console.log(req.file);
+
+    // ✅ Find Vendor
+    const vendor = await Vendor.findById(
+      req.vendor._id
+    );
 
     if (!vendor) {
       return res.status(404).json({
-        message: "Vendor not found"
+        success: false,
+        message: "Vendor not found",
       });
     }
-       console.log("BODY:", req.body);
-       console.log("FILE:", req.file);
 
-    // ✅ Update text fields safely
-   const { ownerName, shopName, cuisine, address } = req.body || {};
+    // ✅ SAFE BODY ACCESS
+    const ownerName =
+      req.body?.ownerName;
 
-vendor.ownerName = ownerName || vendor.ownerName;
-vendor.shopName = shopName || vendor.shopName;
-vendor.cuisine = cuisine || vendor.cuisine;
-vendor.address = address || vendor.address;
+    const shopName =
+      req.body?.shopName;
 
-    // ✅ FIX: correct image path (IMPORTANT)
-    if (req.file) {
-      vendor.profilePic = `/uploads/vendors/${req.file.filename}`;
+    const address =
+      req.body?.address;
+
+    const cuisine =
+      req.body?.cuisine;
+
+    // ✅ Update Fields
+    if (ownerName) {
+      vendor.ownerName = ownerName;
     }
 
-    await vendor.save();
+    if (shopName) {
+      vendor.shopName = shopName;
+    }
 
-    res.json({
-      message: "Profile updated successfully",
-      vendor
+    if (address) {
+      vendor.address = address;
+    }
+
+    if (cuisine) {
+      vendor.cuisine = cuisine;
+    }
+
+    // ✅ Image Upload
+    if (req.file) {
+
+      vendor.profilePic =
+        `/uploads/vendors/${req.file.filename}`;
+
+      console.log(
+        "IMAGE SAVED:",
+        vendor.profilePic
+      );
+    }
+
+    // ✅ Save
+    const updatedVendor =
+      await vendor.save();
+
+    // ✅ Response
+    return res.status(200).json({
+      success: true,
+      message:
+        "Profile updated successfully",
+      vendor: updatedVendor,
     });
 
   } catch (error) {
-    console.error("UPDATE PROFILE ERROR:", error);
 
-    res.status(500).json({
-      message: "Server error",
-      error: error.message
+    console.log(
+      "UPDATE PROFILE ERROR:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
     });
   }
 };
