@@ -13,7 +13,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
   const navigate = useNavigate();
   const [vendor, setVendor] = useState(null);
 
-  // ✅ SAFE vendor fetch
+  //  SAFE vendor fetch
   useEffect(() => {
     try {
       const storedVendor = localStorage.getItem("vendor");

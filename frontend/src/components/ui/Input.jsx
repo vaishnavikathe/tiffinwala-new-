@@ -6,8 +6,8 @@ const Input = ({
   onChange,
   placeholder,
   required = false,
-  textarea = false,   // 👈 NEW PROP
-  rows = 3,           // 👈 optional control
+  textarea = false,   //  NEW PROP
+  rows = 3,           // optional control
 }) => {
   return (
     <div>
