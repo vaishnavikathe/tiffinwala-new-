@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getPlans, getMenus, addMenu, updateMenu } from "../../services/vendorApi";
 import toast from "react-hot-toast";
+import  BackButton  from "../../components/layout/BackButton";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -10,7 +11,7 @@ const MenuManagement = () => {
   const [menus, setMenus] = useState([]);
   const [menuData, setMenuData] = useState({});
 
-  // ✅ Fetch Plans
+  //  Fetch Plans
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -29,7 +30,7 @@ const MenuManagement = () => {
     fetchPlans();
   }, []);
 
-  // ✅ Fetch Menus
+  //  Fetch Menus
   useEffect(() => {
     if (!selectedPlanId) return;
 
@@ -45,7 +46,7 @@ const MenuManagement = () => {
 
         setMenus(filtered);
 
-        // 🔥 Convert API data → UI structure
+        //  Convert API data → UI structure
         const structured = {};
 
         days.forEach((day) => {
@@ -74,7 +75,7 @@ const MenuManagement = () => {
     fetchMenus();
   }, [selectedPlanId]);
 
-  // ✅ Handle input change
+  //  Handle input change
   const handleChange = (day, type, value) => {
     setMenuData((prev) => ({
       ...prev,
@@ -85,7 +86,7 @@ const MenuManagement = () => {
     }));
   };
 
-  // ✅ Save Menu
+  //  Save Menu
   const handleSave = async () => {
     try {
       for (const day of days) {
@@ -131,7 +132,7 @@ const MenuManagement = () => {
   return (
     <div className="p-6">
 
-      {/* 🔥 Top Bar */}
+      {/* Top Bar */}
       <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow mb-6">
 
         <div>
@@ -157,7 +158,7 @@ const MenuManagement = () => {
         </button>
       </div>
 
-      {/* 🔥 Weekly UI */}
+      {/* Weekly UI */}
       <div className="space-y-5">
         {days.map((day) => (
           <div key={day} className="bg-white p-5 rounded-xl shadow">
@@ -197,6 +198,7 @@ const MenuManagement = () => {
             </div>
           </div>
         ))}
+        <BackButton />
       </div>
 
     </div>

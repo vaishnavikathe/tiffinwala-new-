@@ -5,6 +5,7 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { loginUser } from "../../services/api";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; 
+import BackButton from "../../components/layout/BackButton";
 
 const UserLogin = () => {
   const navigate = useNavigate();
@@ -116,6 +117,7 @@ const UserLogin = () => {
         </p>
 
       </Card>
+      <BackButton />
     </div>
   );
 };

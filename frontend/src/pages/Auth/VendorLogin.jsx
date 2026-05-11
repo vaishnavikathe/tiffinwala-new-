@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginVendor } from "../../services/api";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; 
+import BackButton from "../../components/layout/BackButton";
 
 const VendorLogin = () => {
   const navigate = useNavigate();
@@ -38,13 +39,13 @@ const VendorLogin = () => {
   try {
     const res = await loginVendor(formData);
 
-    // ✅ store token
+    //  store token
     localStorage.setItem("token", res.token);
 
-    // ✅ store vendor name (IMPORTANT)
+    // store vendor name (IMPORTANT)
     localStorage.setItem("vendorName", res.vendor.ownerName);
 
-    // ✅ optional (nice UI)
+    // optional (nice UI)
     localStorage.setItem("shopName", res.vendor.shopName);
 
     console.log("Vendor login:", res);
@@ -84,7 +85,7 @@ const VendorLogin = () => {
             required
           />
 
-          {/* 👇 Password with Eye Icon */}
+          {/*  Password with Eye Icon */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -126,6 +127,7 @@ const VendorLogin = () => {
           <Link to="/vendor-register" className="text-orange-600">
             Register
           </Link>
+           <BackButton />
         </p>
       </div>
     </div>

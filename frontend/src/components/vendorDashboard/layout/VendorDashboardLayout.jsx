@@ -22,7 +22,7 @@ const DashboardLayout = () => {
       >
         <Navbar
           openSidebar={() => setIsOpen(true)}
-          isOpen={isOpen}   // 👈 IMPORTANT
+          isOpen={isOpen}   //  IMPORTANT
         />
 
         <div className="p-6">

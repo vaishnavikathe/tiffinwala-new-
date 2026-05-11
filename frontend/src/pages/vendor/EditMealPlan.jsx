@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../../services/api";
+import BackButton from "../../components/layout/BackButton";
 
 const EditMealPlan = () => {
   const { id } = useParams();
@@ -115,6 +116,7 @@ const EditMealPlan = () => {
           </button>
 
         </form>
+        <BackButton/> 
       </div>
     </div>
   );

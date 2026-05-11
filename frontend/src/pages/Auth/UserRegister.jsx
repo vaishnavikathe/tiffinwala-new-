@@ -6,6 +6,7 @@ import Button from "../../components/ui/Button";
 import { registerUser } from "../../services/api";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import BackButton from "../../components/layout/BackButton";
 
 const UserRegister = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const UserRegister = () => {
     email: "",
     phone: "",
     password: "",
-    confirmPassword: "", // ✅ added
+    confirmPassword: "", // added
     address: "",
   });
 
@@ -33,7 +34,7 @@ const UserRegister = () => {
     }));
   };
 
-  // ✅ VALIDATION
+  // VALIDATION
   const validateForm = () => {
     const { email, phone, password, confirmPassword } = formData;
 
@@ -102,6 +103,7 @@ const UserRegister = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          
 
           <Input
             label="Full Name"
@@ -226,7 +228,7 @@ const UserRegister = () => {
             Login
           </span>
         </p>
-
+         <BackButton />
       </Card>
     </div>
   );

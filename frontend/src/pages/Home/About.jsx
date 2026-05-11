@@ -1,8 +1,10 @@
 import Footer from "../../components/layout/Footer";
+import BackButton from "../../components/layout/BackButton";
 
 const About = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <BackButton />
 
       {/* Content */}
       <div className="flex-grow">

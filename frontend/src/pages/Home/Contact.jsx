@@ -1,4 +1,5 @@
 import React from 'react'
+import BackButton from "../../components/layout/BackButton";
 
 import Footer from "../../components/layout/Footer";
 
@@ -91,7 +92,9 @@ const Contact = () => {
                 </button>
 
               </form>
+              
             </div>
+            <BackButton />
 
           </div>
         </div>
@@ -100,6 +103,7 @@ const Contact = () => {
       
 
     </div>
+    
   );
 };
 
