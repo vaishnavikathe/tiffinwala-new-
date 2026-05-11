@@ -1,4 +1,4 @@
-// src/components/user/VendorGrid.jsx
+
 
 import VendorCard from "./VendorCard";
 
