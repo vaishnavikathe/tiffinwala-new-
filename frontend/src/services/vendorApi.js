@@ -20,6 +20,7 @@ export const addMenu = (data) => API.post(`/menu/${data.planId}`, {
 export const getUsers = () => API.get("/vendor/subscribers");
 
 
+
 // Get menu
 
 export const getMenus = () => API.get("/menu");
@@ -32,8 +33,5 @@ export const getVendorProfile = () =>
 
 export const updateVendorProfile = (data) =>
   API.put("/vendor/profile", data);
-/*export const updateVendorProfile = (data) =>
-  API.put("/vendor/update-profile", data);*/
-
 
   

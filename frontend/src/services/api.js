@@ -134,9 +134,8 @@ export const registerVendor = async (data) => {
   }
 };
 
-// =========================
+
 // PLAN APIs
-// =========================
 
 // Get Vendor Plans
 export const getPlans = async () => {
@@ -156,39 +155,7 @@ export const getPlans = async () => {
   }
 };
 
-// =========================
-// MENU APIs
-// =========================
 
-// ✅ Add Menu
-/*export const addMenu = async (data) => {
-  try {
-
-    const response = await API.post(
-      `/menu/${data.planId}`, // ✅ planId in URL
-      {
-        day: data.day,
-        mealType: data.mealType,
-        items: data.items
-      }
-    );
-
-    return response.data;
-
-  } catch (error) {
-
-    console.error(
-      "ADD MENU ERROR:",
-      error.response?.data
-    );
-
-    throw (
-      error.response?.data || {
-        message: "Add menu failed",
-      }
-    );
-  }
-};*/
 export const addMenu = async (data) => {
   try {
 
