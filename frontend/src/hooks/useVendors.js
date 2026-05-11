@@ -13,16 +13,11 @@ const useVendors = (page, limit = 9) => {
       try {
         setLoading(true);
         setError(null);
-
         const res = await getVendors({ page, limit });
-
-        // Defensive handling
         const data = res.data;
-
         setVendors(data.vendors || []);
         setTotalPages(data.totalPages || 1);
         setTotalVendors(data.total || 0);
-
       } catch (err) {
         console.error("Vendor fetch error:", err);
         setError("Failed to load vendors");
@@ -43,4 +38,4 @@ const useVendors = (page, limit = 9) => {
   };
 };
 
-export default useVendors;
+export default useVendors;  

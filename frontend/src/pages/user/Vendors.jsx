@@ -9,12 +9,9 @@ const Vendors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {
-    vendors,
-    totalPages,
-    loading,
-    error,
-  } = useVendors(currentPage, 10000);
+  const page = searchQuery ? 1 : currentPage;
+  const limit = searchQuery ? 1000 : 9;
+  const { vendors, totalPages, loading, error } = useVendors(page, limit);
 
   const navigate = useNavigate();
 
