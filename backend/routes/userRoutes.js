@@ -9,10 +9,19 @@ const userroutes = express.Router();
 //userroutes.post("/register", registerUser);
 userroutes.post("/login", loginUser);
 userroutes.post("/register",upload.single("profilePic"),registerUser);
+userroutes.get("/profile", protectUser, (req, res) => {
+  res.json({ user: req.user });
+});
 
 //protected
+userroutes.put(
+  "/profile",
+  protectUser,
+  upload.single("profilePic"),
+  updateUserProfile
+);
 userroutes.use(protectUser);
-userroutes.post("/update-profile", updateUserProfile);
+//userroutes.post("/update-profile", updateUserProfile);
 userroutes.post("/change-password", updateUserPassword);
 
 
