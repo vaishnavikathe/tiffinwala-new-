@@ -1,9 +1,8 @@
-// src/pages/user/VendorDetails.jsx
-
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../../services/api";
 import PlanList from "../../components/user/PlanList";
+import BackButton from "../../components/layout/BackButton";
 
 const VendorDetails = () => {
   const { id } = useParams();
@@ -23,13 +22,13 @@ const VendorDetails = () => {
       setVendor(res.data.vendor);
       setMenu(res.data.menu);
 
-      // 🔥 IMPORTANT: Transform backend plans → UI-friendly format
+      // IMPORTANT: Transform backend plans → UI-friendly format
       const rawPlans = res.data.plans || [];
 
       const formattedPlans = rawPlans.flatMap((plan) => {
         const result = [];
 
-        // ✅ Prepaid Plans
+        // Prepaid Plans
         if (plan.prepaidPlans?.length) {
           plan.prepaidPlans.forEach((p) => {
             result.push({
@@ -42,7 +41,7 @@ const VendorDetails = () => {
           });
         }
 
-        // ✅ Postpaid Plan
+        // Postpaid Plan
         if (plan.postpaidPlan) {
           result.push({
             _id: `${plan._id}_post`,
@@ -101,6 +100,8 @@ const VendorDetails = () => {
           onSubscribe={handleSubscribe}
           onViewMenu={handleViewMenu}
         />
+
+        <BackButton />
       </div>
     </div>
   );

@@ -19,11 +19,10 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-console.log(preview,"preview")
-  // ✅ FETCH PROFILE (RUNS ONLY ONCE)
 
-   const fetchProfile = async () => {
-      debugger
+  // FETCH PROFILE (RUNS ONLY ONCE)
+  useEffect(() => {
+    const fetchProfile = async () => {
       try {
         const res = await getVendorProfile();
         const vendor = res.data.vendor;
@@ -37,9 +36,9 @@ console.log(preview,"preview")
           cuisine: vendor.cuisine || ""
         });
 
-        // ✅ FIX IMAGE PATH
+        //  FIX IMAGE PATH
         if (vendor.profilePic) {
-          setPreview(`http://localhost:5000${vendor.profilePic}`);
+          setPreview(`http://localhost:5000/${vendor.profilePic}`);
         }
 
       } catch (err) {
@@ -47,11 +46,11 @@ console.log(preview,"preview")
         toast.error("Failed to load profile");
       }
     };
-  useEffect(() => {
+
     fetchProfile();
   }, []);
 
-  // ✅ HANDLE INPUT
+  // HANDLE INPUT
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -59,173 +58,80 @@ console.log(preview,"preview")
     });
   };
 
-  // ✅ HANDLE IMAGE CHANGE
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   setImage(file);
-
-  //   // cleanup old blob preview
-  //   if (preview && preview.startsWith("blob:")) {
-  //     URL.revokeObjectURL(preview);
-  //   }
-
-  //   setPreview(URL.createObjectURL(file));
-  // };
-
+  // HANDLE IMAGE CHANGE
   const handleImageChange = (e) => {
-  const file = e.target.files[0];
+    const file = e.target.files[0];
+    if (!file) return;
 
-  if (!file) return;
+    setImage(file);
 
-  // ✅ Save File
-  setImage(file);
-
-  // ✅ Preview Image
-  setPreview(URL.createObjectURL(file));
-
-  console.log("SELECTED IMAGE 👉", file);
-};
-
-  // ✅ HANDLE SUBMIT (FULLY CLEAN)
-//   const handleSubmit = async (e) => {
-//     debugger
-//     e.preventDefault();
-
-//     try {
-//       setLoading(true);
-
-//       const formData = new FormData();
-
-//       formData.append("ownerName", form.ownerName);
-//       formData.append("shopName", form.shopName);
-//       formData.append("address", form.address);
-//       formData.append("cuisine", form.cuisine);
-
-//       if (image) {
-//         formData.append("profilePic", image);
-//       }
-//       for (let pair of formData.entries()) {
-//       console.log(pair[0], pair[1]);
-//        }
-
-//       const res = await updateVendorProfile(formData);
-
-// console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
-
-// const updatedVendor = res.data.vendor;
-
-//       // ✅ SAVE UPDATED DATA
-//       localStorage.setItem("vendor", JSON.stringify(updatedVendor));
-
-//       // ✅ UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
-//       if (updatedVendor.profilePic) {
-//         setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
-//       }
-
-//       // ✅ UPDATE FORM
-//       setForm({
-//         ownerName: updatedVendor.ownerName || "",
-//         email: updatedVendor.email || "",
-//         mobile: updatedVendor.mobile || "",
-//         shopName: updatedVendor.shopName || "",
-//         address: updatedVendor.address || "",
-//         cuisine: updatedVendor.cuisine || ""
-//       });
-
-//       // ✅ notify sidebar
-//       window.dispatchEvent(new Event("vendorUpdated"));
-
-//       toast.success("Profile updated successfully!");
-
-//     } catch (err) {
-//       console.error("PROFILE UPDATE ERROR:", err.response?.data);
-//       toast.error(err?.response?.data?.message || "Update failed ❌");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-const handleSubmit = async (e) => {
-  debugger
-  e.preventDefault();
-
-  try {
-    setLoading(true);
-
-    // ✅ Create FormData
-    const formData = new FormData();
-
-    formData.append("ownerName", form.ownerName);
-    formData.append("shopName", form.shopName);
-    formData.append("address", form.address);
-    formData.append("cuisine", form.cuisine);
-
-    // ✅ Append Image
-    if (image) {
-      formData.append("profilePic", image);
+    // cleanup old blob preview
+    if (preview && preview.startsWith("blob:")) {
+      URL.revokeObjectURL(preview);
     }
 
-    // ✅ Debug FormData
-    console.log("========= FORM DATA =========");
+    setPreview(URL.createObjectURL(file));
+  };
 
-    for (const pair of formData.entries()) {
+  // HANDLE SUBMIT (FULLY CLEAN)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+
+      formData.append("ownerName", form.ownerName);
+      formData.append("shopName", form.shopName);
+      formData.append("address", form.address);
+      formData.append("cuisine", form.cuisine);
+
+      if (image) {
+        formData.append("profilePic", image);
+      }
+      for (let pair of formData.entries()) {
       console.log(pair[0], pair[1]);
+       }
+
+      const res = await updateVendorProfile(formData);
+
+console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
+
+const updatedVendor = res.data.vendor;
+
+      // SAVE UPDATED DATA
+      localStorage.setItem("vendor", JSON.stringify(updatedVendor));
+
+      // UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
+      if (updatedVendor.profilePic) {
+        setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
+      }
+
+      // UPDATE FORM
+      setForm({
+        ownerName: updatedVendor.ownerName || "",
+        email: updatedVendor.email || "",
+        mobile: updatedVendor.mobile || "",
+        shopName: updatedVendor.shopName || "",
+        address: updatedVendor.address || "",
+        cuisine: updatedVendor.cuisine || ""
+      });
+
+      //notify sidebar
+      window.dispatchEvent(new Event("vendorUpdated"));
+
+      toast.success("Profile updated successfully!");
+
+    } catch (err) {
+      console.error("PROFILE UPDATE ERROR:", err.response?.data);
+      toast.error(err?.response?.data?.message || "Update failed ❌");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    console.log("=============================");
-
-    // ✅ API CALL
-    const res = await updateVendorProfile(formData);
-
-    console.log("SERVER RESPONSE 👉", res.data);
-
-    const updatedVendor = res.data.vendor;
-
-    // ✅ Save Vendor
-    localStorage.setItem(
-      "vendor",
-      JSON.stringify(updatedVendor)
-    );
-
-    // ✅ Update Preview
-    if (updatedVendor.profilePic) {
-      setPreview(
-        `http://localhost:5000/${updatedVendor.profilePic}`
-      );
-    }
-
-    // ✅ Update Form
-    setForm({
-      ownerName: updatedVendor.ownerName || "",
-      email: updatedVendor.email || "",
-      mobile: updatedVendor.mobile || "",
-      shopName: updatedVendor.shopName || "",
-      address: updatedVendor.address || "",
-      cuisine: updatedVendor.cuisine || "",
-    });
-
-    // ✅ Notify Sidebar/Navbar
-    window.dispatchEvent(new Event("vendorUpdated"));
-
-    toast.success("Profile updated successfully ✅");
-    fetchProfile()
-
-  } catch (err) {
-    console.error(
-      "PROFILE UPDATE ERROR:",
-      err.response?.data || err.message
-    );
-
-    toast.error(
-      err.response?.data?.message ||
-      "Update failed ❌"
-    );
-
-  } finally {
-    setLoading(false);
-  }
-};
+  
 
   return (
     <div className="p-6 flex justify-center bg-gray-50 min-h-screen">
@@ -237,7 +143,7 @@ const handleSubmit = async (e) => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* 📸 PROFILE IMAGE */}
+          {/* PROFILE IMAGE */}
           <div className="flex flex-col items-center gap-3">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500">
              <img
@@ -252,10 +158,7 @@ const handleSubmit = async (e) => {
 
             <input
               type="file"
-               accept="image/png, image/jpeg, image/jpg,image/webp,
-    image/svg,
-    image/jfif,
-    image/avif"
+              //accept="image/*"
               onChange={handleImageChange}
               //className="text-sm"
             />

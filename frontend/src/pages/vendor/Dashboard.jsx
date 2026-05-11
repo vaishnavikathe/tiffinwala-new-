@@ -1,5 +1,6 @@
 import useVendorData from "../../hooks/useVendorData";
 import { FiUsers, FiBox, FiShoppingCart } from "react-icons/fi";
+import  BackButton  from "../../components/layout/BackButton";
 
 const Dashboard = () => {
   const { data, loading } = useVendorData();
@@ -39,6 +40,7 @@ const Dashboard = () => {
 
         </div>
       )}
+      <BackButton />
     </>
   );
 };

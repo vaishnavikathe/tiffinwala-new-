@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useVendors from "../../hooks/useVendors";
 import VendorGrid from "../../components/user/VendorGrid";
+import BackButton from "../../components/layout/BackButton";
 
 const Vendors = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,6 +87,7 @@ const Vendors = () => {
           </button>
         </div>
       )}
+      <BackButton />
     </div>
   );
 };

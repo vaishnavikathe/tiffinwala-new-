@@ -6,6 +6,7 @@ import Button from "../../components/ui/Button";
 import { registerVendor } from "../../services/api";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast"; 
+import BackButton from "../../components/layout/BackButton";
 
 const VendorRegister = () => {
   
@@ -37,7 +38,7 @@ const VendorRegister = () => {
     }));
   };
 
-  // ✅ VALIDATION FUNCTION
+  // VALIDATION FUNCTION
   const validateForm = () => {
     const { email, phone, password, confirmPassword } = formData;
 
@@ -164,10 +165,10 @@ const VendorRegister = () => {
   name="phone"
   value={formData.phone}
   onChange={(e) => {
-    // ✅ allow only digits
+    // allow only digits
     let value = e.target.value.replace(/\D/g, "");
 
-    // ✅ limit to 10 digits
+    //  limit to 10 digits
     if (value.length > 10) return;
 
     setFormData((prev) => ({
@@ -250,6 +251,7 @@ const VendorRegister = () => {
           </Button>
 
         </form>
+         <BackButton />
       </Card>
     </div>
   );
