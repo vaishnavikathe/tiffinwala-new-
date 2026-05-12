@@ -69,7 +69,7 @@ const VendorDetails = () => {
   const handleViewMenu = (planId) => {
     console.log("Show menu for:", planId);
 
-    // later you can open modal using `menu` state
+    
     console.log("Menu data:", menu);
   };
 

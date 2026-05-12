@@ -1,3 +1,5 @@
+import BackButton from "../../components/layout/BackButton";
+
 const MenuView = ({ menus }) => {
   return (
     <div className="space-y-4">
@@ -16,7 +18,9 @@ const MenuView = ({ menus }) => {
           </ul>
         </div>
       ))}
+      <BackButton />
     </div>
+    
   );
 };
 

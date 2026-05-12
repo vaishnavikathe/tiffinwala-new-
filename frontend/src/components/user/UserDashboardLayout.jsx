@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-
+import BackButton from "../../components/layout/BackButton";
 import UserSidebar from "./UserSidebar";
 import UserNavbar from "./UserNavbar";
 
@@ -26,6 +26,7 @@ const UserDashboardLayout = () => {
 
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto p-6">
+          <BackButton />
           <Outlet />
         </div>
 

@@ -1,4 +1,5 @@
 import Button from "../../components/ui/Button";
+import BackButton from "../../components/layout/BackButton";
 
 const VendorCard = ({ vendor, onViewPlans }) => {
   return (
@@ -27,6 +28,7 @@ const VendorCard = ({ vendor, onViewPlans }) => {
         >
           View Plans
         </Button>
+        <BackButton />  
       </div>
     </div>
   );
