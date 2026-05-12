@@ -22,9 +22,11 @@ const VendorDetails = () => {
   const fetchVendorDetails = async () => {
     try {
       const res = await API.get(`/vendor/${id}/details`);
+      console.log("API Response:", res.data);
       setVendor(res.data.vendor);
 
       const rawPlans = res.data.plans || [];
+      console.log("Plans:", rawPlans);
       setPlans(rawPlans);
     } catch (err) {
       console.error("Vendor Details Error:", err);
