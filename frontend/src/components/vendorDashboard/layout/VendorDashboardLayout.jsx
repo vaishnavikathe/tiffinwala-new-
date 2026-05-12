@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import Sidebar from "./VendorSidebar";
 import Navbar from "./VendorNavbar";
-import BackButton from "../../components/layout/BackButton";
+import BackButton from "../../layout/BackButton";
 
 const DashboardLayout = () => {
   const [isOpen, setIsOpen] = useState(true);
