@@ -135,7 +135,7 @@ import Plan from "../models/plan.js";
 export const createSubscription = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { vendorId, planId, selectedPlanIndex } = req.body;
+    const { vendorId, planId } = req.body;
 
     // ✅ Check plan exists
     const plan = await Plan.findById(planId);
@@ -167,17 +167,19 @@ export const createSubscription = async (req, res) => {
     }
 
     // ✅ Validate selected plan index
-    if (
+   /* if (
       selectedPlanIndex === undefined ||
       !plan.prepaidPlans[selectedPlanIndex]
     ) {
       return res.status(400).json({
         message: "Invalid plan selection"
       });
-    }
+    }*/
 
-    const selectedPlan = plan.prepaidPlans[selectedPlanIndex];
-
+    //const selectedPlan = plan.prepaidPlans[selectedPlanIndex];
+    const selectedPlan = plan.prepaidPlans.reduce((max, p) =>
+  p.tiffinCount > max.tiffinCount ? p : max
+);
     // ✅ Dates logic
     const startDate = new Date();
 
@@ -193,7 +195,8 @@ export const createSubscription = async (req, res) => {
       planId,
       startDate,
       endDate,
-      status: "active"
+      status: "active",
+      planDetails: selectedPlan
     });
 
     res.status(201).json({
@@ -214,7 +217,7 @@ export const getUserSubscriptions = async (req, res) => {
 
     const subs = await Subscription.find({ userId })
       .populate("vendorId", "shopName")
-      .populate("planId", "planName prepaidPlans");
+      .populate("planId", "planName");
 
     // ✅ CHECK & UPDATE STATUS
     for (let sub of subs) {
