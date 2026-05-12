@@ -28,8 +28,9 @@ import Users from "./pages/vendor/Users";
 // User
 import UserDashboard from "./pages/user/UserDashboard";
 import Vendors from "./pages/user/Vendors";
-import VendorDetails from "./pages/user/VendorDetails"; // ✅ keep this
+import VendorDetails from "./pages/user/VendorDetails"; // keep this
 import PlanDetails from "./pages/user/PlanDetails";
+import SubscriptionPage from "./pages/user/SubscriptionPage";
 
 const App = () => {
   return (
@@ -64,17 +65,18 @@ const App = () => {
 
       {/* USER DASHBOARD */}
       <Route element={<ProtectedRoute />}>
-        <Route element={<UserDashboardLayout />}>
+      <Route element={<UserDashboardLayout />}>
+      <Route path="/user/subscription" element={<SubscriptionPage />} />
 
           <Route path="/user" element={<UserDashboard />} />
 
-          {/* ✅ Vendors List */}
+          {/* Vendors List */}
           <Route path="/user/vendors" element={<Vendors />} />
 
-          {/* ✅ Vendor Details (plans + menu inside this) */}
+          {/* Vendor Details (plans + menu inside this) */}
           <Route path="/user/vendors/:id" element={<VendorDetails />} />
 
-          {/* ✅ Plan Details */}
+          {/* Plan Details */}
           <Route path="/user/plan/:planId" element={<PlanDetails />} />
 
         </Route>
