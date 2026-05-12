@@ -1,5 +1,4 @@
-// src/components/user/PlanList.jsx
-
+import BackButton from "../../components/layout/BackButton";
 import PlanCard from "./PlanCard";
 
 const PlanList = ({ plans, onSubscribe, onViewMenu }) => {
@@ -21,6 +20,7 @@ const PlanList = ({ plans, onSubscribe, onViewMenu }) => {
           onViewMenu={onViewMenu}
         />
       ))}
+      <BackButton />
     </div>
   );
 };

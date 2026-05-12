@@ -1,5 +1,5 @@
 import { FiMenu } from "react-icons/fi";
-
+import BackButton from "../../components/layout/BackButton";
 const userName = localStorage.getItem("userName");
 
 const UserNavbar = ({ openSidebar, isOpen }) => {
@@ -17,7 +17,7 @@ const UserNavbar = ({ openSidebar, isOpen }) => {
           Welcome, {userName || "User"} 👋
         </h2>
       </div>
-
+      <BackButton />  
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FiHome, FiUsers, FiLogOut, FiX } from "react-icons/fi";
-
+import BackButton from "../../components/layout/BackButton";
 const UserSidebar = ({ closeSidebar }) => {
   const navigate = useNavigate();
 
@@ -18,6 +18,7 @@ const UserSidebar = ({ closeSidebar }) => {
   return (
     <div className="w-64 h-screen bg-[#0B1A2C] text-white p-5 flex flex-col">
 
+      <BackButton />
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-bold">TiffinWala</h2>

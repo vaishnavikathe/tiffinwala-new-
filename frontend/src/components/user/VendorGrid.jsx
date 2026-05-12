@@ -1,5 +1,4 @@
-
-
+import BackButton from "../../components/layout/BackButton";
 import VendorCard from "./VendorCard";
 
 const VendorGrid = ({ vendors, onViewPlans }) => {
@@ -20,6 +19,7 @@ const VendorGrid = ({ vendors, onViewPlans }) => {
           onViewPlans={onViewPlans}
         />
       ))}
+      <BackButton />  
     </div>
   );
 };
