@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Plan from "../models/plan.js";
 
-export const createPlan = async (req, res) => {
+/*export const createPlan = async (req, res) => {
   try {
     const vendorId = req.vendor.id;
 
@@ -15,6 +15,42 @@ export const createPlan = async (req, res) => {
     const plan = await Plan.create({
       vendorId,
       planName, 
+      planTypes,
+      prepaidPlans,
+      postpaidPlan
+    });
+
+    return res.status(201).json({
+      message: "Plan created successfully",
+      plan
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};*/
+export const createPlan = async (req, res) => {
+  try {
+    const vendorId = req.vendor.id;
+
+    let {
+      planName,
+      planTypes,
+      prepaidPlans,
+      postpaidPlan
+    } = req.body;
+
+    // ✅ FIX: parse prepaidPlans
+    if (typeof prepaidPlans === "string") {
+      prepaidPlans = JSON.parse(prepaidPlans);
+    }
+
+    const plan = await Plan.create({
+      vendorId,
+      planName,
       planTypes,
       prepaidPlans,
       postpaidPlan
@@ -53,13 +89,37 @@ export const getPlans = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
+    
+    const formattedPlans = plans.map(plan => {
+  let price = 0;
+  let meals = 0;
 
-    res.json({
+  if (plan.prepaidPlans && plan.prepaidPlans.length > 0) {
+    // 👉 pick first plan (or you can choose logic)
+    price = plan.prepaidPlans[0].price;
+    meals = plan.prepaidPlans[0].tiffinCount;
+  }
+
+  return {
+    _id: plan._id,
+    planName: plan.planName,
+    planTypes: plan.planTypes,
+    price,
+    tiffinCount: meals
+  };
+});  
+   res.json({
       total,
       page,
       totalPages: Math.ceil(total / limit),
       plans
     });
+   /* res.json({
+  total,
+  page,
+  totalPages: Math.ceil(total / limit),
+  plans: formattedPlans
+});*/
 
   } catch (error) {
 
@@ -72,67 +132,6 @@ export const getPlans = async (req, res) => {
   }
 };
 
-/*import mongoose from "mongoose";
-import Plan from "../models/plan.js";
-
-export const getSinglePlan = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // ✅ Check if id exists
-    if (!id) {
-      return res.status(400).json({
-        message: "Plan ID is required"
-      });
-    }
-
-    // ✅ Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        message: "Invalid Plan ID"
-      });
-    }
-
-    const plan = await Plan.findById(id);
-
-    if (!plan) {
-      return res.status(404).json({
-        message: "Plan not found"
-      });
-    }
-
-    res.json({ plan });
-
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      error: error.message
-    });
-  }
-};*/
-
-
-/*export const deletePlan = async (req, res) => {
-  try {
-    const vendorId = req.user.id;
-    const { id } = req.params;
-
-    const plan = await Plan.findOneAndDelete({
-      _id: id,
-      vendorId,
-    });
-
-    if (!plan) {
-      return res.status(404).json({ message: "Plan not found" });
-    }
-
-    res.json({ message: "Plan deleted successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
-  }
-};*/
 export const deletePlan = async (req, res) => {
   try {
     const plan = await Plan.findById(req.params.id);
@@ -152,7 +151,7 @@ export const deletePlan = async (req, res) => {
 };
 
 
-export const updatePlan = async (req, res) => {
+/*export const updatePlan = async (req, res) => {
   try {
 
     const vendorId = req.vendor.id;
@@ -215,6 +214,52 @@ export const updatePlan = async (req, res) => {
       error: error.message
     });
 
+  }
+};*/
+export const updatePlan = async (req, res) => {
+  try {
+    const vendorId = req.vendor.id;
+    const { id } = req.params;
+
+    let {
+      planName,
+      planTypes,
+      prepaidPlans,
+      postpaidPlan
+    } = req.body;
+
+    // ✅ FIX HERE ALSO
+    if (typeof prepaidPlans === "string") {
+      prepaidPlans = JSON.parse(prepaidPlans);
+    }
+
+    const updatedPlan = await Plan.findOneAndUpdate(
+      { _id: id, vendorId },
+      {
+        planName,
+        planTypes,
+        prepaidPlans,
+        postpaidPlan
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedPlan) {
+      return res.status(404).json({
+        message: "Plan not found"
+      });
+    }
+
+    res.json({
+      message: "Plan updated successfully",
+      plan: updatedPlan
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
 export const getVendorPlans = async (req, res) => {
