@@ -13,6 +13,14 @@ const subscriptionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Plan"
   },
+  startDate: {
+    type: Date,
+    default: Date.now
+  },
+
+  endDate: {
+    type: Date
+  },
   status: {
     type: String,
     enum: ["active", "expired"],
