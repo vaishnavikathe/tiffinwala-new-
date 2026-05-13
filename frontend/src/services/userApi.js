@@ -1,6 +1,6 @@
 import API from "./api";
 
-// ✅ Get vendors (pagination handled by backend)
+//Get vendors (pagination handled by backend)
 export const getVendors = ({ page = 1, limit = 9 } = {}) => {
   return API.get(`/vendor/all?page=${page}&limit=${limit}`);
 };

@@ -26,7 +26,7 @@ const VendorDetails = () => {
       setVendor(res.data.vendor);
 
       const rawPlans = res.data.plans || [];
-      console.log("Plans:", rawPlans);
+      console.log("Plans:", rawPlans); 
       setPlans(rawPlans);
     } catch (err) {
       console.error("Vendor Details Error:", err);
