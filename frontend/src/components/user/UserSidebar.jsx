@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiHome, FiUsers, FiLogOut, FiX } from "react-icons/fi";
+import { FiHome, FiUsers, FiLogOut, FiX, FiCalendar, FiCreditCard } from "react-icons/fi";
 import BackButton from "../../components/layout/BackButton";
 const UserSidebar = ({ closeSidebar }) => {
   const navigate = useNavigate();
@@ -7,6 +7,8 @@ const UserSidebar = ({ closeSidebar }) => {
   const menuItems = [
     { name: "Dashboard", path: "/user", icon: <FiHome /> },
     { name: "Vendors", path: "/user/vendors", icon: <FiUsers /> },
+    { name: "My Subscription", path: "/user/subscription", icon: <FiCalendar /> },
+    { name: "Billing", path: "/user/billing", icon: <FiCreditCard /> }, 
   ];
 
   const handleLogout = () => {

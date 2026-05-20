@@ -13,6 +13,7 @@ const SubscriptionPage = () => {
   const fetchSubscriptions = async () => {
     try {
       const res = await getUserSubscriptions();
+      console.log("Subscriptions:", res.data); // add
       setSubscriptions(res.data || []);
     } catch (err) {
       console.error(err);
