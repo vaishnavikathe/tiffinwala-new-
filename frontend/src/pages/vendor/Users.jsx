@@ -9,7 +9,7 @@ const Users = () => {
   useEffect(() => {
     getUsers()
       .then(res => {
-        console.log("USERS DATA 👉", res.data);
+        console.log("USERS DATA ", res.data);
         setUsers(res.data.subscribers || []);
       })
       .finally(() => setLoading(false));
@@ -43,52 +43,62 @@ const Users = () => {
           </div>
 
           {/* ROWS */}
-          {users.map((sub) => (
-            <div
-              key={sub._id}
-              className="grid grid-cols-8 gap-4 px-6 py-4 border-t items-center text-sm"
-            >
-              {/* User */}
-              <p className="font-medium">
-                {sub.userId?.name }
-              </p>
+         
 
-              {/* Plan */}
-              <p>
-                {sub.planId?.planName || "-"}
-              </p>
+{users.map((sub) => {
 
-              {/* Period */}
-              <p className="text-gray-500">
-                {sub.startDate?.slice(0, 10) || "-"} <br />
-                {sub.endDate?.slice(0, 10) || "-"}
-              </p>
+  console.log("SUB 👉", sub);
+  console.log("USER 👉", sub.userId);
 
-              {/* Billing */}
-              <span className="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-600 w-fit">
-                {sub.billingType || "postpaid"}
-              </span>
+  return (
+    <div
+      key={sub._id}
+      className="grid grid-cols-8 gap-4 px-6 py-4 border-t items-center text-sm"
+    >
 
-              {/* Base */}
-              <p>₹{sub.basePrice || 0}</p>
+      {/* User */}
+      <p className="font-medium">
+        {sub.userId?.name || "No Name"}
+      </p>
 
-              {/* Extra */}
-              <p>
-                {sub.extraMeals || 0} <br />
-                ₹{sub.extraCost || 0}
-              </p>
+      {/* Plan */}
+      <p>
+        {sub.planId?.planName || "-"}
+      </p>
 
-              {/* Status */}
-              <span className="text-green-600 font-medium">
-                {sub.status || "Active"}
-              </span>
+      {/* Period */}
+      <p className="text-gray-500">
+        {sub.startDate?.slice(0, 10) || "-"} <br />
+        {sub.endDate?.slice(0, 10) || "-"}
+      </p>
 
-              {/* Total */}
-              <p className="font-semibold text-green-700">
-                ₹{sub.total || 0}
-              </p>
-            </div>
-          ))}
+      {/* Billing */}
+      <span className="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-600 w-fit">
+        {sub.billingType || "postpaid"}
+      </span>
+
+      {/* Base */}
+      <p>₹{sub.basePrice || 0}</p>
+
+      {/* Extra */}
+      <p>
+        {sub.extraMeals || 0} <br />
+        ₹{sub.extraCost || 0}
+      </p>
+
+      {/* Status */}
+      <span className="text-green-600 font-medium">
+        {sub.status || "Active"}
+      </span>
+
+      {/* Total */}
+      <p className="font-semibold text-green-700">
+        ₹{sub.total || 0}
+      </p>
+
+    </div>
+  );
+})}
 
         </div>
       )}

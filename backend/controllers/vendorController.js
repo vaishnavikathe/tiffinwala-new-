@@ -138,16 +138,16 @@ export const addMenu = async (req, res) => {
 // get vendors for user dashboard
 export const getAllVendors = async (req, res) => {
   try {
-    // ✅ query params
+    //  query params
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 9;
 
     const skip = (page - 1) * limit;
 
-    // ✅ total count
+    //  total count
     const total = await Vendor.countDocuments();
 
-    // ✅ paginated data
+    //  paginated data
     const vendors = await Vendor.find()
       .select("ownerName shopName cuisine address")
       .skip(skip)
