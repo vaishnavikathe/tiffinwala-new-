@@ -70,18 +70,18 @@ import {
 
 import { protectVendor } from "../middlewares/authMiddleware.js";
 
-const router = express.Router();
+const menurouter = express.Router();
 
 //  SAVE MENU
-router.post("/:planId", protectVendor, saveMenu);
-router.get("/:planId", protectVendor, getMenus);
+menurouter.post("/:planId", protectVendor, saveMenu);
+menurouter.get("/:planId", protectVendor, getMenus);
 //router.post("/", protectVendor, saveMenu);
 //router.get("/", protectVendor, getMenus);
 // GET MENU BY PLAN
-router.get("/plan/:planId", protectVendor, getMenuByPlan);
-router.get("/single/:id", protectVendor, getSingleMenu);
+menurouter.get("/plan/:planId", protectVendor, getMenuByPlan);
+menurouter.get("/single/:id", protectVendor, getSingleMenu);
 
 // DELETE MENU
-router.delete("/:id", protectVendor, deleteMenu);
+menurouter.delete("/:id", protectVendor, deleteMenu);
 
-export default router;
+export default menurouter;
