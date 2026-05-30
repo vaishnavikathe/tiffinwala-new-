@@ -3,6 +3,7 @@ import Contact from "../models/contact.js";
 //Save contact message
 export const createContact = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
     const { name, email, message } = req.body;
 
     // validation
