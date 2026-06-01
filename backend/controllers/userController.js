@@ -1,6 +1,6 @@
-import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 
 
 // ================= REGISTER USER =================
@@ -11,12 +11,12 @@ export const registerUser = async (req, res) => {
     console.log("FILE:", req.file);
 
     const { name, mobile, address, password, email } = req.body;
-    
+
     if (!req.body) {
-  return res.status(400).json({
-    message: "Request body missing"
-  });
-}
+      return res.status(400).json({
+        message: "Request body missing"
+      });
+    }
     // ✅ profile pic handling
     let profilePic = "uploads/default.png";
 

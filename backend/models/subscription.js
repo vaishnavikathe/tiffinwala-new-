@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 const subscriptionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "user"
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Vendor"
+    ref: "vendors"
   },
   planId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -25,6 +25,11 @@ const subscriptionSchema = new mongoose.Schema({
     type: String,
     enum: ["active", "expired"],
     default: "active"
+  },
+  planDetails: {
+    tiffinCount: Number,
+    price: Number,
+    duration: String
   }
 }, { timestamps: true });
 

@@ -129,12 +129,12 @@ export const getUserSubscriptions = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };*/
-import Subscription from "../models/subscription.js";
+/*import Subscription from "../models/subscription.js";
 import Plan from "../models/plan.js";
 
 export const createSubscription = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const { vendorId, planId } = req.body;
 
     // ✅ Check plan exists
@@ -150,6 +150,8 @@ export const createSubscription = async (req, res) => {
       userId,
       vendorId,
       planId,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       status: "active"
     });
 
@@ -164,7 +166,7 @@ export const createSubscription = async (req, res) => {
       return res.status(400).json({
         message: "No prepaid plans available"
       });
-    }
+    }*/
 
     // ✅ Validate selected plan index
    /* if (
@@ -177,7 +179,9 @@ export const createSubscription = async (req, res) => {
     }*/
 
     //const selectedPlan = plan.prepaidPlans[selectedPlanIndex];
-    const selectedPlan = plan.prepaidPlans.reduce((max, p) =>
+   /* const selectedPlan = plan.prepaidPlans.reduce((max, p) =>
+   
+   
   p.tiffinCount > max.tiffinCount ? p : max
 );
     // ✅ Dates logic
@@ -217,6 +221,7 @@ export const getUserSubscriptions = async (req, res) => {
 
     const subs = await Subscription.find({ userId })
       .populate("vendorId", "shopName")
+      .populate("userId", "name email mobile")
       .populate("planId", "planName");
 
     // ✅ CHECK & UPDATE STATUS
@@ -231,5 +236,150 @@ export const getUserSubscriptions = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};*/
+
+import Subscription from "../models/subscription.js";
+import Plan from "../models/plan.js";
+// Create Subscription
+export const createSubscription = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { vendorId, planId } = req.body;
+
+    console.log("USER ID:", userId);
+    console.log("BODY:", req.body);
+
+    // Check plan exists
+    const plan = await Plan.findById(planId);
+
+    if (!plan) {
+      return res.status(404).json({
+        message: "Plan not found",
+      });
+    }
+
+    // Prevent duplicate active subscription
+    const existing = await Subscription.findOne({
+      userId,
+      vendorId,
+      planId,
+      status: "active",
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        message: "Already subscribed",
+      });
+    }
+
+    // Check prepaid plans
+    
+console.log("PLAN:", plan);
+console.log("PREPAID:", plan.prepaidPlans);
+    if (!plan.prepaidPlans || plan.prepaidPlans.length === 0) {
+      return res.status(400).json({
+        message: "No prepaid plans available",
+      });
+    }
+
+    // Select highest tiffin count plan
+    const selectedPlan = plan.prepaidPlans.reduce(
+      (max, p) => (p.tiffinCount > max.tiffinCount ? p : max),
+      plan.prepaidPlans[0]
+    );
+
+    // Dates
+    const startDate = new Date();
+
+    const endDate = new Date(startDate);
+    endDate.setDate(
+      startDate.getDate() + Number(selectedPlan.tiffinCount)
+    );
+
+    // Create subscription
+    const subscription = await Subscription.create({
+      userId,
+      vendorId,
+      planId,
+      startDate,
+      endDate,
+      status: "active",
+    });
+
+    console.log("CREATED SUB:", subscription);
+
+    res.status(201).json({
+      message: "Subscribed successfully",
+      subscription,
+    });
+
+  } catch (error) {
+    console.error("SUBSCRIPTION ERROR:", error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Get User Subscriptions
+export const getUserSubscriptions = async (req, res) => {
+  try {
+    const userId = req.user.id; // FIXED
+
+    const subs = await Subscription.find({ userId })
+      .populate("vendorId", "shopName")
+      .populate("userId", "name email mobile")
+      .populate("planId", "planName");
+
+    // Update expired subscriptions
+    for (const sub of subs) {
+      if (sub.status === "active" && new Date() > sub.endDate) {
+        sub.status = "expired";
+        await sub.save();
+      }
+    }
+
+    res.status(200).json({
+      totalSubscriptions: subs.length,
+      subscriptions: subs,
+    });
+
+  } catch (error) {
+    console.error("GET USER SUBS ERROR:", error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Get Vendor Subscribers
+export const getVendorSubscribers = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id;
+
+    console.log("Logged Vendor:", req.vendor._id);
+    const subscribers = await Subscription.find({
+      vendorId,
+      status: "active",
+      
+    })
+      
+      .populate("userId", "name email mobile")
+      .populate("planId", "planName");
+    console.log("Found Subscribers:", subscribers);
+    res.status(200).json({
+      totalSubscribers: subscribers.length,
+      subscribers,
+    });
+
+  } catch (error) {
+    console.error("GET VENDOR SUBSCRIBERS ERROR:", error);
+
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
