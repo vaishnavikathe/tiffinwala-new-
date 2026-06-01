@@ -90,7 +90,7 @@ const SubscriptionPage = () => {
           </div>
         </div>
 
-        {/* Right - Bill Summary */}
+        {/*Right - Bill Summary */}
         <div className="lg:w-72 space-y-4">
           <div className="bg-white rounded-xl shadow p-5">
             <h3 className="font-semibold text-lg mb-4">Bill summary</h3>
