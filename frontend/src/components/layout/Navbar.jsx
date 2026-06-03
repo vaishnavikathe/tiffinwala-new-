@@ -34,8 +34,17 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Auth/Vendor Links - "Vendor Login" removed for a cleaner look */}
+          {/* Auth/Vendor/Admin Links */}
           <div className="flex items-center gap-4 md:gap-6">
+            
+            {/* Added: Admin Login link - Styled as a subtle, clean text option */}
+            <Link
+              to="/admin-login"
+              className="text-xs font-semibold tracking-wide text-orange-100 hover:text-white transition whitespace-nowrap bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-md"
+            >
+              Admin Portal
+            </Link>
+
             <Link
               to="/user-login"
               className="px-4 py-2 rounded-md border border-white hover:bg-white hover:text-orange-600 transition text-sm font-semibold whitespace-nowrap"
@@ -43,7 +52,7 @@ const Navbar = () => {
               Sign Up
             </Link>
 
-            {/* Clicking "Join as Vendor" now leads directly to the Login page */}
+            {/* Clicking "Join as Vendor" leads directly to the Login page */}
             <Link
               to="/vendor-login"
               className="px-4 py-2 rounded-md border border-white hover:bg-white hover:text-orange-600 transition text-sm font-semibold whitespace-nowrap"

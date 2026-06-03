@@ -11,11 +11,15 @@ import VendorLogin from "./pages/Auth/VendorLogin";
 import VendorRegister from "./pages/Auth/VendorRegister";
 import UserLogin from "./pages/Auth/UserLogin";
 import UserRegister from "./pages/Auth/UserRegister";
+import AdminLogin from "./pages/Auth/AdminLogin";
 
 // Home
 import Home from "./pages/Home/Home";
 import About from "./pages/Home/About";
 import Contact from "./pages/Home/Contact";
+
+// Admin
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Vendor
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -48,6 +52,7 @@ const App = () => {
       <Route path="/vendor-register" element={<VendorRegister />} />
       <Route path="/user-login" element={<UserLogin />} />
       <Route path="/user-register" element={<UserRegister />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
 
       {/* VENDOR DASHBOARD */}
       <Route element={<ProtectedRoute />}>
@@ -81,6 +86,10 @@ const App = () => {
 
         </Route>
       </Route>
+
+      {/* ADMIN DASHBOARD PANELS */}
+      {/* Note: You can nest this inside a ProtectedRoute later if needed */}
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
       {/* 404 */}
       <Route
