@@ -169,7 +169,7 @@ export const getAllVendors = async (req, res) => {
   }
 };
 
-//GET SINGLE VENDOR DETAILS (IMPORTANT)
+//GET SINGLE VENDOR DETAILS
 export const getVendorDetails = async (req, res) => {
   try {
     const vendorId = req.params.id;
@@ -221,7 +221,7 @@ export const getVendorDetails = async (req, res) => {
 //        console.log("BODY:", req.body);
 //        console.log("FILE:", req.file);
 
-//     // ✅ Update text fields safely
+//     // Update text fields safely
 //    const { ownerName, shopName, cuisine, address } = req.body || {};
 
 // vendor.ownerName = ownerName || vendor.ownerName;
@@ -229,7 +229,7 @@ export const getVendorDetails = async (req, res) => {
 // vendor.cuisine = cuisine || vendor.cuisine;
 // vendor.address = address || vendor.address;
 
-//     // ✅ FIX: correct image path (IMPORTANT)
+//     // FIX: correct image path (IMPORTANT)
 //     if (req.file) {
 //       vendor.profilePic = `/uploads/vendors/${req.file.filename}`;
 //     }
@@ -260,7 +260,7 @@ export const updateVendorProfile = async (req, res) => {
     console.log("========= FILE =========");
     console.log(req.file);
 
-    // ✅ Find Vendor
+    //Find Vendor
     const vendor = await Vendor.findById(
       req.vendor._id
     );
@@ -272,7 +272,7 @@ export const updateVendorProfile = async (req, res) => {
       });
     }
 
-    // ✅ SAFE BODY ACCESS
+    //BODY ACCESS
     const ownerName =
       req.body?.ownerName;
 
@@ -285,7 +285,7 @@ export const updateVendorProfile = async (req, res) => {
     const cuisine =
       req.body?.cuisine;
 
-    // ✅ Update Fields
+    //Update Fields
     if (ownerName) {
       vendor.ownerName = ownerName;
     }
@@ -302,7 +302,7 @@ export const updateVendorProfile = async (req, res) => {
       vendor.cuisine = cuisine;
     }
 
-    // ✅ Image Upload
+    //Image Upload
     if (req.file) {
 
       vendor.profilePic =
@@ -314,11 +314,11 @@ export const updateVendorProfile = async (req, res) => {
       );
     }
 
-    // ✅ Save
+    //Save
     const updatedVendor =
       await vendor.save();
 
-    // ✅ Response
+    //Response
     return res.status(200).json({
       success: true,
       message:
@@ -344,7 +344,7 @@ export const updateVendorProfile = async (req, res) => {
 export const updateVendorPassword = async (req, res) => {
   try {
 
-    const vendorId = req.vendor.id; // ✅ FIX
+    const vendorId = req.vendor.id;
 
     const {
       currentPassword,
@@ -481,8 +481,8 @@ export const getVendorDashboard = async (req, res) => {
     });
 
     res.json({
-      totalSubscribers, // ✅ replace totalUsers
-      activeUsers: totalSubscribers, // same for now
+      totalSubscribers, 
+      activeUsers: totalSubscribers,
       totalPlans,
       totalMenus
     });

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
 
-// ================= REGISTER USER =================
+//REGISTER USER
 
 export const registerUser = async (req, res) => {
   try {
@@ -17,7 +17,7 @@ export const registerUser = async (req, res) => {
         message: "Request body missing"
       });
     }
-    // ✅ profile pic handling
+    //profile pic handling
     let profilePic = "uploads/default.png";
 
     if (req.file) {
@@ -58,7 +58,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// ================= LOGIN USER =================
+//LOGIN USER
 
 export const loginUser = async (req, res) => {
   try {
@@ -124,9 +124,8 @@ export const loginUser = async (req, res) => {
 };
 
 
-// ================= UPDATE PROFILE =================
-
-export const updateUserProfile = async (req, res) => {
+//UPDATE PROFILE
+/*export const updateUserProfile = async (req, res) => {
   try {
 
     // FIXED
@@ -188,10 +187,88 @@ export const updateUserProfile = async (req, res) => {
     });
 
   }
+};*/
+export const updateUserProfile = async (req, res) => {
+  try {
+    console.log("BODY");
+    console.log(req.body);
+
+    console.log("FILE");
+    console.log(req.file);
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const {
+      name,
+      email,
+      mobile,
+      address,
+      password,
+    } = req.body;
+
+    // Password verification
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Incorrect Password",
+      });
+    }
+
+    // Update fields
+    if (name) user.name = name;
+
+    if (email) user.email = email;
+
+    if (mobile) user.mobile = mobile;
+
+    if (address) user.address = address;
+
+    // Profile picture upload
+    if (req.file) {
+      user.profilePic =
+        `/uploads/users/${req.file.filename}`;
+
+      console.log(
+        "IMAGE SAVED:",
+        user.profilePic
+      );
+    }
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+
+  } catch (error) {
+    console.log(
+      "UPDATE USER PROFILE ERROR:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
 };
 
-
-// ================= UPDATE PASSWORD =================
+//UPDATE PASSWORD
 
 export const updateUserPassword = async (req, res) => {
 
