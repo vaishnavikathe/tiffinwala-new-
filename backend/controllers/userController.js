@@ -209,12 +209,11 @@ export const updateUserProfile = async (req, res) => {
       name,
       email,
       mobile,
-      address,
-      password,
+      address
     } = req.body;
 
     // Password verification
-    const isMatch = await bcrypt.compare(
+    /*const isMatch = await bcrypt.compare(
       password,
       user.password
     );
@@ -225,7 +224,7 @@ export const updateUserProfile = async (req, res) => {
         message: "Incorrect Password",
       });
     }
-
+*/
     // Update fields
     if (name) user.name = name;
 

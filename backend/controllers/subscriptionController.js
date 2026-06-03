@@ -167,8 +167,6 @@ export const createSubscription = async (req, res) => {
         message: "No prepaid plans available"
       });
     }*/
-
-    // ✅ Validate selected plan index
    /* if (
       selectedPlanIndex === undefined ||
       !plan.prepaidPlans[selectedPlanIndex]

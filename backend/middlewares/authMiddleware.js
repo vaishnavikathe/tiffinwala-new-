@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Vendor from "../models/vendor.js";
+import vendors from "../models/vendor.js";
 
 // ================= USER =================
 export const protectUser = (req, res, next) => {
@@ -43,7 +43,7 @@ export const protectVendor = async (req, res, next) => {
       );
 
       // ✅ THIS WAS FAILING because Vendor wasn't imported
-      req.vendor = await Vendor.findById(
+      req.vendor = await vendors.findById(
         decoded.id
       ).select("-password");
 

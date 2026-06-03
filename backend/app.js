@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import adminRoutes from "./routes/adminRoutes.js";
 import userroutes from "./routes/userRoutes.js";
 import vendorRoutes from "./routes/vendorRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
@@ -14,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+app.use("/api/admin",adminRoutes);
 app.use("/api/user",userroutes);
 app.use("/api/vendor",vendorRoutes);
 app.use("/api/plan",planRoutes);
