@@ -1,126 +1,154 @@
-import React from 'react';
-import { Users as UsersIcon, Store, CreditCard, TrendingUp } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Users,
+  Store,
+  CreditCard,
+  Columns,
+} from "lucide-react";
 
 export default function OverviewTab() {
+  const [dashboard, setDashboard] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  const fetchDashboard = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      const res = await axios.get(
+        "http://localhost:5000/api/admin/dashboard",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setDashboard(res.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <h2>Loading...</h2>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-8 space-y-8">
-      {/* Header Panel */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Platform Overview</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Everything happening across TiffinWala</p>
-      </div>
+    <>
+      <header className="bg-white border-b border-gray-200 px-8 py-5 flex items-center gap-4">
+        <Columns size={20} />
+        <div>
+          <h1 className="text-xl font-bold">
+            Platform Overview
+          </h1>
+          <p className="text-sm text-gray-500">
+            Everything happening across TiffinWala
+          </p>
+        </div>
+      </header>
 
-      {/* Metric Dashboard Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Card 1: Diners */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-start">
-          <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Diners</p>
-            <p className="text-4xl font-bold text-gray-900 mt-2">5</p>
-            <p className="text-xs text-gray-400 mt-1">4 active</p>
+      <div className="p-8 space-y-6">
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+          <div className="bg-white p-5 rounded-xl shadow">
+            <Users className="text-orange-500 mb-2" />
+            <p className="text-xs text-gray-500">
+              TOTAL USERS
+            </p>
+            <h2 className="text-3xl font-bold">
+              {dashboard.totalUsers}
+            </h2>
           </div>
-          <div className="p-2.5 bg-teal-50 text-teal-600 rounded-xl">
-            <UsersIcon size={20} />
+
+          <div className="bg-white p-5 rounded-xl shadow">
+            <Store className="text-amber-500 mb-2" />
+            <p className="text-xs text-gray-500">
+              TOTAL VENDORS
+            </p>
+            <h2 className="text-3xl font-bold">
+              {dashboard.totalVendors}
+            </h2>
           </div>
+
+          <div className="bg-white p-5 rounded-xl shadow">
+            <Store className="text-green-500 mb-2" />
+            <p className="text-xs text-gray-500">
+              APPROVED VENDORS
+            </p>
+            <h2 className="text-3xl font-bold">
+              {dashboard.approvedVendors}
+            </h2>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl shadow">
+            <CreditCard className="text-blue-500 mb-2" />
+            <p className="text-xs text-gray-500">
+              SUBSCRIPTIONS
+            </p>
+            <h2 className="text-3xl font-bold">
+              {dashboard.totalSubscriptions}
+            </h2>
+          </div>
+
         </div>
 
-        {/* Card 2: Vendors */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-start">
-          <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Vendors</p>
-            <p className="text-4xl font-bold text-gray-900 mt-2">4</p>
-            <p className="text-xs text-gray-400 mt-1">3 approved</p>
-          </div>
-          <div className="p-2.5 bg-orange-50 text-[#f15a24] rounded-xl">
-            <Store size={20} />
-          </div>
+        {/* Pending Vendors */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-lg font-bold mb-4">
+            Pending Vendor Approvals
+          </h2>
+
+          {dashboard.pendingVendors?.length === 0 ? (
+            <p>No pending vendors</p>
+          ) : (
+            dashboard.pendingVendors?.map((vendor) => (
+              <div
+                key={vendor._id}
+                className="border p-3 rounded mb-3"
+              >
+                <h3 className="font-semibold">
+                  {vendor.shopName}
+                </h3>
+
+                <p>{vendor.ownerName}</p>
+                <p>{vendor.address}</p>
+              </div>
+            ))
+          )}
         </div>
 
-        {/* Card 3: Subscriptions */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-start">
-          <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Subscriptions</p>
-            <p className="text-4xl font-bold text-gray-900 mt-2">3</p>
-            <p className="text-xs text-gray-400 mt-1">this month</p>
-          </div>
-          <div className="p-2.5 bg-green-50 text-green-600 rounded-xl">
-            <CreditCard size={20} />
-          </div>
-        </div>
+        {/* Recent Subscriptions */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-lg font-bold mb-4">
+            Recent Subscriptions
+          </h2>
 
-        {/* Card 4: GMV Tracking */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-start">
-          <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">GMV (Mock)</p>
-            <p className="text-4xl font-bold text-gray-900 mt-2">₹19,765</p>
-            <p className="text-xs text-emerald-600 font-medium mt-1">+12% MoM</p>
-          </div>
-          <div className="p-2.5 bg-amber-50 text-amber-500 rounded-xl">
-            <TrendingUp size={20} />
-          </div>
-        </div>
-      </div>
-
-      {/* Section: Split Sub-Grids */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Pending Approvals Widget */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm lg:col-span-5">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Pending vendor approvals</h3>
-          <div className="p-4 rounded-xl border border-gray-100 bg-white flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-xl">
-                🍱
+          {dashboard.recentSubscriptions?.length === 0 ? (
+            <p>No subscriptions found</p>
+          ) : (
+            dashboard.recentSubscriptions?.map((sub) => (
+              <div
+                key={sub._id}
+                className="border p-3 rounded mb-3"
+              >
+                <p>{sub.name}</p>
               </div>
-              <div>
-                <h4 className="text-sm font-bold text-gray-900">Gupta Tiffin Co.</h4>
-                <p className="text-xs text-gray-400">Mumbai • Multi-cuisine</p>
-              </div>
-            </div>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-200">
-              Pending
-            </span>
-          </div>
-        </div>
-
-        {/* Recent Subscriptions Widget */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm lg:col-span-7">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Recent subscriptions</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 border border-gray-50 rounded-xl">
-              <div>
-                <h4 className="text-sm font-bold text-gray-900">Aarav Patel</h4>
-                <p className="text-xs text-gray-400">Full Day Combo</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-emerald-600">₹7,830</p>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">POSTPAID</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border border-gray-50 rounded-xl">
-              <div>
-                <h4 className="text-sm font-bold text-gray-900">Diya Reddy</h4>
-                <p className="text-xs text-gray-400">Sattvik Two Meals</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-emerald-600">₹5,495</p>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-green-50 text-green-600 rounded">PREPAID</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border border-gray-50 rounded-xl">
-              <div>
-                <h4 className="text-sm font-bold text-gray-900">Kabir Singh</h4>
-                <p className="text-xs text-gray-400">Flexi Multi-cuisine</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-emerald-600">₹6,440</p>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">POSTPAID</span>
-              </div>
-            </div>
-          </div>
+            ))
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
