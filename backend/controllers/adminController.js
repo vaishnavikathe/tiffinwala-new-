@@ -90,7 +90,7 @@ export const getDashboardStats =
     };*/
 
 import admins from "../models/admin.js";
-import user from "../models/user.js";
+import User from "../models/user.js";
 import vendors from "../models/vendor.js";
 import Subscription from "../models/subscription.js";
 import bcrypt from "bcryptjs";
@@ -357,7 +357,7 @@ export const getAllVendors = async (req, res) => {
 export const getDashboardStats = async (req, res) => {
     try {
         const totalUsers =
-            await user.countDocuments();
+            await User.countDocuments();
 
         const totalVendors =
             await vendors.countDocuments();
@@ -402,7 +402,7 @@ export const getDashboardStats = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const Users = await user.find()
+        const Users = await User.find()
             .select("-password")
             .sort({ createdAt: -1 });
 
