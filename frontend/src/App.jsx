@@ -35,6 +35,8 @@ import Vendors from "./pages/user/Vendors";
 import VendorDetails from "./pages/user/VendorDetails"; // keep this
 import PlanDetails from "./pages/user/PlanDetails";
 import SubscriptionPage from "./pages/user/SubscriptionPage";
+import UserProfile from "./components/user/UserProfile";
+
 
 const App = () => {
   return (
@@ -72,8 +74,8 @@ const App = () => {
       <Route element={<ProtectedRoute />}>
       <Route element={<UserDashboardLayout />}>
       <Route path="/user/subscription" element={<SubscriptionPage />} />
-
-          <Route path="/user" element={<UserDashboard />} />
+      <Route path="/user/profile" element={<UserProfile />} />  
+      <Route path="/user" element={<UserDashboard />} />
 
           {/* Vendors List */}
           <Route path="/user/vendors" element={<Vendors />} />
