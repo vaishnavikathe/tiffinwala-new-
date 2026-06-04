@@ -32,10 +32,11 @@ import Users from "./pages/vendor/Users";
 // User
 import UserDashboard from "./pages/user/UserDashboard";
 import Vendors from "./pages/user/Vendors";
-import VendorDetails from "./pages/user/VendorDetails"; // keep this
+import VendorDetails from "./pages/user/VendorDetails"; 
 import PlanDetails from "./pages/user/PlanDetails";
 import SubscriptionPage from "./pages/user/SubscriptionPage";
 import UserProfile from "./components/user/UserProfile";
+import BillingPage from "./pages/user/BillingPage";
 
 
 const App = () => {
@@ -76,6 +77,7 @@ const App = () => {
       <Route path="/user/subscription" element={<SubscriptionPage />} />
       <Route path="/user/profile" element={<UserProfile />} />  
       <Route path="/user" element={<UserDashboard />} />
+      <Route path="/user/billing" element={<BillingPage />} />
 
           {/* Vendors List */}
           <Route path="/user/vendors" element={<Vendors />} />
