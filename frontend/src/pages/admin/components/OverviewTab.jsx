@@ -68,7 +68,7 @@ export default function OverviewTab() {
               TOTAL USERS
             </p>
             <h2 className="text-3xl font-bold">
-              {dashboard.totalUsers}
+              {dashboard.totalUser}
             </h2>
           </div>
 
@@ -138,14 +138,36 @@ export default function OverviewTab() {
           {dashboard.recentSubscriptions?.length === 0 ? (
             <p>No subscriptions found</p>
           ) : (
-            dashboard.recentSubscriptions?.map((sub) => (
-              <div
-                key={sub._id}
-                className="border p-3 rounded mb-3"
-              >
-                <p>{sub.name}</p>
-              </div>
-            ))
+            <div className="space-y-3">
+              {dashboard.recentSubscriptions?.map((sub) => (
+                <div
+                  key={sub._id}
+                  className="flex items-center justify-between border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition"
+                >
+                  <div>
+                    <h3 className="font-semibold text-gray-900">
+                      {sub.userId?.name || "Unknown User"}
+                    </h3>
+
+                    <p className="text-sm text-gray-500">
+                      {sub.vendorId?.shopName || "Unknown Vendor"}
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <p className="font-medium text-gray-800">
+                      {sub.planId?.planName || "Plan"}
+                    </p>
+
+                    <p className="text-xs text-gray-400">
+                      {new Date(
+                        sub.createdAt
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>

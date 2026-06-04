@@ -1,3 +1,4 @@
+// adminApi.js
 import axios from "axios";
 
 const API = axios.create({
@@ -13,5 +14,13 @@ API.interceptors.request.use((config) => {
 
   return config;
 });
+
+// Dashboard
+export const getDashboardStats = () =>
+  API.get("/dashboard");
+
+// Recent Subscriptions
+export const getRecentSubscriptions = () =>
+  API.get("/recent-subscriptions");
 
 export default API;
