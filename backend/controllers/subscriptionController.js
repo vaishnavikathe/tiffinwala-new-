@@ -275,7 +275,7 @@ export const createSubscription = async (req, res) => {
     
 console.log("PLAN:", plan);
 console.log("PREPAID:", plan.prepaidPlans);
-    if (!plan.prepaidPlans || plan.prepaidPlans.length === 0) {
+    /*if (!plan.prepaidPlans || plan.prepaidPlans.length === 0) {
       return res.status(400).json({
         message: "No prepaid plans available",
       });
@@ -285,7 +285,29 @@ console.log("PREPAID:", plan.prepaidPlans);
     const selectedPlan = plan.prepaidPlans.reduce(
       (max, p) => (p.tiffinCount > max.tiffinCount ? p : max),
       plan.prepaidPlans[0]
-    );
+    );*/
+    if (plan.prepaidPlans && plan.prepaidPlans.length > 0) {
+
+      // Highest prepaid plan
+      selectedPlan = plan.prepaidPlans.reduce(
+        (max, p) => (p.tiffinCount > max.tiffinCount ? p : max),
+        plan.prepaidPlans[0]
+      );
+
+      planType = "prepaid";
+
+    } else if (plan.postpaidPlan) {
+
+      selectedPlan = plan.postpaidPlan;
+      planType = "postpaid";
+
+    } else {
+
+      return res.status(400).json({
+        message: "No plans available",
+      });
+
+    }
 
     // Dates
     const startDate = new Date();
@@ -382,3 +404,78 @@ export const getVendorSubscribers = async (req, res) => {
   }
 };
 
+export const addExtraTiffin = async (req, res) => {
+  try {
+    const { subscriptionId } = req.params;
+    const { quantity, pricePerTiffin } = req.body;
+
+    const subscription =
+      await Subscription.findById(subscriptionId);
+
+    if (!subscription) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found",
+      });
+    }
+
+    subscription.extraTiffins += quantity;
+
+    subscription.totalAmount +=
+      quantity * pricePerTiffin;
+
+    await subscription.save();
+
+    res.json({
+      success: true,
+      subscription,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const cancelSubscription = async (req, res) => {
+  try {
+    const subscription = await Subscription.findById(
+      req.params.id
+    );
+
+    if (!subscription) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found",
+      });
+    }
+
+    // Ensure user owns this subscription
+    if (
+      subscription.userId.toString() !==
+      req.user.id
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    await Subscription.findByIdAndDelete(
+      req.params.id
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Subscription cancelled successfully",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

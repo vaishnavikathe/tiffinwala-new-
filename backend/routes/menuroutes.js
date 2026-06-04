@@ -78,7 +78,7 @@ menurouter.get("/:planId", protectVendor, getMenus);
 //router.post("/", protectVendor, saveMenu);
 //router.get("/", protectVendor, getMenus);
 // GET MENU BY PLAN
-menurouter.get("/plan/:planId", protectVendor, getMenuByPlan);
+menurouter.get("/plan/:planId", getMenuByPlan);
 menurouter.get("/single/:id", protectVendor, getSingleMenu);
 
 // DELETE MENU
