@@ -377,6 +377,9 @@ export const getDashboardStats = async (req, res) => {
 
         const recentSubscriptions =
             await Subscription.find()
+                .populate("userId", "name")
+                .populate("vendorId", "shopName")
+                .populate("planId", "planName")
                 .sort({ createdAt: -1 })
                 .limit(5);
 
