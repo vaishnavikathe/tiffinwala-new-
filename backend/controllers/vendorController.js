@@ -518,7 +518,7 @@ export const createSubscription = async (req, res) => {
 export const getVendorSubscribers = async (req, res) => {
   try {
     const vendorId = req.vendor._id;
-
+    
     const subscribers = await Subscription.find({
       vendorId,
       status: "active"

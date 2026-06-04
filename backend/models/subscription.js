@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const subscriptionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user"
+    ref: "User"
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,

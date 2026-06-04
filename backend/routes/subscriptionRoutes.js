@@ -9,10 +9,6 @@ const router = express.Router();
 
 router.post("/", protectUser, createSubscription);
 router.get("/", protectUser, getUserSubscriptions);
-router.get(
-    "/vendor/subscribers",
-    protectVendor,
-    getVendorSubscribers
-);
+router.get("/vendor/subscribers",protectVendor,getVendorSubscribers);
 
 export default router;

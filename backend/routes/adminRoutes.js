@@ -5,7 +5,9 @@ import {
     getAllUsers,
     getAllVendors,
     getDashboardStats,
-    suspendVendor
+    suspendVendor,
+    getAllSubscriptions,
+    getRecentSubscriptions
 } from "../controllers/adminController.js";
 import { protectAdmin, } from "../middlewares/adminAuth.js";
 
@@ -17,5 +19,7 @@ adminRoutes.get("/user", getAllUsers);
 adminRoutes.get("/vendors", getAllVendors);
 adminRoutes.patch("/vendors/:id/approve", approveVendor);
 adminRoutes.patch("/vendors/:id/suspend", suspendVendor);
+adminRoutes.get("/subscriptions", getAllSubscriptions);
+adminRoutes.get("/recent-subscriptions",protectAdmin,getRecentSubscriptions);
 
 export default adminRoutes;

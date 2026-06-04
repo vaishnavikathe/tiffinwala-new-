@@ -511,3 +511,43 @@ export const suspendVendor = async (req, res) => {
         });
     }
 };
+
+export const getAllSubscriptions = async (req, res) => {
+    try {
+        const subscriptions = await Subscription.find()
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            subscriptions,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+// controllers/adminController.js
+
+export const getRecentSubscriptions = async (req, res) => {
+    try {
+        const subscriptions = await Subscription.find()
+            .populate("userId", "name")
+            .populate("vendorId", "shopName")
+            .populate("planId", "planName")
+            .sort({ createdAt: -1 })
+            .limit(5);
+
+        res.json({
+            success: true,
+            subscriptions,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
