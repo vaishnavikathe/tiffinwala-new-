@@ -493,6 +493,7 @@ export const suspendVendor = async (req, res) => {
                     new: true,
                 }
             );
+        console.log(vendor);
 
         if (!vendor) {
             return res.status(404).json({

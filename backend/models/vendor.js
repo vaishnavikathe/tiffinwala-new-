@@ -46,7 +46,12 @@ const vendorSchema = new mongoose.Schema(
     profilePic: {
      type: String,
      default: "uploads/default.png"
-}  
+    },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "suspended"],
+      default: "pending",
+    }    
 
   },
   {

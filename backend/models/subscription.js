@@ -21,6 +21,14 @@ const subscriptionSchema = new mongoose.Schema({
   endDate: {
     type: Date
   },
+  extraTiffins: {
+    type: Number,
+    default: 0
+  },
+  totalAmount: {
+    type: Number,
+    default: 0
+  },
   status: {
     type: String,
     enum: ["active", "expired"],
