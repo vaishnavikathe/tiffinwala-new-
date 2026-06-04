@@ -19,7 +19,7 @@ const Vendors = () => {
     navigate(`/user/vendors/${vendorId}`);
   };
 
-  console.log(vendors[0])
+ 
 
   // Frontend filtering
   const filteredVendors = vendors.filter((vendor) => {

@@ -14,10 +14,14 @@ export const getVendorDetails = (vendorId) => {
 export const getPlanByMenu = (planId) =>
   API.get(`/menu/plan/${planId}`);
 
-// Naya - Subscribe karo
+//Subscribe karo
 export const createSubscription = ({ vendorId, planId }) =>
   API.post("/subscription", { vendorId, planId });
 
-// Naya - User ki subscriptions lao
+// User ki subscriptions lao
 export const getUserSubscriptions = () =>
   API.get("/subscription");
+
+// User Profile
+export const getUserProfile = () => API.get("/user/profile");
+export const updateUserProfile = (data) => API.put("/user/profile", data);

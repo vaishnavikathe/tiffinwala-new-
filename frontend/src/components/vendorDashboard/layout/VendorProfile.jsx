@@ -96,7 +96,7 @@ const Profile = () => {
 
       const res = await updateVendorProfile(formData);
 
-console.log("UPDATED VENDOR 👉", res.data.vendor); // 👈 ADD THIS
+console.log("UPDATED VENDOR ", res.data.vendor); // 👈 ADD THIS
 
 const updatedVendor = res.data.vendor;
 

@@ -2,6 +2,8 @@ import express from "express";
 import { registerUser, loginUser, updateUserProfile, updateUserPassword } from "../controllers/userController.js";
 import { protectUser } from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/uploadMiddleware.js";
+import User from "../models/user.js";
+
 
 const userroutes = express.Router();
 
@@ -9,8 +11,13 @@ const userroutes = express.Router();
 //userroutes.post("/register", registerUser);
 userroutes.post("/login", loginUser);
 userroutes.post("/register",upload.single("profilePic"),registerUser);
-userroutes.get("/profile", protectUser, (req, res) => {
-  res.json({ user: req.user });
+userroutes.get("/profile", protectUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 //protected
