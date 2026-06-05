@@ -14,14 +14,18 @@ export const getVendorDetails = (vendorId) => {
 export const getPlanByMenu = (planId) =>
   API.get(`/menu/plan/${planId}`);
 
-//Subscribe karo
+//Subscribe to a plan
 export const createSubscription = ({ vendorId, planId }) =>
   API.post("/subscription", { vendorId, planId });
 
-// User ki subscriptions lao
+// Get user's subscriptions
 export const getUserSubscriptions = () =>
   API.get("/subscription");
 
 // User Profile
 export const getUserProfile = () => API.get("/user/profile");
 export const updateUserProfile = (data) => API.put("/user/profile", data);
+
+// Cancel subscription
+export const cancelSubscription = (id) =>
+  API.delete(`/subscription/${id}`);

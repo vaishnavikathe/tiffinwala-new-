@@ -72,13 +72,18 @@ const App = () => {
       </Route>
 
       {/* USER DASHBOARD */}
-      <Route element={<ProtectedRoute />}>
-      <Route element={<UserDashboardLayout />}>
-      <Route path="/user/subscription" element={<SubscriptionPage />} />
-      <Route path="/user/profile" element={<UserProfile />} />  
-      <Route path="/user" element={<UserDashboard />} />
-      <Route path="/user/billing" element={<BillingPage />} />
-
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserDashboardLayout />}>
+            <Route path="/user" element={<UserDashboard />} />
+            <Route path="/user/vendors" element={<Vendors />} />
+            <Route path="/user/vendors/:id" element={<VendorDetails />} />
+            <Route path="/user/plan/:planId" element={<PlanDetails />} />
+            <Route path="/user/subscription" element={<SubscriptionPage />} />
+            <Route path="/user/profile" element={<UserProfile />} />
+            <Route path="/user/billing" element={<BillingPage />} />
+          </Route>
+        </Route>
+        
           {/* Vendors List */}
           <Route path="/user/vendors" element={<Vendors />} />
 
@@ -88,8 +93,8 @@ const App = () => {
           {/* Plan Details */}
           <Route path="/user/plan/:planId" element={<PlanDetails />} />
 
-        </Route>
-      </Route>
+        
+    
 
       {/* ADMIN DASHBOARD PANELS */}
       {/* Note: You can nest this inside a ProtectedRoute later if needed */}

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { getUserSubscriptions } from "../../services/userApi";
+import { getUserSubscriptions, getPlanByMenu, cancelSubscription } from "../../services/userApi";
 import BackButton from "../../components/layout/BackButton";
+import toast from "react-hot-toast";
 
 const SubscriptionPage = () => {
   const [subscriptions, setSubscriptions] = useState([]);
+  const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -13,7 +15,13 @@ const SubscriptionPage = () => {
   const fetchSubscriptions = async () => {
     try {
       const res = await getUserSubscriptions();
-      setSubscriptions(res.data.subscriptions || []);
+      const subs = res.data.subscriptions || [];
+      setSubscriptions(subs);
+
+      if (subs.length > 0 && subs[0].planId?._id) {
+        const menuRes = await getPlanByMenu(subs[0].planId._id);
+        setMenus(menuRes.data.menus || []);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -21,9 +29,15 @@ const SubscriptionPage = () => {
     }
   };
 
-  const handleCancel = () => {
-    alert("Cancel subscription feature coming soon!");
-    // TODO: API ready hone pe yahan connect karna
+  const handleCancel = async () => {
+    if (!window.confirm("Are you sure you want to cancel this subscription?")) return;
+    try {
+      await cancelSubscription(subscriptions[0]._id);
+      toast.success("Subscription cancelled!");
+      fetchSubscriptions();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Cancel failed!");
+    }
   };
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
@@ -80,24 +94,38 @@ const SubscriptionPage = () => {
       {/* This Week's Menu */}
       <h3 className="font-semibold mb-3">This week's menu</h3>
       <div className="bg-white rounded-xl shadow overflow-hidden mb-6">
-        <table className="w-full text-sm">
-          <tbody>
-            {["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map((day) => (
-              <tr key={day} className="border-b last:border-0">
-                <td className="py-3 px-4 font-medium w-28">{day}</td>
-                <td className="py-3 px-4 text-gray-500">Menu not available</td>
+        {menus.length === 0 ? (
+          <p className="text-gray-400 text-sm p-4">Menu not available</p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="py-3 px-4 text-left text-gray-500">Day</th>
+                <th className="py-3 px-4 text-left text-gray-500">Meal Type</th>
+                <th className="py-3 px-4 text-left text-gray-500">Items</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {menus.map((menu) => (
+                <tr key={menu._id} className="border-t">
+                  <td className="py-3 px-4 font-medium">{menu.day}</td>
+                  <td className="py-3 px-4 text-gray-500">{menu.mealType}</td>
+                  <td className="py-3 px-4 text-gray-500">
+                    {menu.items?.map(item => item.name).join(", ")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Cancel Button */}
       <button
-      onClick={handleCancel}
-      className="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl border border-red-200 transition font-medium"
+        onClick={handleCancel}
+        className="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl border border-red-200 transition font-medium"
       >
-          ✕ Cancel Subscription
+         Cancel Subscription
       </button>
 
       <BackButton />

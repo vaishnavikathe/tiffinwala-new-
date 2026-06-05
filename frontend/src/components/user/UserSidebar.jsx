@@ -34,7 +34,7 @@ const UserSidebar = ({ closeSidebar }) => {
       
       <div
         className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3 mb-6 cursor-pointer hover:bg-white/20 transition"
-        onClick={() => navigate("/user/profile")}  // ← ADD onClick
+        onClick={() => navigate("/user/profile")}  
       >
         <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-sm">
           {userName.charAt(0).toUpperCase()}
