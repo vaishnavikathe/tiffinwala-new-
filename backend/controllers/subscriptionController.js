@@ -286,6 +286,8 @@ console.log("PREPAID:", plan.prepaidPlans);
       (max, p) => (p.tiffinCount > max.tiffinCount ? p : max),
       plan.prepaidPlans[0]
     );*/
+    let selectedPlan;
+    let planType;
     if (plan.prepaidPlans && plan.prepaidPlans.length > 0) {
 
       // Highest prepaid plan
@@ -312,10 +314,14 @@ console.log("PREPAID:", plan.prepaidPlans);
     // Dates
     const startDate = new Date();
 
-    const endDate = new Date(startDate);
-    endDate.setDate(
-      startDate.getDate() + Number(selectedPlan.tiffinCount)
-    );
+    let endDate = null;
+
+    if (planType === "prepaid") {
+      endDate = new Date(startDate);
+      endDate.setDate(
+        startDate.getDate() + Number(selectedPlan.tiffinCount)
+      );
+    }
 
     // Create subscription
     const subscription = await Subscription.create({
@@ -325,6 +331,11 @@ console.log("PREPAID:", plan.prepaidPlans);
       startDate,
       endDate,
       status: "active",
+      planDetails: {
+        tiffinCount: selectedPlan.tiffinCount || 0,
+        price: selectedPlan.price || selectedPlan.pricePerTiffin,
+        duration: planType
+      }
     });
 
     console.log("CREATED SUB:", subscription);
