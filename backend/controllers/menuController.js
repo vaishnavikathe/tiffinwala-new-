@@ -383,7 +383,7 @@ export const getMenus = async (req, res) => {
 };
 
 // ✅ GET MENU BY PLAN
-export const getMenuByPlan = async (req, res) => {
+/*export const getMenuByPlan = async (req, res) => {
   try {
     const { planId } = req.params;
     const vendorId = req.vendor._id; // ✅ FIXED
@@ -396,7 +396,18 @@ export const getMenuByPlan = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+}; */
+export const getMenuByPlan = async (req, res) => {
+  try {
+    const { planId } = req.params;
+    const menus = await Menu.find({ planId })
+      .sort({ day: 1 });
+    res.json({ menus });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
+
 
 // ✅ GET SINGLE MENU
 export const getSingleMenu = async (req, res) => {
