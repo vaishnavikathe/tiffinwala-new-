@@ -11,7 +11,7 @@ export const protectUser = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+    console.log("DECODED:", decoded);
     if (decoded.role !== "user") {
       return res.status(403).json({ message: "Access denied" });
     }

@@ -20,7 +20,7 @@ const API = axios.create({
 
 
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("userToken");
 
   if (token) {
     // ✅ FIXED (backticks added)
@@ -197,7 +197,7 @@ export const addMenu = async (data) => {
     }
 
     const response = await API.post(
-      `/menu/${data.planId}`, 
+      `/menu/${data.planId}`,
       {
         day: data.day,
         mealType: data.mealType,
