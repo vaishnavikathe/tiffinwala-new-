@@ -68,7 +68,7 @@ export default function OverviewTab() {
               TOTAL USERS
             </p>
             <h2 className="text-3xl font-bold">
-              {dashboard.totalUser}
+              {dashboard.totalUsers}
             </h2>
           </div>
 
