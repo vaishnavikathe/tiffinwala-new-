@@ -48,3 +48,7 @@ export const cancelSubscription = (id) =>
 // Delete subscription
 export const deleteSubscription = (id) =>
   userAPI.delete(`/subscription/${id}`);
+
+// Extra tiffin order
+export const orderExtraTiffin = (id, data) =>
+  userAPI.patch(`/subscription/${id}`, data);
