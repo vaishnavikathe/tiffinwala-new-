@@ -29,3 +29,7 @@ export const updateUserProfile = (data) => API.put("/user/profile", data);
 // Cancel subscription
 export const cancelSubscription = (id) =>
   API.delete(`/subscription/${id}`);
+
+// Delete subscription
+export const deleteSubscription = (id) =>
+  API.delete(`/subscription/${id}`);

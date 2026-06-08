@@ -1,9 +1,23 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FiHome, FiUsers, FiLogOut, FiX, FiCalendar, FiCreditCard, FiUser } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import API from "../../services/api";
 
 const UserSidebar = ({ closeSidebar }) => {
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName") || "User";
+  const [profilePic, setProfilePic] = useState(null); 
+
+  useEffect(() => {
+    API.get("/user/profile")
+      .then(res => {
+        if (res.data.user?.profilePic) {
+          setProfilePic(`http://localhost:5000/${res.data.user.profilePic}`);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
 
   const menuItems = [
     { name: "Dashboard", path: "/user", icon: <FiHome /> },
@@ -18,6 +32,7 @@ const UserSidebar = ({ closeSidebar }) => {
     localStorage.removeItem("userName");
     navigate("/user-login");
   };
+  
 
   return (
     <div className="w-64 h-screen bg-[#0B1A2C] text-white p-5 flex flex-col">
@@ -32,18 +47,23 @@ const UserSidebar = ({ closeSidebar }) => {
 
       {/* User Avatar*/}
       
-      <div
-        className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3 mb-6 cursor-pointer hover:bg-white/20 transition"
-        onClick={() => navigate("/user/profile")}  
-      >
-        <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-sm">
-          {userName.charAt(0).toUpperCase()}
+      {/* User Avatar */}
+        <div
+          className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3 mb-6 cursor-pointer hover:bg-white/20 transition"
+          onClick={() => navigate("/user/profile")}
+        >
+          <div className="w-9 h-9 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center text-white font-bold text-sm">
+            {profilePic ? (
+              <img src={profilePic} alt="profile" className="w-full h-full object-cover" />
+            ) : (
+              userName.charAt(0).toUpperCase()
+            )}
+          </div>
+          <div>
+            <p className="text-sm font-semibold">{userName}</p>
+            <p className="text-xs text-gray-400">User Account</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold">{userName}</p>
-          <p className="text-xs text-gray-400">User Account</p>
-        </div>
-      </div>
 
       {/* Menu */}
       <nav className="flex flex-col gap-2">

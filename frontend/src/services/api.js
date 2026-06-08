@@ -1,17 +1,5 @@
 import axios from "axios";
-
-
-
-// Base API instance
-
-/*const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});*/
-
-const API = axios.create({
+  const API = axios.create({
   baseURL: "http://localhost:5000/api",
 });
 
@@ -20,7 +8,7 @@ const API = axios.create({
 
 
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("userToken");
+  const token = localStorage.getItem("token");
 
   if (token) {
     // ✅ FIXED (backticks added)

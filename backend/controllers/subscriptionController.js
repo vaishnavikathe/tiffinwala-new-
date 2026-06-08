@@ -474,9 +474,8 @@ export const cancelSubscription = async (req, res) => {
       });
     }
 
-    await Subscription.findByIdAndDelete(
-      req.params.id
-    );
+    subscription.status = "cancelled";
+    await subscription.save();
 
     res.status(200).json({
       success: true,
