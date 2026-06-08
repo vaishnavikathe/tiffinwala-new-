@@ -417,7 +417,7 @@ export const getVendorSubscribers = async (req, res) => {
 
 export const addExtraTiffin = async (req, res) => {
   try {
-    const { subscriptionId } = req.params;
+    const subscriptionId  = req.params.id;
     const { quantity, pricePerTiffin } = req.body;
 
     const subscription =

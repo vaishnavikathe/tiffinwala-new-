@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserSubscriptions, getPlanByMenu, cancelSubscription, deleteSubscription  } from "../../services/userApi";
+import { getUserSubscriptions, getPlanByMenu, cancelSubscription, deleteSubscription, orderExtraTiffin } from "../../services/userApi";
 import BackButton from "../../components/layout/BackButton";
 import toast from "react-hot-toast";
 
@@ -7,6 +7,9 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
   const [menus, setMenus] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const [menuLoading, setMenuLoading] = useState(false);
+  const [showExtraForm, setShowExtraForm] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [ordering, setOrdering] = useState(false);
 
   const fetchMenu = async () => {
     if (menus.length > 0) {
@@ -22,6 +25,23 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
       toast.error("Menu fetch failed!");
     } finally {
       setMenuLoading(false);
+    }
+  };
+
+  const handleExtraTiffin = async () => {
+    try {
+      setOrdering(true);
+      await orderExtraTiffin(sub._id, {
+        quantity: Number(quantity),
+        pricePerTiffin: sub.planDetails?.price || 0
+      });
+      toast.success(`${quantity} extra tiffin(s) ordered!`);
+      setShowExtraForm(false);
+      setQuantity(1);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Order failed!");
+    } finally {
+      setOrdering(false);
     }
   };
 
@@ -98,22 +118,60 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
         </div>
       )}
 
-      {/* Cancel Button*/}
+      {/* Buttons - sirf active ke liye */}
       {sub.status === "active" && (
-        <button
-          onClick={() => onCancel(sub._id)}
-          className="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl border border-red-200 transition font-medium"
-        >
-          ✕ Cancel Subscription
-        </button>
+        <div className="flex flex-wrap gap-3 mt-2">
+          {/* Cancel Button */}
+          <button
+            onClick={() => onCancel(sub._id)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl border border-red-200 transition font-medium"
+          >
+            ✕ Cancel Subscription
+          </button>
+
+          {/* Extra Tiffin Button */}
+          {!showExtraForm ? (
+            <button
+              onClick={() => setShowExtraForm(true)}
+              className="flex items-center gap-2 px-5 py-2.5 bg-orange-50 hover:bg-orange-100 text-orange-500 rounded-xl border border-orange-200 transition font-medium"
+            >
+              + Order Extra Tiffin
+            </button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={quantity}
+                onChange={e => setQuantity(e.target.value)}
+                className="w-20 p-2 border rounded-lg text-center"
+              />
+              <button
+                onClick={handleExtraTiffin}
+                disabled={ordering}
+                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium disabled:opacity-50"
+              >
+                {ordering ? "Ordering..." : "Confirm"}
+              </button>
+              <button
+                onClick={() => setShowExtraForm(false)}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       )}
-        {/* Delete Button */}
+
+      {/* Delete Button - expired/cancelled ke liye */}
       {sub.status !== "active" && (
         <button
           onClick={() => onDelete(sub._id)}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl border border-gray-300 transition font-medium"
+          className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl border border-gray-300 transition font-medium mt-2"
         >
-          Delete
+          🗑 Delete
         </button>
       )}
     </div>
@@ -151,15 +209,15 @@ const SubscriptionPage = () => {
   };
 
   const handleDelete = async (id) => {
-  if (!window.confirm("Delete this subscription permanently?")) return;
-  try {
-    await deleteSubscription(id);
-    toast.success("Subscription deleted!");
-    fetchSubscriptions();
-  } catch (err) {
-    toast.error(err?.response?.data?.message || "Delete failed!");
-  }
-};
+    if (!window.confirm("Delete this subscription permanently?")) return;
+    try {
+      await deleteSubscription(id);
+      toast.success("Subscription deleted!");
+      fetchSubscriptions();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Delete failed!");
+    }
+  };
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
 
@@ -172,7 +230,6 @@ const SubscriptionPage = () => {
     );
   }
 
-  // Active subscriptions pehle dikhao
   const sorted = [...subscriptions].sort((a, _b) =>
     a.status === "active" ? -1 : 1
   );
