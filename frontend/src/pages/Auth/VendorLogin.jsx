@@ -42,6 +42,9 @@ const VendorLogin = () => {
     //  store token
     localStorage.setItem("vendorToken", res.token);
 
+    localStorage.setItem("token", res.token);    
+    localStorage.setItem("role", "vendor");  
+
     // store vendor name (IMPORTANT)
     localStorage.setItem("vendorName", res.vendor.ownerName);
 
@@ -122,13 +125,13 @@ const VendorLogin = () => {
 
         </form>
 
-        <p className="mt-4 text-center text-sm">
-          Don’t have an account?{" "}
+                <p className="mt-4 text-center text-sm">
+          Don't have an account?{" "}
           <Link to="/vendor-register" className="text-orange-600">
             Register
           </Link>
-           <BackButton />
         </p>
+        <BackButton />
       </div>
     </div>
   );

@@ -41,8 +41,10 @@ const UserLogin = () => {
       const res = await loginUser(formData);
 
       localStorage.setItem("userToken", res.token);
+      localStorage.setItem("token", res.token);  
+      localStorage.setItem("role", "user");
       localStorage.setItem("userName", res.user?.name || "User");
-
+      
       console.log("Login success:", res);
       navigate("/user/vendors");
     } catch (err) {

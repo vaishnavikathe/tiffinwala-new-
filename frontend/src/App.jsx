@@ -58,7 +58,7 @@ const App = () => {
       <Route path="/admin-login" element={<AdminLogin />} />
 
       {/* VENDOR DASHBOARD */}
-      <Route element={<ProtectedRoute />}>
+      <Route element={<ProtectedRoute role="vendor" />}>
         <Route element={<DashboardLayout />}>
           <Route path="/vendor" element={<Navigate to="/vendor/dashboard" />} />
           <Route path="/vendor/dashboard" element={<Dashboard />} />
@@ -72,7 +72,7 @@ const App = () => {
       </Route>
 
       {/* USER DASHBOARD */}
-        <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute role="user" />}>
           <Route element={<UserDashboardLayout />}>
             <Route path="/user" element={<UserDashboard />} />
             <Route path="/user/vendors" element={<Vendors />} />
