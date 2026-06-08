@@ -1,11 +1,11 @@
 // adminApi.js
 import axios from "axios";
 
-const API = axios.create({
+const adminAPI = axios.create({
   baseURL: "http://localhost:5000/api/admin",
 });
 
-API.interceptors.request.use((config) => {
+adminAPI.interceptors.request.use((config) => {
   const token = localStorage.getItem("adminToken");
 
   if (token) {
@@ -17,10 +17,10 @@ API.interceptors.request.use((config) => {
 
 // Dashboard
 export const getDashboardStats = () =>
-  API.get("/dashboard");
+  adminAPI.get("/dashboard");
 
 // Recent Subscriptions
 export const getRecentSubscriptions = () =>
-  API.get("/recent-subscriptions");
+  adminAPI.get("/recent-subscriptions");
 
-export default API;
+export default adminAPI;

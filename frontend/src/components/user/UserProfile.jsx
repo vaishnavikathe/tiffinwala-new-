@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import API from "../../services/api";
+import userAPI from "../../services/userApi";
 import toast from "react-hot-toast";
 import { FiCamera } from "react-icons/fi";
 
@@ -21,8 +21,8 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await API.get("/user/profile", {
+        const token = localStorage.getItem("userToken");
+        const res = await userAPI.get("/user/profile", {
           headers: { Authorization: `Bearer ${token}` }
         });
         console.log("Profile Response:", res.data);
@@ -71,7 +71,7 @@ const UserProfile = () => {
       if (image) {
         formData.append("profilePic", image);
       }
-      const res = await API.put("/user/profile", formData, {
+      const res = await userAPI.put("/user/profile", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data"

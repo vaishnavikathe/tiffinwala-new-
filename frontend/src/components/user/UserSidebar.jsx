@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FiHome, FiUsers, FiLogOut, FiX, FiCalendar, FiCreditCard, FiUser } from "react-icons/fi";
 import { useState, useEffect } from "react";
-import API from "../../services/api";
+import userAPI from "../../services/userApi";
 
 const UserSidebar = ({ closeSidebar }) => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const UserSidebar = ({ closeSidebar }) => {
   const [profilePic, setProfilePic] = useState(null); 
 
   useEffect(() => {
-    API.get("/user/profile")
+    userAPI.get("/user/profile")
       .then(res => {
         if (res.data.user?.profilePic) {
           setProfilePic(`http://localhost:5000/${res.data.user.profilePic}`);

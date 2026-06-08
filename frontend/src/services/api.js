@@ -1,22 +1,6 @@
 import axios from "axios";
-  const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
-
-
-// Attach token automatically
-
-
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    // ✅ FIXED (backticks added)
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+import userAPI from "./userApi";
+import vendorAPI from "./vendorApi";
 
 // USER APIs
 
@@ -27,7 +11,7 @@ export const loginUser = async (data) => {
         ? { email: data.identifier, password: data.password }
         : { mobile: data.identifier, password: data.password };
 
-    const response = await API.post(
+    const response = await userAPI.post(
       "/user/login",
       payload
     );
@@ -53,7 +37,7 @@ export const registerUser = async (data) => {
       password: data.password,
     };
 
-    const response = await API.post(
+    const response = await userAPI.post(
       "/user/register",
       payload
     );
@@ -78,7 +62,7 @@ export const loginVendor = async (data) => {
         ? { email: data.identifier, password: data.password }
         : { mobile: data.identifier, password: data.password };
 
-    const response = await API.post(
+    const response = await userAPI.post(
       "/vendor/login",
       payload
     );
@@ -106,7 +90,7 @@ export const registerVendor = async (data) => {
       address: data.shopAddress,
     };
 
-    const response = await API.post(
+    const response = await vendorAPI.post(
       "/vendor/register",
       payload
     );
@@ -129,7 +113,7 @@ export const registerVendor = async (data) => {
 // Get Vendor Plans
 export const getPlans = async () => {
   try {
-    const response = await API.get(
+    const response = await vendorAPI.get(
       "/plan"
     );
 
@@ -184,7 +168,7 @@ export const addMenu = async (data) => {
       throw { message: "Plan ID missing" };
     }
 
-    const response = await API.post(
+    const response = await vendorAPI.post(
       `/menu/${data.planId}`,
       {
         day: data.day,
@@ -214,7 +198,7 @@ export const addMenu = async (data) => {
 export const getMenus = async () => {
   try {
 
-    const response = await API.get(
+    const response = await vendorAPI.get(
       "/menu"
     );
 
@@ -236,7 +220,7 @@ export const updateMenu = async (
 ) => {
   try {
 
-    const response = await API.put(
+    const response = await vendorAPI.put(
       `/menu/${menuId}`,
       data
     );
@@ -258,7 +242,7 @@ export const deleteMenu = async (
 ) => {
   try {
 
-    const response = await API.delete(
+    const response = await vendorAPI.delete(
       `/menu/${menuId}`
     );
 
@@ -272,6 +256,3 @@ export const deleteMenu = async (
     );
   }
 };
-
-// Export API instance
-export default API;

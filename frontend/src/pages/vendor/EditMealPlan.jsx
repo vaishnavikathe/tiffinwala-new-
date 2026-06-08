@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../../services/api";
+import vendorAPI from "../../services/vendorApi";
 import BackButton from "../../components/layout/BackButton";
 
 const EditMealPlan = () => {
@@ -20,7 +20,7 @@ const EditMealPlan = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const res = await API.get(`/plan/${id}`);
+        const res = await vendorAPI.get(`/plan/${id}`);
         setFormData(res.data.plan);
       } catch (err) {
         console.log(err);
@@ -46,7 +46,7 @@ const EditMealPlan = () => {
     setLoading(true);
 
     try {
-      await API.put(`/plan/${id}`, formData);
+      await vendorAPI.put(`/plan/${id}`, formData);
 
       alert("Plan updated successfully");
       navigate("/vendor/dashboard");
