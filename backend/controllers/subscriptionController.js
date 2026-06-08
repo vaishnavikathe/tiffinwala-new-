@@ -331,6 +331,8 @@ console.log("PREPAID:", plan.prepaidPlans);
       startDate,
       endDate,
       status: "active",
+      billingType: billingType || "prepaid",  
+      pricePerTiffin: pricePerTiffin || 0,    
       planDetails: {
         tiffinCount: selectedPlan.tiffinCount || 0,
         price: selectedPlan.price || selectedPlan.pricePerTiffin,

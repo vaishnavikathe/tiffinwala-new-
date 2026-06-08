@@ -34,6 +34,19 @@ const subscriptionSchema = new mongoose.Schema({
     enum: ["active", "expired","cancelled"],
     default: "active"
   },
+  billingType: {           
+    type: String,
+    enum: ["prepaid", "postpaid"],
+    default: "prepaid"
+  },
+  pricePerTiffin: {       
+    type: Number,
+    default: 0
+  },
+  tiffinsConsumed: {       
+    type: Number,
+    default: 0
+  },
   planDetails: {
     tiffinCount: Number,
     price: Number,
