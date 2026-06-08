@@ -37,9 +37,14 @@ const VendorDetails = () => {
     try {
       setSubscribing(true);
       setError("");
-      await createSubscription({ vendorId: id, planId });
+      await createSubscription({ 
+        vendorId: id, 
+        planId,
+        billingType: type,  
+        pricePerTiffin: type === "postpaid" ? selectedPlan.postpaidPlan?.pricePerTiffin : 0
+    });
       setSelectedPlan(null);
-      navigate("/user/subscription"); // Subscription page pe navigate karo
+      navigate("/user/subscription"); 
     } catch (err) {
       setError(err.response?.data?.message || "Subscription failed");
     } finally {
