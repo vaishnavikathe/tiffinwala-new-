@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import API from "../../services/api";
+import vendorAPI from "../../services/vendorApi";
 import { createSubscription } from "../../services/userApi";
 import BackButton from "../../components/layout/BackButton";
 import { X } from "lucide-react";
@@ -21,7 +21,7 @@ const VendorDetails = () => {
 
   const fetchVendorDetails = async () => {
     try {
-      const res = await API.get(`/vendor/${id}/details`);
+      const res = await vendorAPI.get(`/vendor/${id}/details`);
       console.log("API Response:", res.data);
       setVendor(res.data.vendor);
 

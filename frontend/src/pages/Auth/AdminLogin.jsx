@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../../services/adminApi";
+import adminAPI from "../../services/adminApi";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ const AdminLogin = () => {
     try {
       setLoading(true);
 
-      const res = await API.post("/login", {
+      const res = await adminAPI.post("/login", {
         email,
         password,
       });

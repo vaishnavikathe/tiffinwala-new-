@@ -1,35 +1,50 @@
-import API from "./api";
+import axios from "axios";
+
+const userAPI = axios.create({
+  baseURL: "http://localhost:5000/api",
+});
+userAPI.interceptors.request.use((config) => {
+  const token = localStorage.getItem("userToken");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+export default userAPI;
 
 //Get vendors (pagination handled by backend)
 export const getVendors = ({ page = 1, limit = 9 } = {}) => {
-  return API.get(`/vendor/all?page=${page}&limit=${limit}`);
+  return userAPI.get(`/vendor/all?page=${page}&limit=${limit}`);
 };
 
 //  Get plans by vendor
 export const getVendorDetails = (vendorId) => {
-  return API.get(`/vendor/${vendorId}/details`);
+  return userAPI.get(`/vendor/${vendorId}/details`);
 };
 
 //  Get menu by plan
 export const getPlanByMenu = (planId) =>
-  API.get(`/menu/plan/${planId}`);
+  userAPI.get(`/menu/plan/${planId}`);
 
 //Subscribe to a plan
 export const createSubscription = ({ vendorId, planId }) =>
-  API.post("/subscription", { vendorId, planId });
+  userAPI.post("/subscription", { vendorId, planId });
 
 // Get user's subscriptions
 export const getUserSubscriptions = () =>
-  API.get("/subscription");
+  userAPI.get("/subscription");
 
 // User Profile
-export const getUserProfile = () => API.get("/user/profile");
-export const updateUserProfile = (data) => API.put("/user/profile", data);
+export const getUserProfile = () => userAPI.get("/user/profile");
+export const updateUserProfile = (data) => userAPI.put("/user/profile", data);
 
 // Cancel subscription
 export const cancelSubscription = (id) =>
-  API.delete(`/subscription/${id}`);
+  userAPI.delete(`/subscription/${id}`);
 
 // Delete subscription
 export const deleteSubscription = (id) =>
-  API.delete(`/subscription/${id}`);
+  userAPI.delete(`/subscription/${id}`);

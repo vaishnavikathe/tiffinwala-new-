@@ -40,7 +40,7 @@ const VendorLogin = () => {
     const res = await loginVendor(formData);
 
     //  store token
-    localStorage.setItem("token", res.token);
+    localStorage.setItem("vendorToken", res.token);
 
     // store vendor name (IMPORTANT)
     localStorage.setItem("vendorName", res.vendor.ownerName);
