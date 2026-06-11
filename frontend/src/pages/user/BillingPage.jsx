@@ -135,20 +135,21 @@ const BillingPage = () => {
               </div>
 
               {/* Dates */}
-              <div className="grid grid-cols-2 gap-4 mt-4 bg-gray-50 rounded-lg p-3">
-                <div>
-                  <p className="text-xs text-gray-400 uppercase">Start Date</p>
-                  <p className="text-sm font-medium">
-                    {new Date(sub.startDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400 uppercase">End Date</p>
-                  <p className="text-sm font-medium">
-                    {new Date(sub.endDate).toLocaleDateString()}
-                  </p>
-                </div>
+              
+            <div className="grid grid-cols-2 gap-4 mt-4 bg-gray-50 rounded-lg p-3">
+              <div>
+                <p className="text-xs text-gray-400 uppercase">Start Date</p>
+                <p className="text-sm font-medium">
+                  {new Date(sub.startDate).toLocaleDateString()}
+                </p>
               </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase">End Date</p>
+                <p className="text-sm font-medium">
+                  {sub.endDate ? new Date(sub.endDate).toLocaleDateString() : "Ongoing ♾️"}
+                </p>
+              </div>
+            </div>
 
             </div>
           );

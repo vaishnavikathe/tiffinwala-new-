@@ -10,9 +10,10 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
   const [showExtraForm, setShowExtraForm] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [ordering, setOrdering] = useState(false);
+  const [pauseFromDate, setPauseFromDate] = useState("");
+  const [pauseToDate, setPauseToDate] = useState("");
   const [showPauseForm, setShowPauseForm] = useState(false);
-  const [pauseDate, setPauseDate] = useState("");
-  const [pausing, setPausing] = useState(false);
+  const [pausing, setPausing] = useState(false); 
 
   const fetchMenu = async () => {
     if (menus.length > 0) {
@@ -49,16 +50,21 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
   };
 
   const handlePause = async () => {
-  if (!pauseDate) {
-    toast.error("Please select a date!");
+  if (!pauseFromDate || !pauseToDate) {
+    toast.error("Please select both dates!");
     return;
   }
   try {
     setPausing(true);
-    await pauseTiffin(sub._id, pauseDate);
-    toast.success("Tiffin paused! End date extended by 1 day!");
+    await pauseTiffin(sub._id, { 
+      fromDate: pauseFromDate, 
+      toDate: pauseToDate 
+    });
+    const days = Math.ceil((new Date(pauseToDate) - new Date(pauseFromDate)) / (1000 * 60 * 60 * 24)) + 1;
+    toast.success(`${days} days paused! End date extended!`);
     setShowPauseForm(false);
-    setPauseDate("");
+    setPauseFromDate("");
+    setPauseToDate("");
   } catch (err) {
     toast.error(err?.response?.data?.message || "Pause failed!");
   } finally {
@@ -85,7 +91,7 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
           <div>
             <p className="text-xs text-white/60 uppercase">Start</p>
             <p className="font-medium">
-              {new Date(sub.startDate).toLocaleDateString()}
+             {sub.endDate ? new Date(sub.endDate).toLocaleDateString() : "Ongoing ♾️"}
             </p>
           </div>
           <div>
@@ -159,28 +165,41 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
                 ⏸ Pause Tiffin
               </button>
             ) : (
-              <div className="flex items-center gap-3">
-                <input
-                  type="date"
-                  value={pauseDate}
-                  min={new Date().toISOString().split("T")[0]}
-                  onChange={e => setPauseDate(e.target.value)}
-                  className="p-2 border rounded-lg text-sm"
-                />
-                <button
-                  onClick={handlePause}
-                  disabled={pausing}
-                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium disabled:opacity-50"
-                >
-                  {pausing ? "Pausing..." : "Confirm"}
-                </button>
-                <button
-                  onClick={() => setShowPauseForm(false)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg"
-                >
-                  Cancel
-                </button>
-              </div>
+             <div className="flex items-center gap-3 flex-wrap">
+  <div>
+    <label className="text-xs text-gray-500">From</label>
+    <input
+      type="date"
+      value={pauseFromDate}
+      min={new Date().toISOString().split("T")[0]}
+      onChange={e => setPauseFromDate(e.target.value)}
+      className="p-2 border rounded-lg text-sm block"
+    />
+  </div>
+        <div>
+          <label className="text-xs text-gray-500">To</label>
+          <input
+            type="date"
+            value={pauseToDate}
+            min={pauseFromDate || new Date().toISOString().split("T")[0]}
+            onChange={e => setPauseToDate(e.target.value)}
+            className="p-2 border rounded-lg text-sm block"
+          />
+        </div>
+        <button
+          onClick={handlePause}
+          disabled={pausing}
+          className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium disabled:opacity-50 mt-4"
+        >
+          {pausing ? "Pausing..." : "Confirm"}
+        </button>
+        <button
+          onClick={() => setShowPauseForm(false)}
+          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg mt-4"
+        >
+          Cancel
+        </button>
+      </div>
             )}
           {/* Extra Tiffin Button */}
           {!showExtraForm ? (
