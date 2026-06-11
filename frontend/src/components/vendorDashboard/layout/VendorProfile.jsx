@@ -38,7 +38,7 @@ const Profile = () => {
 
         //  FIX IMAGE PATH
         if (vendor.profilePic) {
-          setPreview(`http://localhost:5000/${vendor.profilePic}`);
+          setPreview(`http://localhost:5000${vendor.profilePic}`);
         }
 
       } catch (err) {
@@ -105,7 +105,7 @@ const updatedVendor = res.data.vendor;
 
       // UPDATE IMAGE AFTER SAVE (VERY IMPORTANT)
       if (updatedVendor.profilePic) {
-        setPreview(`http://localhost:5000/${updatedVendor.profilePic}`);
+        setPreview(`http://localhost:5000${updatedVendor.profilePic}`);
       }
 
       // UPDATE FORM

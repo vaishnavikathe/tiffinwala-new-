@@ -491,3 +491,104 @@ export const cancelSubscription = async (req, res) => {
     });
   }
 };
+
+export const pauseTiffin = async (req, res) => {
+  try {
+    const { date } = req.body; // Date jo pause karni hai
+    const sub = await Subscription.findById(req.params.id);
+    
+    if (!sub) return res.status(404).json({ message: "Not found" });
+  
+    const alreadyPaused = sub.pausedDates.some(
+      d => new Date(d).toDateString() === new Date(date).toDateString()
+    );
+    
+    if (alreadyPaused) {
+      return res.status(400).json({ message: "Already paused for this date" });
+    }
+    
+    sub.pausedDates.push(new Date(date));
+    sub.pausedDays += 1;
+
+    sub.endDate = new Date(sub.endDate.getTime() + 24 * 60 * 60 * 1000);
+    
+    await sub.save();
+    res.json({ message: "Tiffin paused!", subscription: sub });
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+/*export const skipTiffin = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { subscriptionId, skipDate } = req.body;
+
+    const subscription = await Subscription.findById(subscriptionId);
+
+    if (!subscription) {
+      return res.status(404).json({
+        message: "Subscription not found",
+      });
+    }
+
+    const alreadySkipped = await SkipTiffin.findOne({
+      userId,
+      subscriptionId,
+      skipDate,
+    });
+
+    if (alreadySkipped) {
+      return res.status(400).json({
+        message: "Tiffin already skipped",
+      });
+    }
+
+    await SkipTiffin.create({
+      userId,
+      subscriptionId,
+      skipDate,
+    });
+
+    // Extend subscription by 1 day
+    subscription.endDate.setDate(
+      subscription.endDate.getDate() + 1
+    );
+
+    await subscription.save();
+
+    res.status(201).json({
+      message: "Tiffin skipped successfully",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};*/
+
+//import SkippedTiffin from "../models/SkippedTiffin.js";
+
+/*export const getSkippedTiffins = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const skippedTiffins = await SkippedTiffin.find({ userId })
+      .sort({ skipDate: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: skippedTiffins.length,
+      skippedTiffins,
+    });
+  } catch (error) {
+    console.error("GET SKIPPED TIFFINS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};*/

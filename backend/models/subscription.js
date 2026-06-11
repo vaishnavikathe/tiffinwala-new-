@@ -21,6 +21,15 @@ const subscriptionSchema = new mongoose.Schema({
   endDate: {
     type: Date
   },
+
+  pausedDates: [{
+  type: Date
+  }],
+
+  pausedDays: {
+  type: Number,
+  default: 0
+  },
   extraTiffins: {
     type: Number,
     default: 0

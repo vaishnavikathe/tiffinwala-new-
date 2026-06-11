@@ -169,6 +169,8 @@ import fs from "fs";
 // Create folders
 const vendorPath = "uploads/vendors";
 const userPath = "uploads/users";
+const defaultpath = "uploads/default";
+
 
 if (!fs.existsSync(vendorPath)) {
   fs.mkdirSync(vendorPath, { recursive: true });
@@ -187,7 +189,7 @@ const storage = multer.diskStorage({
     } else if (req.baseUrl.includes("user")) {
       cb(null, userPath);
     } else {
-      cb(null, "uploads");
+      cb(null, defaultpath);
     }
 
   },

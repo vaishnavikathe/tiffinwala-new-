@@ -18,7 +18,7 @@ export const registerUser = async (req, res) => {
       });
     }
     //profile pic handling
-    let profilePic = "uploads/default.png";
+    let profilePic = "uploads/default.png/default.jpg";
 
     if (req.file) {
       profilePic = req.file.path;
