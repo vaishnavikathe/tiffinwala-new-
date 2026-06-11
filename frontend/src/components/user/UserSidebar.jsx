@@ -12,7 +12,7 @@ const UserSidebar = ({ closeSidebar }) => {
     userAPI.get("/user/profile")
       .then(res => {
         if (res.data.user?.profilePic) {
-          setProfilePic(`http://localhost:5000/${res.data.user.profilePic}`);
+          setProfilePic(`http://localhost:5000${res.data.user.profilePic}`);
         }
       })
       .catch(() => {});

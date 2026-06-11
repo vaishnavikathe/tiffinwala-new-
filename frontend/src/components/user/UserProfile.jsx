@@ -35,7 +35,7 @@ const UserProfile = () => {
           password: ""
         });
         if (user.profilePic) {
-          setPreview(`http://localhost:5000/${user.profilePic}`);
+          setPreview(`http://localhost:5000${user.profilePic}`);
         }
       } catch (err) {
         console.error("PROFILE LOAD ERROR:", err);
