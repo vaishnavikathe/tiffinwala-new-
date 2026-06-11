@@ -52,3 +52,7 @@ export const deleteSubscription = (id) =>
 // Extra tiffin order
 export const orderExtraTiffin = (id, data) =>
   userAPI.patch(`/subscription/${id}`, data);
+
+// Pause tiffin
+export const pauseTiffin = (id, date) =>
+  userAPI.post(`/subscription/${id}/pause`, { date });

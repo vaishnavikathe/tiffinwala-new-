@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserSubscriptions, getPlanByMenu, cancelSubscription, deleteSubscription, orderExtraTiffin } from "../../services/userApi";
+import { getUserSubscriptions, getPlanByMenu, cancelSubscription, deleteSubscription, orderExtraTiffin, pauseTiffin } from "../../services/userApi";
 import BackButton from "../../components/layout/BackButton";
 import toast from "react-hot-toast";
 
@@ -10,6 +10,9 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
   const [showExtraForm, setShowExtraForm] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [ordering, setOrdering] = useState(false);
+  const [showPauseForm, setShowPauseForm] = useState(false);
+  const [pauseDate, setPauseDate] = useState("");
+  const [pausing, setPausing] = useState(false);
 
   const fetchMenu = async () => {
     if (menus.length > 0) {
@@ -44,6 +47,24 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
       setOrdering(false);
     }
   };
+
+  const handlePause = async () => {
+  if (!pauseDate) {
+    toast.error("Please select a date!");
+    return;
+  }
+  try {
+    setPausing(true);
+    await pauseTiffin(sub._id, pauseDate);
+    toast.success("Tiffin paused! End date extended by 1 day!");
+    setShowPauseForm(false);
+    setPauseDate("");
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Pause failed!");
+  } finally {
+    setPausing(false);
+  }
+};
 
   return (
     <div className="mb-8">
@@ -118,7 +139,7 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
         </div>
       )}
 
-      {/* Buttons - sirf active ke liye */}
+      {/* Buttons*/}
       {sub.status === "active" && (
         <div className="flex flex-wrap gap-3 mt-2">
           {/* Cancel Button */}
@@ -129,6 +150,38 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
             ✕ Cancel Subscription
           </button>
 
+            {/* Pause Tiffin Button */}
+            {!showPauseForm ? (
+              <button
+                onClick={() => setShowPauseForm(true)}
+                className="flex items-center gap-2 px-5 py-2.5 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 rounded-xl border border-yellow-200 transition font-medium"
+              >
+                ⏸ Pause Tiffin
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <input
+                  type="date"
+                  value={pauseDate}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={e => setPauseDate(e.target.value)}
+                  className="p-2 border rounded-lg text-sm"
+                />
+                <button
+                  onClick={handlePause}
+                  disabled={pausing}
+                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium disabled:opacity-50"
+                >
+                  {pausing ? "Pausing..." : "Confirm"}
+                </button>
+                <button
+                  onClick={() => setShowPauseForm(false)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           {/* Extra Tiffin Button */}
           {!showExtraForm ? (
             <button
@@ -165,7 +218,7 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
         </div>
       )}
 
-      {/* Delete Button - expired/cancelled ke liye */}
+      {/* Delete Button */}
       {sub.status !== "active" && (
         <button
           onClick={() => onDelete(sub._id)}
