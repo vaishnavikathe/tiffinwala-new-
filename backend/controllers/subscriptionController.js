@@ -331,13 +331,13 @@ console.log("PREPAID:", plan.prepaidPlans);
       startDate,
       endDate,
       status: "active",
-      billingType: billingType || "prepaid",  
-      pricePerTiffin: pricePerTiffin || 0,    
-      planDetails: {
-        tiffinCount: selectedPlan.tiffinCount || 0,
-        price: selectedPlan.price || selectedPlan.pricePerTiffin,
-        duration: planType
-      }
+      billingType: planType,
+
+  planDetails: {
+    tiffinCount: selectedPlan.tiffinCount || 0,
+    price: selectedPlan.price || selectedPlan.pricePerTiffin || 0,
+    duration: planType,
+  },
     });
 
     console.log("CREATED SUB:", subscription);
