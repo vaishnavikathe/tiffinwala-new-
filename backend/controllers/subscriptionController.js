@@ -520,6 +520,7 @@ await sub.save();
 export const pauseTiffin = async (req, res) => {
   try {
     const { fromDate, toDate } = req.body;
+     console.log("Received dates:", fromDate, toDate); 
     
     const sub = await Subscription.findById(req.params.id);
     if (!sub) {
@@ -528,6 +529,8 @@ export const pauseTiffin = async (req, res) => {
 
     const from = new Date(fromDate);
     const to = new Date(toDate);
+    console.log("Parsed dates:", from, to); // ← ADD
+    console.log("isNaN check:", isNaN(from), isNaN(to)); // ← ADD
     
     // ✅ NaN fix - validate dates
     if (isNaN(from) || isNaN(to)) {

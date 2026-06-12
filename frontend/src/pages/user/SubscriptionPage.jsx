@@ -50,6 +50,7 @@ const SubscriptionCard = ({ sub, onCancel, onDelete }) => {
   };
 
   const handlePause = async () => {
+    console.log("Pause dates:", pauseFromDate, pauseToDate);
   if (!pauseFromDate || !pauseToDate) {
     toast.error("Please select both dates!");
     return;
