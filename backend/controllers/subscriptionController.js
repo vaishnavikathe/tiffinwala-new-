@@ -492,7 +492,7 @@ export const cancelSubscription = async (req, res) => {
   }
 };
 
-export const pauseTiffin = async (req, res) => {
+/*export const pauseTiffin = async (req, res) => {
   try {
     const { fromDate, toDate } = req.body;
 
@@ -511,6 +511,45 @@ sub.pausedDays += days;
 // End date 
 sub.endDate = new Date(sub.endDate.getTime() + days * 24 * 60 * 60 * 1000);
 await sub.save();
+    res.json({ message: "Tiffin paused!", subscription: sub });
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};*/
+export const pauseTiffin = async (req, res) => {
+  try {
+    const { fromDate, toDate } = req.body;
+    
+    const sub = await Subscription.findById(req.params.id);
+    if (!sub) {
+      return res.status(404).json({ message: "Subscription not found" });
+    }
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    
+    // ✅ NaN fix - validate dates
+    if (isNaN(from) || isNaN(to)) {
+      return res.status(400).json({ message: "Invalid dates provided" });
+    }
+    
+    const days = Math.ceil((to - from) / (1000 * 60 * 60 * 24)) + 1;
+    
+    let current = new Date(from);
+    while (current <= to) {
+      sub.pausedDates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+    
+    sub.pausedDays = (sub.pausedDays || 0) + days;
+    
+    // ✅ endDate null check
+    if (sub.endDate) {
+      sub.endDate = new Date(sub.endDate.getTime() + days * 24 * 60 * 60 * 1000);
+    }
+    
+    await sub.save();
     res.json({ message: "Tiffin paused!", subscription: sub });
     
   } catch (err) {
